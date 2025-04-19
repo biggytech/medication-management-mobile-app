@@ -1,21 +1,23 @@
 import React, { type PropsWithChildren } from 'react';
 import {router} from "expo-router";
-import {createContext, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {AuthService} from "@/services/auth/AuthService";
 
 const AuthContext = createContext<{
     signIn: (token: string) => void;
-    signOut: () => void
-    authServiceRef: MutableRefObject<AuthService> | null,
+    signOut: () => void;
+    getToken: () => string | null;
     isLoading: boolean
 }>({
     signIn: () => null,
     signOut: () => null,
-    authServiceRef: null,
+    getToken: () => null,
     isLoading: true
 });
 
-// Access the context as a hook
+/**
+ * Access the auth context as a hook
+ */
 export const useAuthSession = () => {
     return useContext(AuthContext);
 }
@@ -39,7 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
     const signIn = useCallback(async (token: string) => {
         await authServiceRef.current.setToken(token);
-        router.replace('/')
+        router.replace('/home')
     }, []);
 
     const signOut = useCallback(async () => {
@@ -52,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
             value={{
                 signIn,
                 signOut,
-                authServiceRef,
+                getToken: authServiceRef.current.getToken,
                 isLoading
             }}
         >

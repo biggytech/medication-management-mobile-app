@@ -34,7 +34,7 @@ export class AuthService {
         this._token = token;
     }
 
-    public async getToken(): Promise<string | null> {
+    public getToken(): string | null {
         return this._token;
     }
 
