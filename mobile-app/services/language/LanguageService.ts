@@ -6,12 +6,13 @@ export class LanguageService {
     private static readonly LANGUAGE_KEY = '@language';
     private static instance: LanguageService | null = null;
     private readonly i18n: I18nType;
+    public static DEFAULT_LANGUAGE = 'en-US';
 
     private constructor(i18n: I18nType) {
         this.i18n = i18n;
     }
 
-    public static getInstance() {
+    private static getInstance() {
         if (LanguageService.instance === null) {
             LanguageService.instance = new LanguageService(i18n);
         }
@@ -19,24 +20,27 @@ export class LanguageService {
         return LanguageService.instance;
     }
 
-    private async getCurrentLanguage() {
+    private static async getCurrentLanguage() {
         return await AsyncStorage.getItem(LanguageService.LANGUAGE_KEY);
     }
 
-    public async loadCurrentLanguage() {
-        const laguage = await this.getCurrentLanguage();
-        if (laguage) {
-            await this.i18n.changeLanguage(laguage);
+    public static async loadCurrentLanguage() {
+        const language = await LanguageService.getCurrentLanguage();
+        if (language) {
+            const instance = LanguageService.getInstance();
+            await instance.i18n.changeLanguage(language);
         }
-        return laguage;
+        return language;
     }
 
-    public async changeLanguage(language: string) {
+    public static async changeLanguage(language: string) {
+        const instance = LanguageService.getInstance();
         await AsyncStorage.setItem(LanguageService.LANGUAGE_KEY, language);
-        await i18n.changeLanguage(language);
+        await instance.i18n.changeLanguage(language);
     }
     
-    public translate(...args: Parameters<I18nType['t']>) {
-        return this.i18n.t(...args);
+    public static translate(...args: Parameters<I18nType['t']>) {
+        const instance = LanguageService.getInstance();
+        return instance.i18n.t(...args);
     }
 }
