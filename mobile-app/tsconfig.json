@@ -7,7 +7,7 @@
         "./*"
       ]
     },
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "allowJs": false
   },
   "include": [
@@ -15,5 +15,8 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

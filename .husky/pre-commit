@@ -3,3 +3,4 @@
 
 cd ./mobile-app
 npx lint-staged
+npm run typecheck

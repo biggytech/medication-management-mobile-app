@@ -6,8 +6,6 @@ export enum AuthType {
   DEFAULT = "DEFAULT",
 }
 
-//
-
 export class AuthService {
   private static readonly TOKEN_KEY = "@token";
 

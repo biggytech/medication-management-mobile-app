@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { i18n as I18nType } from "i18next";
+import type { i18n as I18nType } from "i18next";
 import i18n from "@/i18n";
 
 export class LanguageService {

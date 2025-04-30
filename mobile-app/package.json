@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "typecheck": "tsc --project tsconfig.json --noEmit --maxNodeModuleJsDepth 0"
   },
   "jest": {
     "preset": "jest-expo"
