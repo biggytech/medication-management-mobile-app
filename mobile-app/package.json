@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "prepare": "husky install",
+    "prepare": "husky",
     "typecheck": "tsc --noEmit"
   },
   "jest": {
