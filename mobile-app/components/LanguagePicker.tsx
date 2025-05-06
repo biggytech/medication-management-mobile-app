@@ -1,28 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { LanguageService } from "@/services/language/LanguageService";
 import { useScreenReload } from "@/hooks/useScreenReload";
+import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/languages";
+import { Spacings } from "@/constants/styling/spacings";
 
 interface LanguageOption {
   label: string;
-  value: string;
+  value: AvailableLanguages;
 }
 
-const LANGUAGES_OPTIONS: LanguageOption[] = [
-  {
-    label: "🇺🇸  English",
-    value: "en-US",
-  },
-  {
-    label: "🇷🇺  Русский",
-    value: "ru-RU",
-  },
-];
+const LANGUAGES_OPTIONS: {
+  [K in AvailableLanguages]: Omit<LanguageOption, "value">;
+} = {
+  [AvailableLanguages.EN]: { label: "🇺🇸  English" },
+  [AvailableLanguages.RU]: { label: "🇷🇺  Русский" },
+};
 
 export const LanguagePicker = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
-    LanguageService.DEFAULT_LANGUAGE,
+    DEFAULT_LANGUAGE,
   );
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const { reloadScreen } = useScreenReload();
@@ -33,7 +31,7 @@ export const LanguagePicker = () => {
       if (language) {
         setSelectedLanguage(language);
       } else {
-        await LanguageService.changeLanguage(LanguageService.DEFAULT_LANGUAGE);
+        await LanguageService.changeLanguage(DEFAULT_LANGUAGE);
       }
     })();
   }, []);
@@ -48,6 +46,16 @@ export const LanguagePicker = () => {
     reloadScreen();
   };
 
+  const options: LanguageOption[] = useMemo(() => {
+    const keys = Object.keys(
+      LANGUAGES_OPTIONS,
+    ) as unknown as (keyof typeof LANGUAGES_OPTIONS)[];
+    return keys.map((key) => ({
+      value: key,
+      ...LANGUAGES_OPTIONS[key],
+    }));
+  }, []);
+
   return (
     <View>
       {selectedLanguage && (
@@ -59,7 +67,7 @@ export const LanguagePicker = () => {
           iconStyle={styles.iconStyle}
           itemContainerStyle={styles.itemContainerStyle}
           itemTextStyle={styles.itemTextStyle}
-          data={LANGUAGES_OPTIONS}
+          data={options}
           maxHeight={300}
           labelField="label"
           valueField="value"
@@ -81,7 +89,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: Spacings.SMALL,
     width: 120,
   },
   focusedDropdown: {

@@ -6,7 +6,6 @@ export class LanguageService {
   private static readonly LANGUAGE_KEY = "@language";
   private static instance: LanguageService | null = null;
   private readonly i18n: I18nType;
-  public static DEFAULT_LANGUAGE = "en-US";
 
   private constructor(i18n: I18nType) {
     this.i18n = i18n;
