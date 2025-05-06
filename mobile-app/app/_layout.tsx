@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { AuthProvider } from "@/providers/AuthProvider";
+import { SafeAreaView } from "react-native-safe-area-context";
 import "@/i18n"; // localization
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -26,12 +27,14 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name={"index"} />
-        <Stack.Screen name={"home"} />
-        <Stack.Screen name={"login"} />
-        <Stack.Screen name={"+not-found"} />
-      </Stack>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name={"index"} />
+          <Stack.Screen name={"home"} />
+          <Stack.Screen name={"login"} />
+          <Stack.Screen name={"+not-found"} />
+        </Stack>
+      </SafeAreaView>
     </AuthProvider>
   );
 }
