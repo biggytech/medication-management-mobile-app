@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TextInput, StyleSheet, type TextInputProps } from "react-native";
 import { AppColors } from "@/constants/styling/colors";
+import { Fonts, FontSizes } from "@/constants/styling/fonts";
 
 type InputProps = TextInputProps;
 
@@ -36,8 +37,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: AppColors.SECONDARY,
     padding: 10,
+    fontSize: FontSizes.STANDART,
+    color: AppColors.FONT,
+    fontFamily: Fonts.DEFAULT,
   },
   focused: {
-    borderColor: AppColors.PRIMARY,
+    borderColor: AppColors.ACCENT,
   },
 });

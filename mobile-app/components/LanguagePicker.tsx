@@ -5,6 +5,8 @@ import { LanguageService } from "@/services/language/LanguageService";
 import { useScreenReload } from "@/hooks/useScreenReload";
 import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/languages";
 import { Spacings } from "@/constants/styling/spacings";
+import { Fonts, FontSizes } from "@/constants/styling/fonts";
+import { AppColors } from "@/constants/styling/colors";
 
 interface LanguageOption {
   label: string;
@@ -96,10 +98,14 @@ const styles = StyleSheet.create({
     borderColor: "blue",
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: FontSizes.STANDART,
+    color: AppColors.FONT,
+    fontFamily: Fonts.DEFAULT,
   },
   selectedTextStyle: {
-    fontSize: 14,
+    fontSize: FontSizes.STANDART,
+    color: AppColors.FONT,
+    fontFamily: Fonts.DEFAULT,
   },
   iconStyle: {
     width: 20,
@@ -107,6 +113,8 @@ const styles = StyleSheet.create({
   },
   itemContainerStyle: {},
   itemTextStyle: {
-    fontSize: 14,
+    fontSize: FontSizes.STANDART,
+    color: AppColors.FONT,
+    fontFamily: Fonts.DEFAULT,
   },
 });

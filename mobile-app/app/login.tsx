@@ -10,6 +10,7 @@ import { APIService } from "@/services/APIService";
 import { AppColors } from "@/constants/styling/colors";
 import { Loader } from "@/components/Loader";
 import { Spacings } from "@/constants/styling/spacings";
+import { Link } from "@/components/Link";
 
 export default function Login(): ReactNode {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -19,6 +20,7 @@ export default function Login(): ReactNode {
   const { signIn } = useAuthSession();
 
   const login = async () => {
+    // TODO: loading, errors, toasts
     const { token } = await APIService.login({
       username,
       password,
@@ -59,6 +61,14 @@ export default function Login(): ReactNode {
           disabled={isButtonDisabled}
           color={AppColors.POSITIVE}
         />
+        <Link
+          text={LanguageService.translate("I don't have account")}
+          onPress={() => {
+            // TODO: open registration screen
+          }}
+          style={styles.registerLink}
+          textStyle={styles.registerLinkText}
+        />
         <View
           style={[
             styles.loaderContainer,
@@ -93,5 +103,11 @@ const styles = StyleSheet.create({
   },
   loaderContainerVisible: {
     opacity: 1,
+  },
+  registerLink: {
+    marginTop: Spacings.STANDART,
+  },
+  registerLinkText: {
+    textAlign: "center",
   },
 });

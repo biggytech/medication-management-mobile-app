@@ -5,14 +5,15 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import "@/i18n"; // localization
+import "@/i18n";
+import { Fonts } from "@/constants/styling/fonts"; // localization
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    [Fonts.DEFAULT]: require("../assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
   });
 
   useEffect(() => {
