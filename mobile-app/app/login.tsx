@@ -1,18 +1,32 @@
 import { useAuthSession } from "@/providers/AuthProvider";
-import type { ReactNode } from "react";
-import { Button, View, StyleSheet } from "react-native";
+import { type ReactNode, useState } from "react";
+import { View, StyleSheet, Image } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { Input } from "@/components/Input";
+import { Button } from "@/components/Button";
 import { BASIC_STYLES } from "@/constants/styling/basic";
+import { APIService } from "@/services/APIService";
+import { AppColors } from "@/constants/styling/colors";
+import { Loader } from "@/components/Loader";
+import { Spacings } from "@/constants/styling/spacings";
 
 export default function Login(): ReactNode {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   const { signIn } = useAuthSession();
 
-  const login = () => {
-    // TODO: add authentication
-    signIn("token");
+  const login = async () => {
+    const { token } = await APIService.login({
+      username,
+      password,
+    });
+    signIn(token);
   };
+
+  const isButtonDisabled = isLoading || !username || !password;
 
   return (
     <View style={BASIC_STYLES.screen}>
@@ -20,9 +34,40 @@ export default function Login(): ReactNode {
         <LanguagePicker />
       </View>
       <View style={styles.form}>
-        <Input autoFocus placeholder={LanguageService.translate("Username")} />
-        <Input placeholder={LanguageService.translate("Password")} />
-        <Button title={LanguageService.translate("Login")} onPress={login} />
+        <Image
+          alt={"Медика"}
+          source={require("../assets/images/logo/logo.png")}
+          style={styles.logo}
+        />
+        <Input
+          autoFocus
+          placeholder={LanguageService.translate("Username")}
+          value={username}
+          onChangeText={(text) => setUsername(text.trim())}
+        />
+        <Input
+          placeholder={LanguageService.translate("Password")}
+          enterKeyHint={"done"}
+          returnKeyType={"done"}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <Button
+          title={LanguageService.translate("Login")}
+          onPress={login}
+          disabled={isButtonDisabled}
+          color={AppColors.POSITIVE}
+        />
+        <View
+          style={[
+            styles.loaderContainer,
+            isLoading ? styles.loaderContainerVisible : {},
+          ]}
+          aria-hidden={!isLoading}
+        >
+          <Loader />
+        </View>
       </View>
     </View>
   );
@@ -32,9 +77,21 @@ const styles = StyleSheet.create({
   languagePickerContainer: {
     marginLeft: "auto",
   },
+  logo: {
+    width: 200,
+    height: 100,
+    resizeMode: "contain",
+    marginBottom: Spacings.SMALL,
+  },
   form: {
     alignSelf: "center",
     marginTop: "auto",
     marginBottom: "auto",
+  },
+  loaderContainer: {
+    opacity: 0,
+  },
+  loaderContainerVisible: {
+    opacity: 1,
   },
 });

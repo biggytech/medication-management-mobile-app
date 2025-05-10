@@ -1,5 +1,7 @@
 {
   "Login": "Войти",
   "Search": "Поиск",
-  "Select": "Выбрать"
+  "Select": "Выбрать",
+  "Username": "Логин",
+  "Password": "Пароль"
 }

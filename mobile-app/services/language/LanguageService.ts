@@ -2,6 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { i18n as I18nType } from "i18next";
 import i18n from "@/i18n";
 
+// TODO: init service with current device's language
+// https://docs.expo.dev/guides/localization/#getting-the-users-language
+
 export class LanguageService {
   private static readonly LANGUAGE_KEY = "@language";
   private static instance: LanguageService | null = null;

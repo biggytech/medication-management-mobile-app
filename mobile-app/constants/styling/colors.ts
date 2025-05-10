@@ -1,7 +1,7 @@
 export enum AppColors {
-  POSITIVE = "#C2E812",
+  POSITIVE = "#68ba6b",
   NEGATIVE = "#FF934F",
-  PRIMARY = "#91F5AD",
+  PRIMARY = "#80d6af",
   SECONDARY = "#BFCBC2",
   BACKGROUND = "#FFFFFF",
 }

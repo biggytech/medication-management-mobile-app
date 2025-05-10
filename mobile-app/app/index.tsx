@@ -17,6 +17,7 @@ export default function RootLayout(): ReactNode {
   }, []);
 
   if (isTokenLoading || isLanguageLoading) {
+    // TODO: fix loader positioning
     return <Loader />;
   }
 

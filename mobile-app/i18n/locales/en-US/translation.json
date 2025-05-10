@@ -1,5 +1,7 @@
 {
   "Login": "Login",
   "Search": "Search",
-  "Select": "Select"
+  "Select": "Select",
+  "Username": "Username",
+  "Password": "Password"
 }

@@ -50,7 +50,7 @@ export class AuthService {
   public async authenticate(): Promise<{
     name: string;
   }> {
-    // TODO:
+    // TODO: authentication
 
     const token = "random-token";
     await this.setToken(token);
