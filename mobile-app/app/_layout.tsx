@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import "@/i18n";
-import { Fonts } from "@/constants/styling/fonts"; // localization
+import "@/i18n"; // localization
+import { Fonts } from "@/constants/styling/fonts";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

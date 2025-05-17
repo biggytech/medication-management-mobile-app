@@ -11,7 +11,7 @@ export const useScreenReload = () => {
   const reloadScreen = useCallback(() => {
     // @ts-expect-error - routePath is dynamic
     router.replace(routePath);
-  }, [routePath]);
+  }, [routePath, router]);
 
   return { reloadScreen };
 };
