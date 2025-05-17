@@ -7,16 +7,8 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "@/i18n"; // localization
 import ToastManager from "toastify-react-native";
-import { Fonts } from "@/constants/styling/fonts.ts";
+import { Fonts } from "@/constants/styling/fonts";
 import { TOAST_MANAGER_OPTIONS } from "@/hooks/useToaster";
-
-type A = {
-  a: number;
-};
-
-const a2: A = {
-  a: "1",
-};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
