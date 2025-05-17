@@ -14,7 +14,7 @@ type A = {
   a: number;
 };
 
-const a: A = {
+const a2: A = {
   a: "1",
 };
 
