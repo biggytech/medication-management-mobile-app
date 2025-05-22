@@ -79,6 +79,14 @@ export default function Login(): ReactNode {
           <Loader />
         </View>
       </View>
+      <Link
+        text={LanguageService.translate("I forgot my password")}
+        onPress={() => {
+          // TODO: open forgot password screen
+        }}
+        style={styles.fogotPasswordLink}
+        textStyle={styles.fogotPasswordLinkText}
+      />
     </View>
   );
 }
@@ -108,6 +116,12 @@ const styles = StyleSheet.create({
     marginTop: Spacings.STANDART,
   },
   registerLinkText: {
+    textAlign: "center",
+  },
+  fogotPasswordLink: {
+    marginTop: "auto",
+  },
+  fogotPasswordLinkText: {
     textAlign: "center",
   },
 });
