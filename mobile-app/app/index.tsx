@@ -1,8 +1,8 @@
 import { useAuthSession } from "@/providers/AuthProvider";
 import { Redirect } from "expo-router";
 import { type ReactNode, useEffect, useState } from "react";
-import { Loader } from "@/components/Loader";
 import { LanguageService } from "@/services/language/LanguageService";
+import { CenteredLoader } from "@/components/CenteredLoader";
 
 export default function RootLayout(): ReactNode {
   const { getToken, isLoading: isTokenLoading } = useAuthSession();
@@ -17,8 +17,7 @@ export default function RootLayout(): ReactNode {
   }, []);
 
   if (isTokenLoading || isLanguageLoading) {
-    // TODO: fix loader positioning
-    return <Loader />;
+    return <CenteredLoader />;
   }
 
   if (!getToken()) {
