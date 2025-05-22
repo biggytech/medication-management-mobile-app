@@ -4,5 +4,6 @@
   "Select": "Выбрать",
   "Username": "Логин",
   "Password": "Пароль",
-  "I don't have account": "У меня нет аккаунта"
+  "I don't have account": "У меня нет аккаунта",
+  "Something went wrong!": "Что-то пошло не так!"
 }

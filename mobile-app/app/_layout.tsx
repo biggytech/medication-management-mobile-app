@@ -9,6 +9,7 @@ import "@/i18n"; // localization
 import ToastManager from "toastify-react-native";
 import { Fonts } from "@/constants/styling/fonts";
 import { TOAST_MANAGER_OPTIONS } from "@/hooks/useToaster";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -29,17 +30,19 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <SafeAreaView style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name={"index"} />
-          <Stack.Screen name={"home"} />
-          <Stack.Screen name={"login"} />
-          <Stack.Screen name={"+not-found"} />
-        </Stack>
-      </SafeAreaView>
+    <QueryProvider>
+      <AuthProvider>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name={"index"} />
+            <Stack.Screen name={"home"} />
+            <Stack.Screen name={"login"} />
+            <Stack.Screen name={"+not-found"} />
+          </Stack>
+        </SafeAreaView>
 
-      <ToastManager {...TOAST_MANAGER_OPTIONS} />
-    </AuthProvider>
+        <ToastManager {...TOAST_MANAGER_OPTIONS} />
+      </AuthProvider>
+    </QueryProvider>
   );
 }

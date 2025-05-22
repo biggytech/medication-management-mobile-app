@@ -6,29 +6,29 @@ import { LanguagePicker } from "@/components/LanguagePicker";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
 import { BASIC_STYLES } from "@/constants/styling/basic";
-import { APIService } from "@/services/APIService";
 import { AppColors } from "@/constants/styling/colors";
 import { Loader } from "@/components/Loader";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/Link";
+import { useLogin } from "@/hooks/api/auth/useLogin";
 
 export default function Login(): ReactNode {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const { signIn } = useAuthSession();
+  const { mutate: login, isPending } = useLogin({
+    onSuccess: ({ token }) => signIn(token),
+  });
 
-  const login = async () => {
-    // TODO: loading, errors, toasts
-    const { token } = await APIService.login({
+  const onLoginPress = async () => {
+    login({
       username,
       password,
     });
-    signIn(token);
   };
 
-  const isButtonDisabled = isLoading || !username || !password;
+  const isButtonDisabled = isPending || !username || !password;
 
   return (
     <View style={BASIC_STYLES.screen}>
@@ -57,7 +57,7 @@ export default function Login(): ReactNode {
         />
         <Button
           title={LanguageService.translate("Login")}
-          onPress={login}
+          onPress={onLoginPress}
           disabled={isButtonDisabled}
           color={AppColors.POSITIVE}
         />
@@ -72,9 +72,9 @@ export default function Login(): ReactNode {
         <View
           style={[
             styles.loaderContainer,
-            isLoading ? styles.loaderContainerVisible : {},
+            isPending ? styles.loaderContainerVisible : {},
           ]}
-          aria-hidden={!isLoading}
+          aria-hidden={!isPending}
         >
           <Loader />
         </View>
