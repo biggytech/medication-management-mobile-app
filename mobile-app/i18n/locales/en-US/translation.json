@@ -6,5 +6,8 @@
   "Password": "Password",
   "I don't have account": "I don't have account",
   "Something went wrong!": "Something went wrong!",
-  "I forgot my password": "I forgot my password"
+  "I forgot my password": "I forgot my password",
+  "Continue without login": "Continue without login",
+  "Guest": "Guest",
+  "Missing required fields": "Missing required fields"
 }

@@ -6,5 +6,8 @@
   "Password": "Пароль",
   "I don't have account": "У меня нет аккаунта",
   "Something went wrong!": "Что-то пошло не так!",
-  "I forgot my password": "Я забыл свой пароль"
+  "I forgot my password": "Я забыл свой пароль",
+  "Continue without login": "Продолжить без входа",
+  "Guest": "Гость",
+  "Missing required fields": "Не все обязательные поля заполнены"
 }

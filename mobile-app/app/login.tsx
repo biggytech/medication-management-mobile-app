@@ -10,25 +10,35 @@ import { AppColors } from "@/constants/styling/colors";
 import { Loader } from "@/components/Loader";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/Link";
-import { useLogin } from "@/hooks/api/auth/useLogin";
+import { AuthType } from "../services/auth/AuthService";
+import { useToaster } from "../hooks/useToaster";
+import { getApiErrorText } from "../utils/api/getApiErrorText";
 
 export default function Login(): ReactNode {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { signIn } = useAuthSession();
-  const { mutate: login, isPending } = useLogin({
-    onSuccess: ({ token }) => signIn(token),
-  });
+  const { signIn, enterWithoutLogin } = useAuthSession();
+  const { showError } = useToaster();
 
   const onLoginPress = async () => {
-    login({
-      username,
-      password,
-    });
+    try {
+      setIsLoading(true);
+
+      await signIn(AuthType.DEFAULT, {
+        username,
+        password,
+      });
+    } catch (error) {
+      console.error(error);
+      showError(getApiErrorText(error));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const isButtonDisabled = isPending || !username || !password;
+  const isButtonDisabled = isLoading || !username || !password;
 
   return (
     <View style={BASIC_STYLES.screen}>
@@ -68,25 +78,36 @@ export default function Login(): ReactNode {
           }}
           style={styles.registerLink}
           textStyle={styles.registerLinkText}
+          disabled={isLoading}
         />
         <View
           style={[
             styles.loaderContainer,
-            isPending ? styles.loaderContainerVisible : {},
+            isLoading ? styles.loaderContainerVisible : {},
           ]}
-          aria-hidden={!isPending}
+          aria-hidden={!isLoading}
         >
           <Loader />
         </View>
       </View>
-      <Link
-        text={LanguageService.translate("I forgot my password")}
-        onPress={() => {
-          // TODO: open forgot password screen
-        }}
-        style={styles.fogotPasswordLink}
-        textStyle={styles.fogotPasswordLinkText}
-      />
+      <View style={styles.bottom}>
+        <View style={styles.withoutLoginButtonContainer}>
+          <Button
+            title={LanguageService.translate("Continue without login")}
+            onPress={enterWithoutLogin}
+            color={AppColors.ACCENT}
+            disabled={isLoading}
+          />
+        </View>
+        <Link
+          text={LanguageService.translate("I forgot my password")}
+          onPress={() => {
+            // TODO: open forgot password screen
+          }}
+          textStyle={styles.forgotPasswordLinkText}
+          disabled={isLoading}
+        />
+      </View>
     </View>
   );
 }
@@ -118,10 +139,14 @@ const styles = StyleSheet.create({
   registerLinkText: {
     textAlign: "center",
   },
-  fogotPasswordLink: {
+  bottom: {
     marginTop: "auto",
+    alignItems: "center",
   },
-  fogotPasswordLinkText: {
+  withoutLoginButtonContainer: {
+    marginBottom: Spacings.STANDART,
+  },
+  forgotPasswordLinkText: {
     textAlign: "center",
   },
 });

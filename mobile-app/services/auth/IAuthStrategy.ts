@@ -1,3 +1,8 @@
+import type { AuthData } from "./AuthService";
+
 export interface IAuthStrategy {
-  // TODO:
+  authenticate(data?: AuthData): Promise<{
+    userName: string;
+    token: string;
+  }>;
 }

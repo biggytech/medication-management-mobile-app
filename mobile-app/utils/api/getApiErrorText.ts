@@ -1,7 +1,7 @@
 import { LanguageService } from "@/services/language/LanguageService";
 
 export const getApiErrorText = (
-  error: Error | string,
+  error: Error | string | any,
   fallbackMessage?: string,
 ) => {
   if (typeof error === "string") {

@@ -1,9 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { IAuthStrategy } from "@/services/auth/IAuthStrategy";
 import { DefaultAuthStrategy } from "@/services/auth/strategies/DefaultAuthStrategy";
+import { OfflineAuthStrategy } from "@/services/auth/strategies/OfflineAuthStrategy";
 
 export enum AuthType {
   DEFAULT = "DEFAULT",
+  OFFLINE = "OFFLINE",
+}
+
+export interface AuthData {
+  username?: string;
+  password?: string;
 }
 
 export class AuthService {
@@ -16,12 +23,24 @@ export class AuthService {
     this.setAuthStrategy(type);
   }
 
+  public get isLoggedIn() {
+    return Boolean(this._token);
+  }
+
+  public get isOnlineUser() {
+    return (
+      this.isLoggedIn && !(this._authStrategy instanceof OfflineAuthStrategy)
+    );
+  }
+
   private static getAuthStrategyByType(type: AuthType): IAuthStrategy {
     switch (type) {
       case AuthType.DEFAULT:
-        return DefaultAuthStrategy;
+        return new DefaultAuthStrategy();
+      case AuthType.OFFLINE:
+        return new OfflineAuthStrategy();
       default:
-        return DefaultAuthStrategy;
+        return new DefaultAuthStrategy();
     }
   }
 
@@ -47,16 +66,13 @@ export class AuthService {
     this._authStrategy = AuthService.getAuthStrategyByType(type);
   }
 
-  public async authenticate(): Promise<{
-    name: string;
-  }> {
-    // TODO: authentication
+  public async authenticate(data?: AuthData) {
+    const { userName, token } = await this._authStrategy.authenticate(data);
 
-    const token = "random-token";
     await this.setToken(token);
 
     return {
-      name: "Undefined User",
+      userName,
     };
   }
 }

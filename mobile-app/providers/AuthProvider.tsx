@@ -1,25 +1,31 @@
-import React, { type PropsWithChildren } from "react";
-import { router } from "expo-router";
-import {
+import React, {
   createContext,
+  type PropsWithChildren,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { AuthService } from "@/services/auth/AuthService";
+import { router } from "expo-router";
+import {
+  type AuthData,
+  AuthService,
+  AuthType,
+} from "@/services/auth/AuthService";
 
 const AuthContext = createContext<{
-  signIn: (token: string) => void;
+  signIn: (authType: AuthType, data?: AuthData) => Promise<void>;
   signOut: () => void;
   getToken: () => string | null;
   isLoading: boolean;
+  enterWithoutLogin: () => void;
 }>({
-  signIn: () => null,
-  signOut: () => null,
+  signIn: async (authType: AuthType) => {},
+  signOut: () => {},
   getToken: () => null,
   isLoading: true,
+  enterWithoutLogin: () => {},
 });
 
 /**
@@ -46,14 +52,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     })();
   }, []);
 
-  const signIn = useCallback(async (token: string) => {
-    await authServiceRef.current.setToken(token);
+  const signIn = useCallback(async (authType: AuthType, data?: AuthData) => {
+    authServiceRef.current.setAuthStrategy(authType);
+    await authServiceRef.current.authenticate(data);
     router.replace("/home");
   }, []);
 
   const signOut = useCallback(async () => {
     await authServiceRef.current.removeToken();
     router.replace("/login");
+  }, []);
+
+  const enterWithoutLogin = useCallback(async () => {
+    authServiceRef.current.setAuthStrategy(AuthType.OFFLINE);
+    await authServiceRef.current.authenticate();
+    router.replace("/home");
   }, []);
 
   return (
@@ -63,6 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signOut,
         getToken: authServiceRef.current.getToken,
         isLoading,
+        enterWithoutLogin,
       }}
     >
       {children}
