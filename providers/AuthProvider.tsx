@@ -13,6 +13,7 @@ import {
   AuthService,
   AuthType,
 } from "@/services/auth/AuthService";
+import { AppScreens } from "@/constants/navigation";
 
 const AuthContext = createContext<{
   signIn: (authType: AuthType, data?: AuthData) => Promise<void>;
@@ -55,18 +56,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signIn = useCallback(async (authType: AuthType, data?: AuthData) => {
     authServiceRef.current.setAuthStrategy(authType);
     await authServiceRef.current.authenticate(data);
-    router.replace("/home");
+    router.replace(AppScreens.HOME);
   }, []);
 
   const signOut = useCallback(async () => {
     await authServiceRef.current.removeToken();
-    router.replace("/login");
+    router.replace(AppScreens.LOGIN);
   }, []);
 
   const enterWithoutLogin = useCallback(async () => {
     authServiceRef.current.setAuthStrategy(AuthType.OFFLINE);
     await authServiceRef.current.authenticate();
-    router.replace("/home");
+    router.replace(AppScreens.HOME);
   }, []);
 
   return (
