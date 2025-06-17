@@ -5,7 +5,12 @@ import { LanguageService } from "@/services/language/LanguageService";
 
 export default function TabLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: AppColors.ACCENT }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: AppColors.ACCENT,
+        headerShown: false,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

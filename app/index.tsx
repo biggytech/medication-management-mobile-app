@@ -3,6 +3,7 @@ import { Redirect } from "expo-router";
 import { type ReactNode, useEffect, useState } from "react";
 import { LanguageService } from "@/services/language/LanguageService";
 import { CenteredLoader } from "@/components/CenteredLoader";
+import { AppScreens } from "@/constants/navigation";
 
 export default function RootLayout(): ReactNode {
   const { getToken, isLoading: isTokenLoading } = useAuthSession();
@@ -21,8 +22,8 @@ export default function RootLayout(): ReactNode {
   }
 
   if (!getToken()) {
-    return <Redirect href={"/login"} />;
+    return <Redirect href={AppScreens.LOGIN} />;
   }
 
-  return <Redirect href={"/home"} />;
+  return <Redirect href={AppScreens.HOME} />;
 }
