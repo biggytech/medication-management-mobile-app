@@ -70,12 +70,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     router.replace(AppScreens.HOME);
   }, []);
 
+  const getToken = useCallback(() => authServiceRef.current.getToken(), []);
+
   return (
     <AuthContext.Provider
       value={{
         signIn,
         signOut,
-        getToken: authServiceRef.current.getToken,
+        getToken,
         isLoading,
         enterWithoutLogin,
       }}
