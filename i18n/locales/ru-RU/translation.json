@@ -11,5 +11,6 @@
   "Guest": "Гость",
   "Missing required fields": "Не все обязательные поля заполнены",
   "Home": "Главная",
-  "Medicines": "Лекарства"
+  "Medicines": "Лекарства",
+  "Logout": "Выйти"
 }
