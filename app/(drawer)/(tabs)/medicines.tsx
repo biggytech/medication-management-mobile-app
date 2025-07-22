@@ -1,7 +1,8 @@
 import React from "react";
+import { Text } from "@/components/Text";
 
 const Medicines: React.FC = () => {
-  return "Medicines";
+  return <Text>Medicines</Text>;
 };
 
 export default Medicines;
