@@ -12,5 +12,6 @@
   "Missing required fields": "Не все обязательные поля заполнены",
   "Home": "Главная",
   "Medicines": "Лекарства",
-  "Logout": "Выйти"
+  "Logout": "Выйти",
+  "Something went wrong": "Что-то пошло не так"
 }
