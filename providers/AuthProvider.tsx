@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { router } from "expo-router";
@@ -44,33 +43,31 @@ interface AuthProviderProps extends PropsWithChildren {}
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  const authServiceRef = useRef<AuthService>(new AuthService());
-
   useEffect(() => {
     (async (): Promise<void> => {
-      await authServiceRef.current.init();
+      await AuthService.loadToken();
       setIsLoading(false);
     })();
   }, []);
 
   const signIn = useCallback(async (authType: AuthType, data?: AuthData) => {
-    authServiceRef.current.setAuthStrategy(authType);
-    await authServiceRef.current.authenticate(data);
+    AuthService.setAuthStrategy(authType);
+    await AuthService.authenticate(data);
     router.replace(AppScreens.HOME);
   }, []);
 
   const signOut = useCallback(async () => {
-    await authServiceRef.current.removeToken();
+    await AuthService.removeToken();
     router.replace(AppScreens.LOGIN);
   }, []);
 
   const enterWithoutLogin = useCallback(async () => {
-    authServiceRef.current.setAuthStrategy(AuthType.OFFLINE);
-    await authServiceRef.current.authenticate();
+    AuthService.setAuthStrategy(AuthType.OFFLINE);
+    await AuthService.authenticate();
     router.replace(AppScreens.HOME);
   }, []);
 
-  const getToken = useCallback(() => authServiceRef.current.getToken(), []);
+  const getToken = useCallback(() => AuthService.getToken(), []);
 
   return (
     <AuthContext.Provider

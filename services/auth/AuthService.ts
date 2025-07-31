@@ -16,20 +16,29 @@ export interface AuthData {
 export class AuthService {
   private static readonly TOKEN_KEY = "@token";
 
-  private _authStrategy!: IAuthStrategy;
-  private _token: string | null = null;
+  private static instance: AuthService | null = null;
 
-  constructor(type: AuthType = AuthType.DEFAULT) {
-    this.setAuthStrategy(type);
+  private authStrategy: IAuthStrategy = new DefaultAuthStrategy();
+  private token: string | null = null;
+
+  private constructor() {}
+
+  private static getInstance() {
+    if (AuthService.instance === null) {
+      AuthService.instance = new AuthService();
+    }
+
+    return AuthService.instance;
   }
 
-  public get isLoggedIn() {
-    return Boolean(this._token);
+  public static get isLoggedIn() {
+    return Boolean(AuthService.getInstance().token);
   }
 
-  public get isOnlineUser() {
+  public static get isOnlineUser() {
     return (
-      this.isLoggedIn && !(this._authStrategy instanceof OfflineAuthStrategy)
+      AuthService.isLoggedIn &&
+      !(AuthService.getInstance().authStrategy instanceof OfflineAuthStrategy)
     );
   }
 
@@ -44,32 +53,37 @@ export class AuthService {
     }
   }
 
-  public async init(): Promise<void> {
-    this._token = (await AsyncStorage.getItem(AuthService.TOKEN_KEY)) || null;
+  public static async loadToken(): Promise<void> {
+    if (!AuthService.getInstance().token) {
+      AuthService.getInstance().token =
+        (await AsyncStorage.getItem(AuthService.TOKEN_KEY)) || null;
+    }
   }
 
-  public async setToken(token: string): Promise<void> {
+  private async setToken(token: string): Promise<void> {
     await AsyncStorage.setItem(AuthService.TOKEN_KEY, token);
-    this._token = token;
+    this.token = token;
   }
 
-  public getToken(): string | null {
-    return this._token;
+  public static getToken(): string | null {
+    return AuthService.getInstance().token;
   }
 
-  public async removeToken(): Promise<void> {
+  public static async removeToken(): Promise<void> {
     await AsyncStorage.setItem(AuthService.TOKEN_KEY, "");
-    this._token = null;
+    AuthService.getInstance().token = null;
   }
 
-  public setAuthStrategy(type: AuthType) {
-    this._authStrategy = AuthService.getAuthStrategyByType(type);
+  public static setAuthStrategy(type: AuthType) {
+    AuthService.getInstance().authStrategy =
+      AuthService.getAuthStrategyByType(type);
   }
 
-  public async authenticate(data?: AuthData) {
-    const { userName, token } = await this._authStrategy.authenticate(data);
+  public static async authenticate(data?: AuthData) {
+    const { userName, token } =
+      await AuthService.getInstance().authStrategy.authenticate(data);
 
-    await this.setToken(token);
+    await AuthService.getInstance().setToken(token);
 
     return {
       userName,
