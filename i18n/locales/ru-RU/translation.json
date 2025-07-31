@@ -13,5 +13,6 @@
   "Home": "Главная",
   "Medicines": "Лекарства",
   "Logout": "Выйти",
-  "Something went wrong": "Что-то пошло не так"
+  "Something went wrong": "Что-то пошло не так",
+  "Request failed with status": "Запрос неуспешен со статусом"
 }

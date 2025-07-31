@@ -13,5 +13,6 @@
   "Home": "Home",
   "Medicines": "Medicines",
   "Logout": "Logout",
-  "Something went wrong": "Something went wrong"
+  "Something went wrong": "Something went wrong",
+  "Request failed with status": "Request failed with status"
 }

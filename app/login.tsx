@@ -30,9 +30,6 @@ export default function Login(): ReactNode {
         username,
         password,
       });
-    } catch (error) {
-      console.error(error);
-      showError(getApiErrorText(error));
     } finally {
       setIsLoading(false);
     }

@@ -1,3 +1,8 @@
+import { isSuccessfulStatus } from "@/utils/api/isSuccessfulStatus";
+import { showError } from "@/utils/ui/showError";
+import { getApiErrorText } from "@/utils/api/getApiErrorText";
+import { getErrorMessage } from "@/utils/api/getErrorMessage";
+
 enum Methods {
   GET = "GET",
   POST = "POST",
@@ -29,7 +34,7 @@ export class APIService {
       const { method, url, params, body, requiresAuth = true } = options;
 
       if (requiresAuth && !this.token) {
-        // TODO: handle error
+        throw new Error("Token is not set for authenticated route");
       }
 
       const response = await fetch(`${this.BASE_URL}${url}`, {
@@ -42,13 +47,21 @@ export class APIService {
         body: body ? JSON.stringify(body) : null,
       });
 
-      return await response.json();
-    } catch (err) {
-      if (process.env.EXPO_PUBLIC_IS_DEBUG_MODE === "true") {
-        alert(err);
+      if (isSuccessfulStatus(response)) {
+        return await response.json();
       }
-      console.error(err);
-      throw err;
+
+      const error = await getErrorMessage(response);
+      throw new Error(error);
+    } catch (error) {
+      // if (process.env.EXPO_PUBLIC_IS_DEBUG_MODE === "true") {
+      //   alert(error);
+      // }
+
+      console.error(error);
+      showError(getApiErrorText(error));
+
+      throw error;
     }
   }
 

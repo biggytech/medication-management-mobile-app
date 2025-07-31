@@ -8,8 +8,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import "@/i18n"; // localization
 import ToastManager from "toastify-react-native";
 import { Fonts } from "@/constants/styling/fonts";
-import { TOAST_MANAGER_OPTIONS } from "@/hooks/useToaster";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { TOAST_MANAGER_OPTIONS } from "@/constants/toaster";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
