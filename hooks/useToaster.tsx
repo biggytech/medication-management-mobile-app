@@ -1,62 +1,11 @@
 import { Toast } from "toastify-react-native";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { AppColors } from "@/constants/styling/colors";
 import { FontSizes } from "@/constants/styling/fonts";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Text } from "@/components/Text";
+import { Toaster, type ToasterProps } from "@/components/Toaster";
 
 const TOAST_MANAGER_CONFIG = {
-  custom: ({
-    text1,
-    text2,
-    backgroundColor,
-    iconColor,
-    textColor,
-    icon,
-  }: {
-    text1: string;
-    text2?: string;
-    backgroundColor: string;
-    iconColor: string;
-    textColor: string;
-    icon: string;
-  }) => (
-    <View
-      style={[
-        styles.toast,
-        {
-          backgroundColor,
-        },
-      ]}
-    >
-      {/* @ts-expect-error - Expo icons do not export icon names for typing */}
-      <Ionicons name={icon} size={24} color={iconColor} />
-      <View style={styles.textContainer}>
-        <Text
-          style={[
-            styles.title,
-            {
-              color: textColor,
-            },
-          ]}
-        >
-          {text1}
-        </Text>
-        {text2 && (
-          <Text
-            style={[
-              styles.message,
-              {
-                color: textColor,
-              },
-            ]}
-          >
-            {text2}
-          </Text>
-        )}
-      </View>
-    </View>
-  ),
+  custom: (props: ToasterProps) => <Toaster {...props} />,
 };
 
 export const TOAST_MANAGER_OPTIONS = {
