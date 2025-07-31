@@ -1,18 +1,18 @@
 import React, {
   createContext,
   type PropsWithChildren,
-  useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { router } from "expo-router";
 import {
   type AuthData,
   AuthService,
   AuthType,
 } from "@/services/auth/AuthService";
-import { AppScreens } from "@/constants/navigation";
+import { signIn } from "@/utils/auth/signIn";
+import { signOut } from "@/utils/auth/signOut";
+import { enterWithoutLogin } from "@/utils/auth/enterWithoutLogin";
 
 const AuthContext = createContext<{
   signIn: (authType: AuthType, data?: AuthData) => Promise<void>;
@@ -50,31 +50,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     })();
   }, []);
 
-  const signIn = useCallback(async (authType: AuthType, data?: AuthData) => {
-    AuthService.setAuthStrategy(authType);
-    await AuthService.authenticate(data);
-    router.replace(AppScreens.HOME);
-  }, []);
-
-  const signOut = useCallback(async () => {
-    await AuthService.removeToken();
-    router.replace(AppScreens.LOGIN);
-  }, []);
-
-  const enterWithoutLogin = useCallback(async () => {
-    AuthService.setAuthStrategy(AuthType.OFFLINE);
-    await AuthService.authenticate();
-    router.replace(AppScreens.HOME);
-  }, []);
-
-  const getToken = useCallback(() => AuthService.getToken(), []);
-
   return (
     <AuthContext.Provider
       value={{
         signIn,
         signOut,
-        getToken,
+        getToken: AuthService.getToken,
         isLoading,
         enterWithoutLogin,
       }}
