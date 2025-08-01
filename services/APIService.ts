@@ -23,13 +23,13 @@ export class APIService {
     return APIService.instance;
   }
 
-  private async makeRequest(options: {
+  private async makeRequest<T>(options: {
     method: Methods;
     url: string;
     params?: Record<string, unknown>;
     body?: Record<string, unknown>;
     requiresAuth?: boolean;
-  }) {
+  }): Promise<T> {
     try {
       const { method, url, params, body, requiresAuth = true } = options;
 
@@ -54,10 +54,6 @@ export class APIService {
       const error = await getErrorMessage(response);
       throw new Error(error);
     } catch (error) {
-      // if (process.env.EXPO_PUBLIC_IS_DEBUG_MODE === "true") {
-      //   alert(error);
-      // }
-
       console.error(error);
       showError(getApiErrorText(error));
 
@@ -66,7 +62,10 @@ export class APIService {
   }
 
   public static async login(data: { username: string; password: string }) {
-    const result = await APIService.getInstance().makeRequest({
+    const result = await APIService.getInstance().makeRequest<{
+      token: string;
+      userName: string;
+    }>({
       method: Methods.POST,
       url: "TODO:",
       requiresAuth: false,
@@ -80,18 +79,17 @@ export class APIService {
   }
 
   public static async signUpOffline() {
-    const result = await APIService.getInstance().makeRequest({
+    const result = await APIService.getInstance().makeRequest<{
+      token: string;
+      userName: string;
+    }>({
       method: Methods.POST,
       url: "/sign-up/offline",
       requiresAuth: false,
     });
 
-    console.log("result!!!", result);
+    APIService.getInstance().token = result.token;
 
-    // TODO: set token
-
-    return {
-      token: "token",
-    };
+    return result;
   }
 }

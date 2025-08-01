@@ -1,11 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { IAuthStrategy } from "@/services/auth/IAuthStrategy";
 import { DefaultAuthStrategy } from "@/services/auth/strategies/DefaultAuthStrategy";
-import { OfflineAuthStrategy } from "@/services/auth/strategies/OfflineAuthStrategy";
+import { AnonymousAuthStrategy } from "@/services/auth/strategies/AnonymousAuthStrategy";
 
 export enum AuthType {
   DEFAULT = "DEFAULT",
-  OFFLINE = "OFFLINE",
+  ANONYMOUS = "ANONYMOUS",
 }
 
 export interface AuthData {
@@ -35,10 +35,10 @@ export class AuthService {
     return Boolean(AuthService.getInstance().token);
   }
 
-  public static get isOnlineUser() {
+  public static get isKnownUser() {
     return (
       AuthService.isLoggedIn &&
-      !(AuthService.getInstance().authStrategy instanceof OfflineAuthStrategy)
+      !(AuthService.getInstance().authStrategy instanceof AnonymousAuthStrategy)
     );
   }
 
@@ -46,8 +46,8 @@ export class AuthService {
     switch (type) {
       case AuthType.DEFAULT:
         return new DefaultAuthStrategy();
-      case AuthType.OFFLINE:
-        return new OfflineAuthStrategy();
+      case AuthType.ANONYMOUS:
+        return new AnonymousAuthStrategy();
       default:
         return new DefaultAuthStrategy();
     }

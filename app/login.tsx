@@ -10,9 +10,7 @@ import { AppColors } from "@/constants/styling/colors";
 import { Loader } from "@/components/Loader";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/Link";
-import { AuthType } from "../services/auth/AuthService";
-import { useToaster } from "../hooks/useToaster";
-import { getApiErrorText } from "../utils/api/getApiErrorText";
+import { AuthType } from "@/services/auth/AuthService";
 
 export default function Login(): ReactNode {
   const [username, setUsername] = useState<string>("");
@@ -20,7 +18,6 @@ export default function Login(): ReactNode {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { signIn, enterWithoutLogin } = useAuthSession();
-  const { showError } = useToaster();
 
   const onLoginPress = async () => {
     try {
@@ -30,6 +27,16 @@ export default function Login(): ReactNode {
         username,
         password,
       });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onWithoutLoginClick = async () => {
+    try {
+      setIsLoading(true);
+
+      await enterWithoutLogin();
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +98,7 @@ export default function Login(): ReactNode {
         <View style={styles.withoutLoginButtonContainer}>
           <Button
             title={LanguageService.translate("Continue without login")}
-            onPress={enterWithoutLogin}
+            onPress={onWithoutLoginClick}
             color={AppColors.ACCENT}
             disabled={isLoading}
           />
