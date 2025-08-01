@@ -11,6 +11,9 @@ import {
 import { useAuthSession } from "@/providers/AuthProvider";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AppColors } from "@/constants/styling/colors";
+import { Text } from "@/components/Text";
+import { StyleSheet, View } from "react-native";
+import { AuthService } from "@/services/auth/AuthService";
 
 const FOCUSED_COLOR = AppColors.SECONDARY;
 
@@ -18,20 +21,25 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { signOut } = useAuthSession();
 
   return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem
-        label={LanguageService.translate("Logout")}
-        onPress={signOut}
-        icon={({ focused, size, color }) => (
-          <Ionicons
-            name={"exit"}
-            size={size}
-            color={focused ? FOCUSED_COLOR : color}
-          />
-        )}
-      />
-    </DrawerContentScrollView>
+    <View style={styles.drawerContent}>
+      <DrawerContentScrollView {...props}>
+        <DrawerItemList {...props} />
+        <DrawerItem
+          label={LanguageService.translate("Logout")}
+          onPress={signOut}
+          icon={({ focused, size, color }) => (
+            <Ionicons
+              name={"exit"}
+              size={size}
+              color={focused ? FOCUSED_COLOR : color}
+            />
+          )}
+        />
+      </DrawerContentScrollView>
+      <View style={styles.userNameView}>
+        <Text style={styles.userName}>{AuthService.getUserName()}</Text>
+      </View>
+    </View>
   );
 }
 
@@ -58,3 +66,13 @@ export default function DrawerLayout() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  drawerContent: {
+    flex: 1,
+  },
+  userNameView: {
+    padding: 15,
+  },
+  userName: {},
+});

@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { IAuthStrategy } from "@/services/auth/IAuthStrategy";
 import { DefaultAuthStrategy } from "@/services/auth/strategies/DefaultAuthStrategy";
 import { AnonymousAuthStrategy } from "@/services/auth/strategies/AnonymousAuthStrategy";
+import { LanguageService } from "@/services/language/LanguageService";
 
 export enum AuthType {
   DEFAULT = "DEFAULT",
@@ -20,6 +21,7 @@ export class AuthService {
 
   private authStrategy: IAuthStrategy = new DefaultAuthStrategy();
   private token: string | null = null;
+  private userName: string = LanguageService.translate("Guest");
 
   private constructor() {}
 
@@ -69,6 +71,14 @@ export class AuthService {
     return AuthService.getInstance().token;
   }
 
+  private async setUserName(userName: string): Promise<void> {
+    this.userName = userName;
+  }
+
+  public static getUserName(): string {
+    return AuthService.getInstance().userName;
+  }
+
   public static async removeToken(): Promise<void> {
     await AsyncStorage.setItem(AuthService.TOKEN_KEY, "");
     AuthService.getInstance().token = null;
@@ -84,6 +94,7 @@ export class AuthService {
       await AuthService.getInstance().authStrategy.authenticate(data);
 
     await AuthService.getInstance().setToken(token);
+    await AuthService.getInstance().setUserName(userName);
 
     return {
       userName,
