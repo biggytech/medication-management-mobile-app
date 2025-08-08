@@ -30,9 +30,13 @@ export class APIService {
     body?: Record<string, unknown>;
     requiresAuth?: boolean;
   }): Promise<T> {
-    try {
-      const { method, url, params, body, requiresAuth = true } = options;
+    const { method, url, params, body, requiresAuth = true } = options;
 
+    console.log(`[${method}] ${url}`, new Date());
+    params && console.log(`params - ${JSON.stringify(params)}`);
+    body && console.log(`body - ${JSON.stringify(body)}`);
+
+    try {
       if (requiresAuth && !this.token) {
         throw new Error("Token is not set for authenticated route");
       }
@@ -48,13 +52,16 @@ export class APIService {
       });
 
       if (isSuccessfulStatus(response)) {
-        return await response.json();
+        const json = await response.json();
+        console.log(`response - ${JSON.stringify(json)}`);
+        return json;
       }
 
       const error = await getErrorMessage(response);
       throw new Error(error);
     } catch (error) {
-      console.error(error);
+      console.log(`error - ${error}`);
+
       showError(getApiErrorText(error));
 
       throw error;
@@ -63,11 +70,12 @@ export class APIService {
 
   public static async login(data: { username: string; password: string }) {
     const result = await APIService.getInstance().makeRequest<{
+      id: number;
       token: string;
-      userName: string;
+      full_name: string;
     }>({
       method: Methods.POST,
-      url: "TODO:",
+      url: ":TODO",
       requiresAuth: false,
     });
 
@@ -80,12 +88,33 @@ export class APIService {
 
   public static async signUpOffline() {
     const result = await APIService.getInstance().makeRequest<{
+      id: number;
       token: string;
-      userName: string;
+      full_name: string;
     }>({
       method: Methods.POST,
-      url: "/sign-up/offline",
+      url: "/sign-up/anonymous",
       requiresAuth: false,
+    });
+
+    APIService.getInstance().token = result.token;
+
+    return result;
+  }
+
+  public static async signUpDefault(data: {
+    full_name: string;
+    is_guest: boolean;
+  }) {
+    const result = await APIService.getInstance().makeRequest<{
+      id: number;
+      token: string;
+      full_name: string;
+    }>({
+      method: Methods.POST,
+      url: "/sign-up/default",
+      requiresAuth: false,
+      body: data,
     });
 
     APIService.getInstance().token = result.token;

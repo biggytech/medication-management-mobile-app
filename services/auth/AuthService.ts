@@ -3,9 +3,11 @@ import type { IAuthStrategy } from "@/services/auth/IAuthStrategy";
 import { DefaultAuthStrategy } from "@/services/auth/strategies/DefaultAuthStrategy";
 import { AnonymousAuthStrategy } from "@/services/auth/strategies/AnonymousAuthStrategy";
 import { LanguageService } from "@/services/language/LanguageService";
+import { DefaultSignUpAndAuthStrategy } from "@/services/auth/strategies/DefaultSignUpAndAuthStrategy";
 
 export enum AuthType {
   DEFAULT = "DEFAULT",
+  DEFAULT_SIGN_UP = "DEFAULT_SIGN_UP",
   ANONYMOUS = "ANONYMOUS",
 }
 
@@ -48,6 +50,8 @@ export class AuthService {
     switch (type) {
       case AuthType.DEFAULT:
         return new DefaultAuthStrategy();
+      case AuthType.DEFAULT_SIGN_UP:
+        return new DefaultSignUpAndAuthStrategy();
       case AuthType.ANONYMOUS:
         return new AnonymousAuthStrategy();
       default:

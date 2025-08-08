@@ -3,9 +3,9 @@ import { APIService } from "@/services/APIService";
 
 export class AnonymousAuthStrategy implements IAuthStrategy {
   public async authenticate() {
-    const { token, userName } = await APIService.signUpOffline();
+    const { token, full_name } = await APIService.signUpOffline();
     return {
-      userName,
+      userName: full_name,
       token,
     };
   }
