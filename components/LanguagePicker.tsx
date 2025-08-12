@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { LanguageService } from "@/services/language/LanguageService";
-import { useScreenReload } from "@/hooks/useScreenReload";
+import { useScreenReload } from "@/hooks/navigation/useScreenReload";
 import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/languages";
 import { Spacings } from "@/constants/styling/spacings";
 import { Fonts, FontSizes } from "@/constants/styling/fonts";

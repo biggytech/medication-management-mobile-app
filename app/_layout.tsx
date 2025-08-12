@@ -10,9 +10,19 @@ import ToastManager from "toastify-react-native";
 import { Fonts } from "@/constants/styling/fonts";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { TOAST_MANAGER_OPTIONS } from "@/constants/toaster";
+import * as Notifications from "expo-notifications";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function RootLayout() {
   const [loaded] = useFonts({
