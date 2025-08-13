@@ -40,3 +40,6 @@ yarn-error.*
 
 # Environment
 .env
+
+# Private keys
+keys/
