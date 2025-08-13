@@ -11,7 +11,8 @@
     "lint": "expo lint",
     "prepare": "husky",
     "typecheck": "tsc --noEmit",
-    "doctor": "npx expo-doctor"
+    "doctor": "npx expo-doctor",
+    "build": "eas build"
   },
   "jest": {
     "preset": "jest-expo"
