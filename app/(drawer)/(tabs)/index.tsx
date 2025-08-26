@@ -5,8 +5,8 @@ import { PushNotificationDebugger } from "@/components/notifications/PushNotific
 
 const Home: React.FC = () => {
   return (
-    <View>
-      <Text>Home</Text>;
+    <View style={{ flex: 1 }}>
+      <Text>Home</Text>
       <PushNotificationDebugger />
     </View>
   );
