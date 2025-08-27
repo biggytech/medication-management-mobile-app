@@ -7,7 +7,7 @@ import {
   type TextStyle,
   type TouchableOpacityProps,
 } from "react-native";
-import { Text } from "@/components/Text";
+import { Text } from "@/components/typography/Text";
 import { AppColors } from "@/constants/styling/colors";
 
 interface LinkProps extends TouchableOpacityProps {

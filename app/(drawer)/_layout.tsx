@@ -11,7 +11,7 @@ import {
 import { useAuthSession } from "@/providers/AuthProvider";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AppColors } from "@/constants/styling/colors";
-import { Text } from "@/components/Text";
+import { Text } from "@/components/typography/Text";
 import { StyleSheet, View } from "react-native";
 import { AuthService } from "@/services/auth/AuthService";
 
