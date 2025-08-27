@@ -19,13 +19,13 @@ const AuthContext = createContext<{
   signOut: () => void;
   getToken: () => string | null;
   isLoading: boolean;
-  enterWithoutLogin: () => void;
+  enterWithoutLogin: () => Promise<void>;
 }>({
   signIn: async (authType: AuthType) => {},
   signOut: () => {},
   getToken: () => null,
   isLoading: true,
-  enterWithoutLogin: () => {},
+  enterWithoutLogin: async () => {},
 });
 
 /**

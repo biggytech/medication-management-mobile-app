@@ -11,6 +11,8 @@ import { Loader } from "@/components/Loader";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/Link";
 import { AuthType } from "@/services/auth/AuthService";
+import { router } from "expo-router";
+import { AppScreens } from "@/constants/navigation";
 
 export default function Login(): ReactNode {
   const [username, setUsername] = useState<string>("");
@@ -77,8 +79,8 @@ export default function Login(): ReactNode {
         />
         <Link
           text={LanguageService.translate("I don't have account")}
-          onPress={() => {
-            // TODO: open registration screen
+          onPress={async () => {
+            router.replace(AppScreens.SIGN_UP);
           }}
           style={styles.registerLink}
           textStyle={styles.registerLinkText}
