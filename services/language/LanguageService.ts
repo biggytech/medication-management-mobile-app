@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { i18n as I18nType } from "i18next";
 import i18n from "@/i18n";
-
-// TODO: init service with current device's language
-// https://docs.expo.dev/guides/localization/#getting-the-users-language
+import { getLocales } from "expo-localization";
+import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/language";
+import { isAvailableLanguage } from "@/utils/language/isAvailableLanguage";
 
 export class LanguageService {
   private static readonly LANGUAGE_KEY = "@language";
@@ -35,7 +35,21 @@ export class LanguageService {
     return language;
   }
 
-  public static async changeLanguage(language: string) {
+  public static async changeLanguageToDeviceLanguage() {
+    let languageToSet = DEFAULT_LANGUAGE;
+
+    const deviceLanguage = getLocales()[0].languageTag;
+
+    if (isAvailableLanguage(deviceLanguage)) {
+      languageToSet = deviceLanguage;
+    }
+
+    await LanguageService.changeLanguage(languageToSet);
+
+    return languageToSet;
+  }
+
+  public static async changeLanguage(language: AvailableLanguages) {
     const instance = LanguageService.getInstance();
     await AsyncStorage.setItem(LanguageService.LANGUAGE_KEY, language);
     await instance.i18n.changeLanguage(language);

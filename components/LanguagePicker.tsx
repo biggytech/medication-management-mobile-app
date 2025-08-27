@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { LanguageService } from "@/services/language/LanguageService";
 import { useScreenReload } from "@/hooks/navigation/useScreenReload";
-import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/languages";
+import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/language";
 import { Spacings } from "@/constants/styling/spacings";
 import { Fonts, FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
@@ -33,7 +33,10 @@ export const LanguagePicker = () => {
       if (language) {
         setSelectedLanguage(language);
       } else {
-        await LanguageService.changeLanguage(DEFAULT_LANGUAGE);
+        const language = await LanguageService.changeLanguageToDeviceLanguage();
+        if (language !== selectedLanguage) {
+          reloadScreen();
+        }
       }
     })();
   }, []);

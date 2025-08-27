@@ -1,10 +1,9 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import * as Localization from "expo-localization";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import translationRu from "./locales/ru-RU/translation.json";
 import translationEn from "./locales/en-US/translation.json";
-import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/languages";
+import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/language";
 
 const resources: {
   [K in AvailableLanguages]: { translation: Record<string, string> };
@@ -14,16 +13,12 @@ const resources: {
 };
 
 const initI18n = async () => {
-  let savedLanguage = await AsyncStorage.getItem("language");
-
-  if (!savedLanguage) {
-    savedLanguage = Localization.locale;
-  }
+  const savedLanguage = await AsyncStorage.getItem("language");
 
   i18n.use(initReactI18next).init({
     compatibilityJSON: "v4",
     resources,
-    lng: savedLanguage,
+    lng: savedLanguage ?? undefined,
     fallbackLng: DEFAULT_LANGUAGE,
     interpolation: {
       escapeValue: false,
