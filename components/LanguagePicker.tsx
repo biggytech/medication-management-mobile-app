@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { LanguageService } from "@/services/language/LanguageService";
-import { useScreenReload } from "@/hooks/navigation/useScreenReload";
-import { AvailableLanguages, DEFAULT_LANGUAGE } from "@/constants/language";
+import { AvailableLanguages } from "@/constants/language";
 import { Spacings } from "@/constants/styling/spacings";
 import { Fonts, FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
+import { useCurrentLanguage } from "@/hooks/language/useCurrentLanguage";
 
 interface LanguageOption {
   label: string;
@@ -21,34 +21,16 @@ const LANGUAGES_OPTIONS: {
 };
 
 export const LanguagePicker = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
-    DEFAULT_LANGUAGE,
-  );
-  const [isFocus, setIsFocus] = useState<boolean>(false);
-  const { reloadScreen } = useScreenReload();
+  const { currentLanguage, updateCurrentLanguage } = useCurrentLanguage();
 
-  useEffect(() => {
-    (async () => {
-      const language = await LanguageService.loadCurrentLanguage();
-      if (language) {
-        setSelectedLanguage(language);
-      } else {
-        const language = await LanguageService.changeLanguageToDeviceLanguage();
-        if (language !== selectedLanguage) {
-          reloadScreen();
-        }
-      }
-    })();
-  }, []);
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
   const handleLanguageUpdated = async (option: LanguageOption) => {
     const language = option.value;
 
-    setSelectedLanguage(language);
     setIsFocus(false);
 
-    await LanguageService.changeLanguage(language);
-    reloadScreen();
+    await updateCurrentLanguage(language);
   };
 
   const options: LanguageOption[] = useMemo(() => {
@@ -63,7 +45,7 @@ export const LanguagePicker = () => {
 
   return (
     <View>
-      {selectedLanguage && (
+      {currentLanguage && (
         <Dropdown
           style={[styles.dropdown, isFocus && styles.focusedDropdown]}
           placeholderStyle={styles.placeholderStyle}
@@ -77,7 +59,7 @@ export const LanguagePicker = () => {
           labelField="label"
           valueField="value"
           placeholder={!isFocus ? LanguageService.translate("Select") : "..."}
-          value={selectedLanguage}
+          value={currentLanguage}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={handleLanguageUpdated}
