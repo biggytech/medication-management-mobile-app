@@ -12,7 +12,7 @@ import { Link } from "@/components/Link";
 import { AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
-import { InlineLoader } from "@/components/InlineLoader";
+import { InlineLoader } from "@/components/loaders/InlineLoader";
 
 export default function Login(): ReactNode {
   const [username, setUsername] = useState<string>("");

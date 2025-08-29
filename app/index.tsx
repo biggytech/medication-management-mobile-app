@@ -2,7 +2,7 @@ import { useAuthSession } from "@/providers/AuthProvider";
 import { Redirect } from "expo-router";
 import { type ReactNode, useEffect, useState } from "react";
 import { LanguageService } from "@/services/language/LanguageService";
-import { BlockingLoader } from "@/components/BlockingLoader";
+import { BlockingLoader } from "@/components/loaders/BlockingLoader";
 import { AppScreens } from "@/constants/navigation";
 
 export default function RootLayout(): ReactNode {

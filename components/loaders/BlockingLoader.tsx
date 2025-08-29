@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { Loader } from "@/components/Loader";
+import { Loader } from "@/components/loaders/Loader";
 
 export const BlockingLoader = () => {
   return (

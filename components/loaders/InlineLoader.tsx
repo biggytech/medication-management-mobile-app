@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Loader } from "@/components/Loader";
+import { Loader } from "@/components/loaders/Loader";
 
 interface InlineLoaderProps {
   isLoading: boolean;
