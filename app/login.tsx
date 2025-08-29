@@ -7,12 +7,12 @@ import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
 import { BASIC_STYLES } from "@/constants/styling/basic";
 import { AppColors } from "@/constants/styling/colors";
-import { Loader } from "@/components/Loader";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/Link";
 import { AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
+import { InlineLoader } from "@/components/InlineLoader";
 
 export default function Login(): ReactNode {
   const [username, setUsername] = useState<string>("");
@@ -86,15 +86,7 @@ export default function Login(): ReactNode {
           textStyle={styles.registerLinkText}
           disabled={isLoading}
         />
-        <View
-          style={[
-            styles.loaderContainer,
-            isLoading ? styles.loaderContainerVisible : {},
-          ]}
-          aria-hidden={!isLoading}
-        >
-          <Loader />
-        </View>
+        <InlineLoader isLoading={isLoading} />
       </View>
       <View style={styles.bottom}>
         <View style={styles.withoutLoginButtonContainer}>
@@ -132,12 +124,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: "auto",
     marginBottom: "auto",
-  },
-  loaderContainer: {
-    opacity: 0,
-  },
-  loaderContainerVisible: {
-    opacity: 1,
   },
   registerLink: {
     marginTop: Spacings.STANDART,
