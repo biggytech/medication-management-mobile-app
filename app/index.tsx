@@ -2,7 +2,7 @@ import { useAuthSession } from "@/providers/AuthProvider";
 import { Redirect } from "expo-router";
 import { type ReactNode, useEffect, useState } from "react";
 import { LanguageService } from "@/services/language/LanguageService";
-import { CenteredLoader } from "@/components/CenteredLoader";
+import { BlockingLoader } from "@/components/BlockingLoader";
 import { AppScreens } from "@/constants/navigation";
 
 export default function RootLayout(): ReactNode {
@@ -18,7 +18,7 @@ export default function RootLayout(): ReactNode {
   }, []);
 
   if (isTokenLoading || isLanguageLoading) {
-    return <CenteredLoader />;
+    return <BlockingLoader />;
   }
 
   if (!getToken()) {

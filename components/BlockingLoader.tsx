@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { Loader } from "@/components/Loader";
 
-export const CenteredLoader = () => {
+export const BlockingLoader = () => {
   return (
     <View style={styles.container}>
       <Loader />
