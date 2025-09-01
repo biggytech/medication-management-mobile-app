@@ -12,5 +12,7 @@ export const getErrorMessage = async (response: Response): Promise<string> => {
     errorMessage = LanguageService.translate(DEFAULT_ERROR_LANGUAGE_KEY);
   }
 
-  return `${LanguageService.translate("Request failed with status")} ${response.status}: ${errorMessage}`;
+  const { status, statusText } = response;
+
+  return `${LanguageService.translate("Request failed with status")} ${status} ${statusText ? `(${statusText})` : ""}: ${errorMessage}`;
 };

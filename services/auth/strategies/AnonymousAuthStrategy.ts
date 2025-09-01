@@ -1,11 +1,11 @@
-import type { IAuthStrategy } from "@/services/auth/IAuthStrategy";
+import type { AuthStrategy } from "@/services/auth/AuthStrategy";
 import { APIService } from "@/services/APIService";
 
-export class AnonymousAuthStrategy implements IAuthStrategy {
+export class AnonymousAuthStrategy implements AuthStrategy {
   public async authenticate() {
     const { token, full_name } = await APIService.signUpOffline();
     return {
-      userName: full_name,
+      fullName: full_name,
       token,
     };
   }

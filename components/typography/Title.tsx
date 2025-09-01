@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import { Fonts, FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
+import { Spacings } from "@/constants/styling/spacings";
 
 type TitleProps = NativeTextProps;
 
@@ -19,5 +20,7 @@ const styles = StyleSheet.create({
     color: AppColors.PRIMARY,
     fontFamily: Fonts.DEFAULT,
     fontWeight: "bold",
+    alignSelf: "center",
+    marginBottom: Spacings.STANDART,
   },
 });

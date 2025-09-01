@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { IAuthStrategy } from "@/services/auth/IAuthStrategy";
+import type { AuthStrategy } from "@/services/auth/AuthStrategy";
 import { DefaultAuthStrategy } from "@/services/auth/strategies/DefaultAuthStrategy";
 import { AnonymousAuthStrategy } from "@/services/auth/strategies/AnonymousAuthStrategy";
 import { LanguageService } from "@/services/language/LanguageService";
@@ -12,8 +12,9 @@ export enum AuthType {
 }
 
 export interface AuthData {
-  username?: string;
-  password?: string;
+  fullName?: string;
+  email: string;
+  password: string;
 }
 
 export class AuthService {
@@ -21,9 +22,9 @@ export class AuthService {
 
   private static instance: AuthService | null = null;
 
-  private authStrategy: IAuthStrategy = new DefaultAuthStrategy();
+  private authStrategy: AuthStrategy = new DefaultAuthStrategy();
   private token: string | null = null;
-  private userName: string = LanguageService.translate("Guest");
+  private fullName: string = LanguageService.translate("Guest");
 
   private constructor() {}
 
@@ -46,7 +47,7 @@ export class AuthService {
     );
   }
 
-  private static getAuthStrategyByType(type: AuthType): IAuthStrategy {
+  private static getAuthStrategyByType(type: AuthType): AuthStrategy {
     switch (type) {
       case AuthType.DEFAULT:
         return new DefaultAuthStrategy();
@@ -75,12 +76,12 @@ export class AuthService {
     return AuthService.getInstance().token;
   }
 
-  private async setUserName(userName: string): Promise<void> {
-    this.userName = userName;
+  private async setFullName(fullName: string): Promise<void> {
+    this.fullName = fullName;
   }
 
   public static getUserName(): string {
-    return AuthService.getInstance().userName;
+    return AuthService.getInstance().fullName;
   }
 
   public static async removeToken(): Promise<void> {
@@ -94,14 +95,14 @@ export class AuthService {
   }
 
   public static async authenticate(data?: AuthData) {
-    const { userName, token } =
+    const { fullName, token } =
       await AuthService.getInstance().authStrategy.authenticate(data);
 
     await AuthService.getInstance().setToken(token);
-    await AuthService.getInstance().setUserName(userName);
+    await AuthService.getInstance().setFullName(fullName);
 
     return {
-      userName,
+      fullName,
     };
   }
 }

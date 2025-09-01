@@ -12,20 +12,17 @@ import {
 } from "@/services/auth/AuthService";
 import { signIn } from "@/utils/auth/signIn";
 import { signOut } from "@/utils/auth/signOut";
-import { enterWithoutLogin } from "@/utils/auth/enterWithoutLogin";
 
 const AuthContext = createContext<{
   signIn: (authType: AuthType, data?: AuthData) => Promise<void>;
   signOut: () => void;
   getToken: () => string | null;
   isLoading: boolean;
-  enterWithoutLogin: () => Promise<void>;
 }>({
   signIn: async (authType: AuthType) => {},
   signOut: () => {},
   getToken: () => null,
   isLoading: true,
-  enterWithoutLogin: async () => {},
 });
 
 /**
@@ -57,7 +54,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signOut,
         getToken: AuthService.getToken,
         isLoading,
-        enterWithoutLogin,
       }}
     >
       {children}

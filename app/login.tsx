@@ -15,18 +15,18 @@ import { AppScreens } from "@/constants/navigation";
 import { InlineLoader } from "@/components/loaders/InlineLoader";
 
 export default function Login(): ReactNode {
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { signIn, enterWithoutLogin } = useAuthSession();
+  const { signIn } = useAuthSession();
 
   const onLoginPress = async () => {
     try {
       setIsLoading(true);
 
       await signIn(AuthType.DEFAULT, {
-        username,
+        email,
         password,
       });
     } finally {
@@ -38,13 +38,13 @@ export default function Login(): ReactNode {
     try {
       setIsLoading(true);
 
-      await enterWithoutLogin();
+      await signIn(AuthType.ANONYMOUS);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const isButtonDisabled = isLoading || !username || !password;
+  const isButtonDisabled = isLoading || !email || !password;
 
   return (
     <View style={BASIC_STYLES.screen}>
@@ -59,9 +59,9 @@ export default function Login(): ReactNode {
         />
         <Input
           autoFocus
-          placeholder={LanguageService.translate("Username")}
-          value={username}
-          onChangeText={(text) => setUsername(text.trim())}
+          placeholder={LanguageService.translate("Email")}
+          value={email}
+          onChangeText={(text) => setEmail(text.trim())}
         />
         <Input
           placeholder={LanguageService.translate("Password")}

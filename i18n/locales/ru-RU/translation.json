@@ -2,7 +2,7 @@
   "Login": "Войти",
   "Search": "Поиск",
   "Select": "Выбрать",
-  "Username": "Логин",
+  "Email": "Email",
   "Password": "Пароль",
   "I don't have account": "У меня нет аккаунта",
   "Something went wrong!": "Что-то пошло не так!",
@@ -14,5 +14,13 @@
   "Medicines": "Лекарства",
   "Logout": "Выйти",
   "Something went wrong": "Что-то пошло не так",
-  "Request failed with status": "Запрос неуспешен со статусом"
+  "Request failed with status": "Запрос неуспешен со статусом",
+  "Sign Up": "Регистрация",
+  "Email is required": "Email обязателен",
+  "Invalid email": "Неверный email",
+  "Password is required": "Пароль обязателен",
+  "Password must contain at least 8 characters": "Пароль должен содержать хотя бы 8 символов",
+  "Full Name": "Полное имя",
+  "Full Name is required": "Полное имя обязательно",
+  "Full Name cannot be long than 255 characters": "Полное имя не может быть длинее, чем 255 символов"
 }

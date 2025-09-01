@@ -1,8 +1,8 @@
 import type { AuthData } from "./AuthService";
 
-export interface IAuthStrategy {
+export interface AuthStrategy {
   authenticate(data?: AuthData): Promise<{
-    userName: string;
+    fullName: string;
     token: string;
   }>;
 }

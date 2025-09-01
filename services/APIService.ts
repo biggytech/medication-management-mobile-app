@@ -68,7 +68,7 @@ export class APIService {
     }
   }
 
-  public static async login(data: { username: string; password: string }) {
+  public static async login(data: { email: string; password: string }) {
     const result = await APIService.getInstance().makeRequest<{
       id: number;
       token: string;
@@ -79,11 +79,9 @@ export class APIService {
       requiresAuth: false,
     });
 
-    // TODO: set token
+    APIService.getInstance().token = result.token;
 
-    return {
-      token: "token",
-    };
+    return result;
   }
 
   public static async signUpOffline() {
@@ -104,7 +102,8 @@ export class APIService {
 
   public static async signUpDefault(data: {
     full_name: string;
-    is_guest: boolean;
+    email: string;
+    password: string;
   }) {
     const result = await APIService.getInstance().makeRequest<{
       id: number;

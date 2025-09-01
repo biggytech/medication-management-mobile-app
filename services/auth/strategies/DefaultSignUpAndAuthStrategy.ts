@@ -1,30 +1,23 @@
-import type { IAuthStrategy } from "@/services/auth/IAuthStrategy";
-import type { AuthData } from "../AuthService";
-import { APIService } from "../../APIService";
-import { LanguageService } from "../../language/LanguageService";
+import type { AuthStrategy } from "@/services/auth/AuthStrategy";
+import type { AuthData } from "@/services/auth/AuthService";
+import { APIService } from "@/services/APIService";
+import { LanguageService } from "@/services/language/LanguageService";
 
-export class DefaultSignUpAndAuthStrategy implements IAuthStrategy {
+export class DefaultSignUpAndAuthStrategy implements AuthStrategy {
   public async authenticate(data?: AuthData) {
+    if (!data?.fullName || !data?.email || !data?.password) {
+      throw new Error(LanguageService.translate("Missing required fields"));
+    }
+
     const { token, full_name } = await APIService.signUpDefault({
-      full_name: "Testik",
-      is_guest: false,
+      full_name: data.fullName,
+      email: data.email,
+      password: data.password,
     });
+
     return {
-      userName: full_name,
+      fullName: full_name,
       token,
     };
-    // if (!data?.username || !data?.password) {
-    //   throw new Error(LanguageService.translate("Missing required fields"));
-    // }
-    //
-    // const { token, userName } = await APIService.login({
-    //   username: data?.username,
-    //   password: data?.password,
-    // });
-    //
-    // return {
-    //   userName,
-    //   token,
-    // };
   }
 }

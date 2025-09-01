@@ -2,7 +2,7 @@
   "Login": "Login",
   "Search": "Search",
   "Select": "Select",
-  "Username": "Username",
+  "Email": "Email",
   "Password": "Password",
   "I don't have account": "I don't have account",
   "Something went wrong!": "Something went wrong!",
@@ -14,5 +14,13 @@
   "Medicines": "Medicines",
   "Logout": "Logout",
   "Something went wrong": "Something went wrong",
-  "Request failed with status": "Request failed with status"
+  "Request failed with status": "Request failed with status",
+  "Sign Up": "Sign Up",
+  "Email is required": "Email is required",
+  "Invalid email": "Invalid email",
+  "Password is required": "Password is required",
+  "Password must contain at least 8 characters": "Password must contain at least 8 characters",
+  "Full Name": "Full Name",
+  "Full Name is required": "Full Name is required",
+  "Full Name cannot be long than 255 characters": "Full Name cannot be long than 255 characters"
 }
