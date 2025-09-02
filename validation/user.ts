@@ -5,7 +5,11 @@ export const getEmailSchema = () =>
   yup
     .string()
     .required(LanguageService.translate("Email is required"))
-    .email(LanguageService.translate("Invalid email"));
+    .email(LanguageService.translate("Invalid email"))
+    .max(
+      255,
+      LanguageService.translate("Email cannot be long than 255 characters"),
+    );
 
 export const getFullNameSchema = () =>
   yup

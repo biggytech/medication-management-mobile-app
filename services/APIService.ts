@@ -68,15 +68,16 @@ export class APIService {
     }
   }
 
-  public static async login(data: { email: string; password: string }) {
+  public static async signInDefault(data: { email: string; password: string }) {
     const result = await APIService.getInstance().makeRequest<{
       id: number;
       token: string;
       full_name: string;
     }>({
       method: Methods.POST,
-      url: ":TODO",
+      url: "/sign-in/default",
       requiresAuth: false,
+      body: data,
     });
 
     APIService.getInstance().token = result.token;

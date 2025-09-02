@@ -9,7 +9,7 @@ export class DefaultAuthStrategy implements AuthStrategy {
       throw new Error(LanguageService.translate("Missing required fields"));
     }
 
-    const { token, full_name } = await APIService.login({
+    const { token, full_name } = await APIService.signInDefault({
       email: data?.email,
       password: data?.password,
     });

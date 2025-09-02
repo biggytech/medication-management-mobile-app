@@ -22,5 +22,6 @@
   "Password must contain at least 8 characters": "Password must contain at least 8 characters",
   "Full Name": "Full Name",
   "Full Name is required": "Full Name is required",
-  "Full Name cannot be long than 255 characters": "Full Name cannot be long than 255 characters"
+  "Full Name cannot be long than 255 characters": "Full Name cannot be long than 255 characters",
+  "Email cannot be long than 255 characters": "Email cannot be long than 255 characters"
 }

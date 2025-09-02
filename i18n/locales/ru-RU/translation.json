@@ -22,5 +22,6 @@
   "Password must contain at least 8 characters": "Пароль должен содержать хотя бы 8 символов",
   "Full Name": "Полное имя",
   "Full Name is required": "Полное имя обязательно",
-  "Full Name cannot be long than 255 characters": "Полное имя не может быть длинее, чем 255 символов"
+  "Full Name cannot be long than 255 characters": "Полное имя не может быть длинее, чем 255 символов",
+  "Email cannot be long than 255 characters": "Email не может быть длинее, чем 255 символов"
 }

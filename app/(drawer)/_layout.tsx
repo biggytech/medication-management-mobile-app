@@ -37,6 +37,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         />
       </DrawerContentScrollView>
       <View style={styles.userNameView}>
+        {/*TODO: fix user name when app opened with already loged in user*/}
         <Text style={styles.userName}>{AuthService.getUserName()}</Text>
       </View>
     </View>
