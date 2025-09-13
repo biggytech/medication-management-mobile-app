@@ -14,6 +14,10 @@ import { AppColors } from "@/constants/styling/colors";
 import { Text } from "@/components/typography/Text";
 import { StyleSheet, View } from "react-native";
 import { AuthService } from "@/services/auth/AuthService";
+import { Button } from "@/components/Button";
+import { FontSizes } from "@/constants/styling/fonts";
+import { router } from "expo-router";
+import { AppScreens } from "@/constants/navigation";
 
 const FOCUSED_COLOR = AppColors.SECONDARY;
 
@@ -37,8 +41,16 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         />
       </DrawerContentScrollView>
       <View style={styles.userNameView}>
-        {/*TODO: fix user name when app opened with already loged in user*/}
-        <Text style={styles.userName}>{AuthService.getUserName()}</Text>
+        <Text style={styles.userName}>{AuthService.fullName}</Text>
+        {AuthService.isGuest && (
+          <Button
+            title={LanguageService.translate("Finish sign up")}
+            size={FontSizes.SMALL}
+            onPress={() => {
+              router.push(AppScreens.SIGN_UP);
+            }}
+          />
+        )}
       </View>
     </View>
   );
@@ -74,6 +86,9 @@ const styles = StyleSheet.create({
   },
   userNameView: {
     padding: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   userName: {},
 });

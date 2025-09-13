@@ -18,17 +18,25 @@ export default function SignUp(): ReactNode {
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { signIn } = useAuthSession();
+  const { signIn, getIsAuthenticated } = useAuthSession();
 
   const onSignUpPress = async () => {
     try {
       setIsLoading(true);
 
-      await signIn(AuthType.DEFAULT_SIGN_UP, {
-        fullName,
-        email,
-        password,
-      });
+      if (getIsAuthenticated()) {
+        await signIn(AuthType.ANONYMOUS_FINISH_SIGN_UP, {
+          fullName,
+          email,
+          password,
+        });
+      } else {
+        await signIn(AuthType.DEFAULT_SIGN_UP, {
+          fullName,
+          email,
+          password,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +78,11 @@ export default function SignUp(): ReactNode {
           error={errors["password"]}
         />
         <Button
-          title={LanguageService.translate("Sign Up")}
+          title={
+            getIsAuthenticated()
+              ? LanguageService.translate("Finish sign up")
+              : LanguageService.translate("Sign Up")
+          }
           onPress={onSignUpPress}
           disabled={isButtonDisabled}
           color={AppColors.POSITIVE}

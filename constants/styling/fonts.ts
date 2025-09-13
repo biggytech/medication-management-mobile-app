@@ -1,5 +1,5 @@
 export enum FontSizes {
-  SMALL = 11,
+  SMALL = 10,
   STANDART = 14,
   BIG = 20,
   HUGE = 34,

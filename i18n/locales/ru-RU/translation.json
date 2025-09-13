@@ -23,5 +23,6 @@
   "Full Name": "Полное имя",
   "Full Name is required": "Полное имя обязательно",
   "Full Name cannot be long than 255 characters": "Полное имя не может быть длинее, чем 255 символов",
-  "Email cannot be long than 255 characters": "Email не может быть длинее, чем 255 символов"
+  "Email cannot be long than 255 characters": "Email не может быть длинее, чем 255 символов",
+  "Finish sign up": "Завершить регистрацию"
 }

@@ -7,5 +7,5 @@ export enum AppColors {
   BACKGROUND = "#FFFFFF",
   FONT = "#333333",
   WHITE = "#FFFFFF",
-  DISABLED = "#b5b5b5",
+  DISABLED = "#d8d8d8",
 }

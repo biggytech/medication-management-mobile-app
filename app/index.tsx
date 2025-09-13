@@ -6,7 +6,7 @@ import { BlockingLoader } from "@/components/loaders/BlockingLoader";
 import { AppScreens } from "@/constants/navigation";
 
 export default function RootLayout(): ReactNode {
-  const { getToken, isLoading: isTokenLoading } = useAuthSession();
+  const { getIsAuthenticated, isLoading: isTokenLoading } = useAuthSession();
   const [isLanguageLoading, setIsLanguageLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function RootLayout(): ReactNode {
     return <BlockingLoader />;
   }
 
-  if (!getToken()) {
+  if (!getIsAuthenticated()) {
     return <Redirect href={AppScreens.LOGIN} />;
   }
 

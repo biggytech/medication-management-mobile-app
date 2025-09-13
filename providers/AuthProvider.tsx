@@ -16,13 +16,13 @@ import { signOut } from "@/utils/auth/signOut";
 const AuthContext = createContext<{
   signIn: (authType: AuthType, data?: AuthData) => Promise<void>;
   signOut: () => void;
-  getToken: () => string | null;
   isLoading: boolean;
+  getIsAuthenticated: () => boolean;
 }>({
   signIn: async (authType: AuthType) => {},
   signOut: () => {},
-  getToken: () => null,
   isLoading: true,
+  getIsAuthenticated: () => false,
 });
 
 /**
@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      await AuthService.loadToken();
+      await AuthService.loadAuthInfo();
       setIsLoading(false);
     })();
   }, []);
@@ -52,8 +52,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       value={{
         signIn,
         signOut,
-        getToken: AuthService.getToken,
         isLoading,
+        getIsAuthenticated: AuthService.getIsAuthenticated,
       }}
     >
       {children}

@@ -1,14 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { AuthStrategy } from "@/services/auth/AuthStrategy";
+import type { AuthInfo, AuthStrategy } from "@/services/auth/AuthStrategy";
 import { DefaultAuthStrategy } from "@/services/auth/strategies/DefaultAuthStrategy";
 import { AnonymousAuthStrategy } from "@/services/auth/strategies/AnonymousAuthStrategy";
 import { LanguageService } from "@/services/language/LanguageService";
 import { DefaultSignUpAndAuthStrategy } from "@/services/auth/strategies/DefaultSignUpAndAuthStrategy";
+import { AnonymousFinishSignUpAuthStrategy } from "@/services/auth/strategies/AnonymousFinishSignUpAuthStrategy";
 
 export enum AuthType {
-  DEFAULT = "DEFAULT",
+  DEFAULT_SIGN_IN = "DEFAULT_SIGN_IN",
   DEFAULT_SIGN_UP = "DEFAULT_SIGN_UP",
-  ANONYMOUS = "ANONYMOUS",
+  ANONYMOUS_SIGN_UP = "ANONYMOUS_SIGN_UP",
+  ANONYMOUS_FINISH_SIGN_UP = "ANONYMOUS_FINISH_SIGN_UP",
 }
 
 export interface AuthData {
@@ -18,16 +20,18 @@ export interface AuthData {
 }
 
 export class AuthService {
-  private static readonly TOKEN_KEY = "@token";
+  private static readonly AUTH_INFO_KEY = "@auth_info_key";
 
   private static instance: AuthService | null = null;
 
   private authStrategy: AuthStrategy = new DefaultAuthStrategy();
   private token: string | null = null;
   private fullName: string = LanguageService.translate("Guest");
+  private isGuest: boolean = true;
 
   private constructor() {}
 
+  // Singleton
   private static getInstance() {
     if (AuthService.instance === null) {
       AuthService.instance = new AuthService();
@@ -36,57 +40,73 @@ export class AuthService {
     return AuthService.instance;
   }
 
-  public static get isLoggedIn() {
-    return Boolean(AuthService.getInstance().token);
+  public static get token(): string | null {
+    return AuthService.getInstance().token;
   }
 
-  public static get isKnownUser() {
-    return (
-      AuthService.isLoggedIn &&
-      !(AuthService.getInstance().authStrategy instanceof AnonymousAuthStrategy)
-    );
+  public static get fullName(): string {
+    return AuthService.getInstance().fullName;
+  }
+
+  public static get isGuest(): boolean {
+    return AuthService.getInstance().isGuest;
   }
 
   private static getAuthStrategyByType(type: AuthType): AuthStrategy {
     switch (type) {
-      case AuthType.DEFAULT:
+      case AuthType.DEFAULT_SIGN_IN:
         return new DefaultAuthStrategy();
       case AuthType.DEFAULT_SIGN_UP:
         return new DefaultSignUpAndAuthStrategy();
-      case AuthType.ANONYMOUS:
+      case AuthType.ANONYMOUS_SIGN_UP:
         return new AnonymousAuthStrategy();
+      case AuthType.ANONYMOUS_FINISH_SIGN_UP:
+        return new AnonymousFinishSignUpAuthStrategy();
       default:
         return new DefaultAuthStrategy();
     }
   }
 
-  public static async loadToken(): Promise<void> {
+  public static async loadAuthInfo(): Promise<void> {
     if (!AuthService.getInstance().token) {
-      AuthService.getInstance().token =
-        (await AsyncStorage.getItem(AuthService.TOKEN_KEY)) || null;
+      const authInfo = await AsyncStorage.getItem(AuthService.AUTH_INFO_KEY);
+
+      if (authInfo) {
+        try {
+          const authInfoParsed: AuthInfo = JSON.parse(authInfo);
+          AuthService.setAuthInfo(authInfoParsed);
+        } catch {}
+      }
     }
   }
 
-  private async setToken(token: string): Promise<void> {
-    await AsyncStorage.setItem(AuthService.TOKEN_KEY, token);
-    this.token = token;
+  private static setAuthInfo(authInfo: AuthInfo) {
+    const { token, fullName, isGuest } = authInfo;
+
+    AuthService.getInstance().token = token;
+    AuthService.getInstance().fullName = fullName;
+    AuthService.getInstance().isGuest = isGuest;
   }
 
-  public static getToken(): string | null {
-    return AuthService.getInstance().token;
-  }
-
-  private async setFullName(fullName: string): Promise<void> {
-    this.fullName = fullName;
-  }
-
-  public static getUserName(): string {
-    return AuthService.getInstance().fullName;
-  }
-
-  public static async removeToken(): Promise<void> {
-    await AsyncStorage.setItem(AuthService.TOKEN_KEY, "");
+  private static resetAuthInfo() {
     AuthService.getInstance().token = null;
+    AuthService.getInstance().fullName = LanguageService.translate("Guest");
+    AuthService.getInstance().isGuest = true;
+  }
+
+  private static async saveAuthInfo(authInfo: AuthInfo): Promise<void> {
+    const authInfoStringified = JSON.stringify(authInfo);
+    await AsyncStorage.setItem(AuthService.AUTH_INFO_KEY, authInfoStringified);
+    AuthService.setAuthInfo(authInfo);
+  }
+
+  public static getIsAuthenticated() {
+    return Boolean(AuthService.token);
+  }
+
+  public static async removeAuthInfo(): Promise<void> {
+    await AsyncStorage.setItem(AuthService.AUTH_INFO_KEY, "");
+    AuthService.resetAuthInfo();
   }
 
   public static setAuthStrategy(type: AuthType) {
@@ -95,14 +115,11 @@ export class AuthService {
   }
 
   public static async authenticate(data?: AuthData) {
-    const { fullName, token } =
+    const authInfo =
       await AuthService.getInstance().authStrategy.authenticate(data);
 
-    await AuthService.getInstance().setToken(token);
-    await AuthService.getInstance().setFullName(fullName);
+    await AuthService.saveAuthInfo(authInfo);
 
-    return {
-      fullName,
-    };
+    return authInfo;
   }
 }

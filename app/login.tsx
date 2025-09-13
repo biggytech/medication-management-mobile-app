@@ -25,7 +25,7 @@ export default function Login(): ReactNode {
     try {
       setIsLoading(true);
 
-      await signIn(AuthType.DEFAULT, {
+      await signIn(AuthType.DEFAULT_SIGN_IN, {
         email,
         password,
       });
@@ -38,7 +38,7 @@ export default function Login(): ReactNode {
     try {
       setIsLoading(true);
 
-      await signIn(AuthType.ANONYMOUS);
+      await signIn(AuthType.ANONYMOUS_SIGN_UP);
     } finally {
       setIsLoading(false);
     }
@@ -79,8 +79,8 @@ export default function Login(): ReactNode {
         />
         <Link
           text={LanguageService.translate("I don't have account")}
-          onPress={async () => {
-            router.replace(AppScreens.SIGN_UP);
+          onPress={() => {
+            router.push(AppScreens.SIGN_UP);
           }}
           style={styles.registerLink}
           textStyle={styles.registerLinkText}

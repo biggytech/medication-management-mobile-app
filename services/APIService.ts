@@ -2,6 +2,7 @@ import { isSuccessfulStatus } from "@/utils/api/isSuccessfulStatus";
 import { showError } from "@/utils/ui/showError";
 import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
+import { AuthService } from "@/services/auth/AuthService";
 
 enum Methods {
   GET = "GET",
@@ -10,7 +11,6 @@ enum Methods {
 
 export class APIService {
   private static instance: APIService | null = null;
-  private token: string | null = null;
   private BASE_URL = process.env.EXPO_PUBLIC_SERVER_BASE_URL!;
 
   private constructor() {}
@@ -37,7 +37,8 @@ export class APIService {
     body && console.log(`body - ${JSON.stringify(body)}`);
 
     try {
-      if (requiresAuth && !this.token) {
+      const token = AuthService.token;
+      if (requiresAuth && !token) {
         throw new Error("Token is not set for authenticated route");
       }
 
@@ -46,7 +47,7 @@ export class APIService {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: requiresAuth ? `Bearer ${this.token}` : "",
+          Authorization: requiresAuth ? `Bearer ${token}` : "",
         },
         body: body ? JSON.stringify(body) : null,
       });
@@ -68,57 +69,78 @@ export class APIService {
     }
   }
 
-  public static async signInDefault(data: { email: string; password: string }) {
-    const result = await APIService.getInstance().makeRequest<{
-      id: number;
-      token: string;
+  public static signIn = {
+    path: "/sign-in",
+
+    async default(data: { email: string; password: string }) {
+      const result = await APIService.getInstance().makeRequest<{
+        id: number;
+        token: string;
+        full_name: string;
+      }>({
+        method: Methods.POST,
+        url: `${this.path}/default`,
+        requiresAuth: false,
+        body: data,
+      });
+
+      return result;
+    },
+  };
+
+  public static signUp = {
+    path: "/sign-up",
+
+    async anonymous() {
+      const result = await APIService.getInstance().makeRequest<{
+        id: number;
+        token: string;
+        full_name: string;
+      }>({
+        method: Methods.POST,
+        url: `${this.path}/anonymous`,
+        requiresAuth: false,
+      });
+
+      return result;
+    },
+
+    async anonymousFinish(data: {
       full_name: string;
-    }>({
-      method: Methods.POST,
-      url: "/sign-in/default",
-      requiresAuth: false,
-      body: data,
-    });
+      email: string;
+      password: string;
+    }) {
+      const result = await APIService.getInstance().makeRequest<{
+        id: number;
+        token: string;
+        full_name: string;
+      }>({
+        method: Methods.POST,
+        url: `${this.path}/anonymous/finish`,
+        requiresAuth: true,
+        body: data,
+      });
 
-    APIService.getInstance().token = result.token;
+      return result;
+    },
 
-    return result;
-  }
-
-  public static async signUpOffline() {
-    const result = await APIService.getInstance().makeRequest<{
-      id: number;
-      token: string;
+    async default(data: {
       full_name: string;
-    }>({
-      method: Methods.POST,
-      url: "/sign-up/anonymous",
-      requiresAuth: false,
-    });
+      email: string;
+      password: string;
+    }) {
+      const result = await APIService.getInstance().makeRequest<{
+        id: number;
+        token: string;
+        full_name: string;
+      }>({
+        method: Methods.POST,
+        url: `${this.path}/default`,
+        requiresAuth: false,
+        body: data,
+      });
 
-    APIService.getInstance().token = result.token;
-
-    return result;
-  }
-
-  public static async signUpDefault(data: {
-    full_name: string;
-    email: string;
-    password: string;
-  }) {
-    const result = await APIService.getInstance().makeRequest<{
-      id: number;
-      token: string;
-      full_name: string;
-    }>({
-      method: Methods.POST,
-      url: "/sign-up/default",
-      requiresAuth: false,
-      body: data,
-    });
-
-    APIService.getInstance().token = result.token;
-
-    return result;
-  }
+      return result;
+    },
+  };
 }

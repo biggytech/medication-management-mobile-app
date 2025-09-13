@@ -9,7 +9,7 @@ export class DefaultSignUpAndAuthStrategy implements AuthStrategy {
       throw new Error(LanguageService.translate("Missing required fields"));
     }
 
-    const { token, full_name } = await APIService.signUpDefault({
+    const { token, full_name } = await APIService.signUp.default({
       full_name: data.fullName,
       email: data.email,
       password: data.password,
@@ -18,6 +18,7 @@ export class DefaultSignUpAndAuthStrategy implements AuthStrategy {
     return {
       fullName: full_name,
       token,
+      isGuest: false, // TODO; retrieve from backend
     };
   }
 }
