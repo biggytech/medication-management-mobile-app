@@ -11,8 +11,6 @@ import { Link } from "@/components/Link";
 import { AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
-import { InlineLoader } from "@/components/loaders/InlineLoader";
-import { validateObject } from "@/utils/validation/validateObject";
 import { getSignInDefaultSchema } from "@/validation/user";
 import { Screen } from "@/components/Screen";
 import { Form } from "@/components/Form";
@@ -25,16 +23,10 @@ export default function Login(): ReactNode {
   const { signIn } = useAuthSession();
 
   const onLoginPress = async () => {
-    try {
-      setIsLoading(true);
-
-      await signIn(AuthType.DEFAULT_SIGN_IN, {
-        email,
-        password,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    await signIn(AuthType.DEFAULT_SIGN_IN, {
+      email,
+      password,
+    });
   };
 
   const onWithoutLoginClick = async () => {
@@ -47,57 +39,57 @@ export default function Login(): ReactNode {
     }
   };
 
-  const { isValid, errors } = validateObject(getSignInDefaultSchema(), {
-    email,
-    password,
-  });
-
-  const isButtonDisabled = isLoading || !isValid;
-
   return (
     <Screen>
       <View style={styles.languagePickerContainer}>
         <LanguagePicker />
       </View>
-      <Form style={styles.form}>
-        <Image
-          alt={"Медика"}
-          source={require("../assets/images/logo/logo.png")}
-          style={styles.logo}
-        />
-        <Input
-          autoFocus
-          placeholder={LanguageService.translate("Email")}
-          value={email}
-          onChangeText={(text) => setEmail(text.trim())}
-          error={errors["email"]}
-        />
-        <Input
-          placeholder={LanguageService.translate("Password")}
-          enterKeyHint={"done"}
-          returnKeyType={"done"}
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          error={errors["password"]}
-        />
-        <Button
-          text={LanguageService.translate("Login")}
-          onPress={onLoginPress}
-          disabled={isButtonDisabled}
-          color={AppColors.POSITIVE}
-        />
-        <Link
-          text={LanguageService.translate("I don't have account")}
-          onPress={() => {
-            router.push(AppScreens.SIGN_UP);
-          }}
-          style={styles.registerLink}
-          textStyle={styles.registerLinkText}
-          disabled={isLoading}
-        />
-        <InlineLoader isLoading={isLoading} />
+      <Form
+        getSchema={getSignInDefaultSchema}
+        data={{
+          email,
+          password,
+        }}
+        style={styles.form}
+        submitText={LanguageService.translate("Login")}
+        onSubmit={onLoginPress}
+        isDisabled={isLoading}
+      >
+        {({ errors }) => (
+          <>
+            <Image
+              alt={"Медика"}
+              source={require("../assets/images/logo/logo.png")}
+              style={styles.logo}
+            />
+            <Input
+              autoFocus
+              placeholder={LanguageService.translate("Email")}
+              value={email}
+              onChangeText={(text) => setEmail(text.trim())}
+              error={errors["email"]}
+            />
+            <Input
+              placeholder={LanguageService.translate("Password")}
+              enterKeyHint={"done"}
+              returnKeyType={"done"}
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              error={errors["password"]}
+            />
+          </>
+        )}
       </Form>
+      <Link
+        text={LanguageService.translate("I don't have account")}
+        onPress={() => {
+          router.push(AppScreens.SIGN_UP);
+        }}
+        style={styles.registerLink}
+        textStyle={styles.registerLinkText}
+        disabled={isLoading}
+      />
       <View style={styles.bottom}>
         <View style={styles.withoutLoginButtonContainer}>
           <Button
@@ -132,16 +124,15 @@ const styles = StyleSheet.create({
   },
   form: {
     marginTop: "auto",
-    marginBottom: "auto",
   },
   registerLink: {
-    marginTop: Spacings.STANDART,
+    marginTop: "auto",
+    marginBottom: Spacings.BIG,
   },
   registerLinkText: {
     textAlign: "center",
   },
   bottom: {
-    marginTop: "auto",
     alignItems: "center",
   },
   withoutLoginButtonContainer: {

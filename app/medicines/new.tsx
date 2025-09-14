@@ -19,15 +19,15 @@ const NewMedicine: React.FC = () => {
   return (
     <Screen>
       <Title>{LanguageService.translate("Add New Medicine")}</Title>
-      <Form>
-        <Input
-          autoFocus
-          placeholder={LanguageService.translate("Title")}
-          value={title}
-          onChangeText={(text) => setTitle(text.trim())}
-          error={errors["title"]}
-        />
-      </Form>
+      {/*<Form>*/}
+      {/*  <Input*/}
+      {/*    autoFocus*/}
+      {/*    placeholder={LanguageService.translate("Title")}*/}
+      {/*    value={title}*/}
+      {/*    onChangeText={(text) => setTitle(text.trim())}*/}
+      {/*    error={errors["title"]}*/}
+      {/*  />*/}
+      {/*</Form>*/}
     </Screen>
   );
 };

@@ -17,78 +17,66 @@ export default function SignUp(): ReactNode {
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { signIn, getIsAuthenticated } = useAuthSession();
 
   const onSignUpPress = async () => {
-    try {
-      setIsLoading(true);
-
-      if (getIsAuthenticated()) {
-        await signIn(AuthType.ANONYMOUS_FINISH_SIGN_UP, {
-          fullName,
-          email,
-          password,
-        });
-      } else {
-        await signIn(AuthType.DEFAULT_SIGN_UP, {
-          fullName,
-          email,
-          password,
-        });
-      }
-    } finally {
-      setIsLoading(false);
+    if (getIsAuthenticated()) {
+      await signIn(AuthType.ANONYMOUS_FINISH_SIGN_UP, {
+        fullName,
+        email,
+        password,
+      });
+    } else {
+      await signIn(AuthType.DEFAULT_SIGN_UP, {
+        fullName,
+        email,
+        password,
+      });
     }
   };
 
-  const { isValid, errors } = validateObject(getNewUserSchema(), {
-    fullName,
-    email,
-    password,
-  });
-
-  const isButtonDisabled = isLoading || !isValid;
-
   return (
     <Screen>
-      <Form style={styles.form}>
-        <Title>{LanguageService.translate("Sign Up")}</Title>
-        <Input
-          autoFocus
-          placeholder={LanguageService.translate("Full Name")}
-          value={fullName}
-          onChangeText={(text) => setFullName(text.trim())}
-          error={errors["fullName"]}
-        />
-        <Input
-          autoFocus
-          placeholder={LanguageService.translate("Email")}
-          value={email}
-          onChangeText={(text) => setEmail(text.trim())}
-          error={errors["email"]}
-        />
-        <Input
-          placeholder={LanguageService.translate("Password")}
-          enterKeyHint={"done"}
-          returnKeyType={"done"}
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          error={errors["password"]}
-        />
-        <Button
-          text={
-            getIsAuthenticated()
-              ? LanguageService.translate("Finish sign up")
-              : LanguageService.translate("Sign Up")
-          }
-          onPress={onSignUpPress}
-          disabled={isButtonDisabled}
-          color={AppColors.POSITIVE}
-        />
-        <InlineLoader isLoading={isLoading} />
+      <Form
+        getSchema={getNewUserSchema}
+        data={{ fullName, email, password }}
+        onSubmit={onSignUpPress}
+        submitText={
+          getIsAuthenticated()
+            ? LanguageService.translate("Finish sign up")
+            : LanguageService.translate("Sign Up")
+        }
+        style={styles.form}
+      >
+        {({ errors }) => (
+          <>
+            <Title>{LanguageService.translate("Sign Up")}</Title>
+            <Input
+              autoFocus
+              placeholder={LanguageService.translate("Full Name")}
+              value={fullName}
+              onChangeText={(text) => setFullName(text.trim())}
+              error={errors["fullName"]}
+            />
+            <Input
+              autoFocus
+              placeholder={LanguageService.translate("Email")}
+              value={email}
+              onChangeText={(text) => setEmail(text.trim())}
+              error={errors["email"]}
+            />
+            <Input
+              placeholder={LanguageService.translate("Password")}
+              enterKeyHint={"done"}
+              returnKeyType={"done"}
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              error={errors["password"]}
+            />
+          </>
+        )}
       </Form>
     </Screen>
   );

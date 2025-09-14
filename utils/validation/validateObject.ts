@@ -1,24 +1,24 @@
 import * as yup from "yup";
-import { type AnyObject, type Maybe, ValidationError } from "yup";
+import { type AnyObject, ValidationError } from "yup";
 
-type YupSchemaObject = AnyObject;
+export type DataForValidation = AnyObject;
 
-type Output<T extends YupSchemaObject = YupSchemaObject> = {
-  [key in keyof T]: string | null;
-};
+export type ValidationOutput<T extends DataForValidation = DataForValidation> =
+  {
+    [key in keyof T]: string | null;
+  };
 
-export const validateObject = <T extends YupSchemaObject = YupSchemaObject>(
+export const validateObject = <T extends DataForValidation = DataForValidation>(
   schema: yup.ObjectSchema<T>,
   value: T,
 ): {
   isValid: boolean;
-  errors: Output<T>;
+  errors: ValidationOutput<T>;
 } => {
   let isValid = true;
-  const errors: Output<T> = Object.keys(schema.fields).reduce<Output<T>>(
-    (acc, curr) => ({ ...acc, [curr]: null }),
-    {} as Output<T>,
-  );
+  const errors: ValidationOutput<T> = Object.keys(schema.fields).reduce<
+    ValidationOutput<T>
+  >((acc, curr) => ({ ...acc, [curr]: null }), {} as ValidationOutput<T>);
 
   try {
     schema.validateSync(value);
@@ -29,7 +29,7 @@ export const validateObject = <T extends YupSchemaObject = YupSchemaObject>(
       const { path, message } = error;
       const field = path?.split(".")[0];
       if (field && field in errors) {
-        errors[field as keyof Output<T>] = message;
+        errors[field as keyof ValidationOutput<T>] = message;
       }
     }
   }
