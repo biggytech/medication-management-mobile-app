@@ -16,7 +16,7 @@ export const Title: React.FC<TitleProps> = ({ style, ...props }) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: FontSizes.HUGE,
+    fontSize: FontSizes.SUPER_BIG,
     color: AppColors.PRIMARY,
     fontFamily: Fonts.DEFAULT,
     fontWeight: "bold",

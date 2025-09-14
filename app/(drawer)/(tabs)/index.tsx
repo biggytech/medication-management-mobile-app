@@ -1,14 +1,14 @@
 import React from "react";
 import { Text } from "@/components/typography/Text";
-import { View } from "react-native";
 import { PushNotificationDebugger } from "@/components/notifications/PushNotificationDebugger";
+import { Screen } from "@/components/Screen";
 
 const Home: React.FC = () => {
   return (
-    <View style={{ flex: 1 }}>
+    <Screen>
       <Text>Home</Text>
       {/*<PushNotificationDebugger />*/}
-    </View>
+    </Screen>
   );
 };
 

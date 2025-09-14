@@ -1,15 +1,22 @@
 import React from "react";
-import { Text } from "@/components/typography/Text";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { FlatList, View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Button } from "@/components/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
+import { router } from "expo-router";
+import { AppScreens } from "@/constants/navigation";
+import { Screen } from "@/components/Screen";
 
 const Medicines: React.FC = () => {
-  // Action when the floating button is pressed
+  // open single medicine
+  // router.push({
+  //   pathname: AppScreens.MEDICINES_SINGLE,
+  //   params: { medicine: "adsfkjd" },
+  // });
+
   const handlePress = () => {
-    alert("Floating Button Pressed!");
+    router.push(AppScreens.MEDICINES_NEW);
   };
 
   // Sample data for the list
@@ -26,7 +33,7 @@ const Medicines: React.FC = () => {
   // );
 
   return (
-    <View style={styles.container}>
+    <Screen>
       <Button
         color={AppColors.POSITIVE}
         style={styles.floatingButton}
@@ -43,32 +50,15 @@ const Medicines: React.FC = () => {
       {/*  renderItem={renderItem}*/}
       {/*  contentContainerStyle={styles.list}*/}
       {/*/>*/}
-    </View>
+    </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: "white",
-    // padding: 20,
-    // justifyContent: "center",
-    // alignItems: "center",
-  },
-  // title: {
-  //   fontSize: 18,
-  //   fontWeight: "bold",
-  //   color: "white",
-  // },
   floatingButton: {
     position: "absolute",
     bottom: 30,
     right: 30,
-    // elevation: 5, // For Android shadow
-    // shadowColor: "#000", // For iOS shadow
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
   },
   // list: {
   //   padding: 10,

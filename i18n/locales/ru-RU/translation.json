@@ -23,10 +23,13 @@
   "Full Name": "Полное имя",
   "Full Name is required": "Полное имя обязательно",
   "Full Name cannot be long than 255 characters": "Полное имя не может быть длинее, чем 255 символов",
-  "Email cannot be long than 255 characters": "Email не может быть длинее, чем 255 символов",
   "Finish sign up": "Завершить регистрацию",
   "You're logged in as a guest": "Вы вошли как гостевой пользователь",
   "You will lose all your data if you log out as a guest user. Are you sure to logout?": "Вы потеряете все данные, если выйдете будучи гостевым пользователем. Вы точно хотите выйти?",
   "Cancel": "Отмена",
-  "Yes, logout": "Да, выйти"
+  "Yes, logout": "Да, выйти",
+  "Add New Medicine": "Добавить Новое Лекарство",
+  "Title": "Название",
+  "Title is required": "Название обязательно",
+  "Title cannot be long than 255 characters": "Название не может быть длинее, чем 255 символов"
 }

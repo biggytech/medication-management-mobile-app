@@ -23,10 +23,13 @@
   "Full Name": "Full Name",
   "Full Name is required": "Full Name is required",
   "Full Name cannot be long than 255 characters": "Full Name cannot be long than 255 characters",
-  "Email cannot be long than 255 characters": "Email cannot be long than 255 characters",
   "Finish sign up": "Finish sign up",
   "You're logged in as a guest": "You're logged in as a guest",
   "You will lose all your data if you log out as a guest user. Are you sure to logout?": "You will lose all your data if you log out as a guest user. Are you sure to logout?",
   "Cancel": "Cancel",
-  "Yes, logout": "Yes, logout"
+  "Yes, logout": "Yes, logout",
+  "Add New Medicine": "Add New Medicine",
+  "Title": "Title",
+  "Title is required": "Title is required",
+  "Title cannot be long than 255 characters": "Title cannot be long than 255 characters"
 }

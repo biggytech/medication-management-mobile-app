@@ -1,16 +1,17 @@
 import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
-import { BASIC_STYLES } from "@/constants/styling/basic";
 import { AppColors } from "@/constants/styling/colors";
 import { AuthType } from "@/services/auth/AuthService";
 import { Title } from "@/components/typography/Title";
 import { InlineLoader } from "@/components/loaders/InlineLoader";
 import { getNewUserSchema } from "@/validation/user";
 import { validateObject } from "@/utils/validation/validateObject";
+import { Screen } from "@/components/Screen";
+import { Form } from "@/components/Form";
 
 export default function SignUp(): ReactNode {
   const [fullName, setFullName] = useState<string>("");
@@ -51,8 +52,8 @@ export default function SignUp(): ReactNode {
   const isButtonDisabled = isLoading || !isValid;
 
   return (
-    <View style={BASIC_STYLES.screen}>
-      <View style={styles.form}>
+    <Screen>
+      <Form style={styles.form}>
         <Title>{LanguageService.translate("Sign Up")}</Title>
         <Input
           autoFocus
@@ -88,16 +89,14 @@ export default function SignUp(): ReactNode {
           color={AppColors.POSITIVE}
         />
         <InlineLoader isLoading={isLoading} />
-      </View>
-    </View>
+      </Form>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   form: {
-    alignSelf: "center",
     marginTop: "auto",
     marginBottom: "auto",
-    alignItems: "center",
   },
 });

@@ -5,7 +5,6 @@ import { LanguageService } from "@/services/language/LanguageService";
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
-import { BASIC_STYLES } from "@/constants/styling/basic";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/Link";
@@ -15,6 +14,8 @@ import { AppScreens } from "@/constants/navigation";
 import { InlineLoader } from "@/components/loaders/InlineLoader";
 import { validateObject } from "@/utils/validation/validateObject";
 import { getSignInDefaultSchema } from "@/validation/user";
+import { Screen } from "@/components/Screen";
+import { Form } from "@/components/Form";
 
 export default function Login(): ReactNode {
   const [email, setEmail] = useState<string>("");
@@ -54,11 +55,11 @@ export default function Login(): ReactNode {
   const isButtonDisabled = isLoading || !isValid;
 
   return (
-    <View style={BASIC_STYLES.screen}>
+    <Screen>
       <View style={styles.languagePickerContainer}>
         <LanguagePicker />
       </View>
-      <View style={styles.form}>
+      <Form style={styles.form}>
         <Image
           alt={"Медика"}
           source={require("../assets/images/logo/logo.png")}
@@ -96,7 +97,7 @@ export default function Login(): ReactNode {
           disabled={isLoading}
         />
         <InlineLoader isLoading={isLoading} />
-      </View>
+      </Form>
       <View style={styles.bottom}>
         <View style={styles.withoutLoginButtonContainer}>
           <Button
@@ -115,7 +116,7 @@ export default function Login(): ReactNode {
           disabled={isLoading}
         />
       </View>
-    </View>
+    </Screen>
   );
 }
 
@@ -130,7 +131,6 @@ const styles = StyleSheet.create({
     marginBottom: Spacings.SMALL,
   },
   form: {
-    alignSelf: "center",
     marginTop: "auto",
     marginBottom: "auto",
   },
