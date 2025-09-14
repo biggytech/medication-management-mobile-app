@@ -16,17 +16,12 @@ import { Screen } from "@/components/Screen";
 import { Form } from "@/components/Form";
 
 export default function Login(): ReactNode {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { signIn } = useAuthSession();
 
-  const onLoginPress = async () => {
-    await signIn(AuthType.DEFAULT_SIGN_IN, {
-      email,
-      password,
-    });
+  const onLoginPress = async (data: { email: string; password: string }) => {
+    await signIn(AuthType.DEFAULT_SIGN_IN, data);
   };
 
   const onWithoutLoginClick = async () => {
@@ -46,16 +41,12 @@ export default function Login(): ReactNode {
       </View>
       <Form
         getSchema={getSignInDefaultSchema}
-        data={{
-          email,
-          password,
-        }}
         style={styles.form}
         submitText={LanguageService.translate("Login")}
         onSubmit={onLoginPress}
         isDisabled={isLoading}
       >
-        {({ errors }) => (
+        {({ data, setValue, errors }) => (
           <>
             <Image
               alt={"Медика"}
@@ -65,8 +56,8 @@ export default function Login(): ReactNode {
             <Input
               autoFocus
               placeholder={LanguageService.translate("Email")}
-              value={email}
-              onChangeText={(text) => setEmail(text.trim())}
+              value={data["email"]}
+              onChangeText={(text) => setValue("email", text.trim())}
               error={errors["email"]}
             />
             <Input
@@ -74,8 +65,8 @@ export default function Login(): ReactNode {
               enterKeyHint={"done"}
               returnKeyType={"done"}
               secureTextEntry
-              value={password}
-              onChangeText={setPassword}
+              value={data["password"]}
+              onChangeText={(text) => setValue("password", text)}
               error={errors["password"]}
             />
           </>

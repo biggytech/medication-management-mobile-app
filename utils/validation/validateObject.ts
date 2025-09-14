@@ -9,7 +9,7 @@ export type ValidationOutput<T extends DataForValidation = DataForValidation> =
   };
 
 export const validateObject = <T extends DataForValidation = DataForValidation>(
-  schema: yup.ObjectSchema<T>,
+  schema: yup.ObjectSchema<Partial<T>>,
   value: T,
 ): {
   isValid: boolean;
