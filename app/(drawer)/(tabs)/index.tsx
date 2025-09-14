@@ -7,7 +7,7 @@ const Home: React.FC = () => {
   return (
     <View style={{ flex: 1 }}>
       <Text>Home</Text>
-      <PushNotificationDebugger />
+      {/*<PushNotificationDebugger />*/}
     </View>
   );
 };

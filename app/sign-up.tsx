@@ -78,7 +78,7 @@ export default function SignUp(): ReactNode {
           error={errors["password"]}
         />
         <Button
-          title={
+          text={
             getIsAuthenticated()
               ? LanguageService.translate("Finish sign up")
               : LanguageService.translate("Sign Up")

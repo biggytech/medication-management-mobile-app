@@ -1,4 +1,5 @@
 import type React from "react";
+import type { ReactNode } from "react";
 import {
   type ButtonProps as NativeButtonProps,
   StyleSheet,
@@ -11,17 +12,21 @@ import { Text } from "@/components/typography/Text";
 import { FontSizes } from "@/constants/styling/fonts";
 
 interface ButtonProps extends TouchableHighlightProps {
-  title: NativeButtonProps["title"];
+  text: NativeButtonProps["title"] | ReactNode;
   color?: NativeButtonProps["color"];
   size?: number;
   disabled?: NativeButtonProps["disabled"];
+  rounded?: boolean;
+  elevated?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  title,
+  text,
   color = AppColors.ACCENT,
   size = FontSizes.STANDART,
-  disabled,
+  disabled = false,
+  rounded = false,
+  elevated = false,
   ...props
 }) => {
   return (
@@ -33,6 +38,8 @@ export const Button: React.FC<ButtonProps> = ({
             backgroundColor: color,
           },
           disabled ? styles.disabledButton : {},
+          rounded ? styles.roundedButton : {},
+          elevated ? styles.elevatedButton : {},
         ]}
       >
         <Text
@@ -43,7 +50,7 @@ export const Button: React.FC<ButtonProps> = ({
             },
           ]}
         >
-          {title}
+          {text}
         </Text>
       </View>
     </TouchableHighlight>
@@ -59,6 +66,12 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: AppColors.DISABLED,
+  },
+  roundedButton: {
+    borderRadius: "50%",
+  },
+  elevatedButton: {
+    boxShadow: `2px 3px 7px ${AppColors.GREY}`,
   },
   text: {
     color: AppColors.WHITE,

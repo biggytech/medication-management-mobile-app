@@ -68,7 +68,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         <Text style={styles.userName}>{AuthService.fullName}</Text>
         {AuthService.isGuest && (
           <Button
-            title={LanguageService.translate("Finish sign up")}
+            text={LanguageService.translate("Finish sign up")}
             size={FontSizes.SMALL}
             onPress={() => {
               router.push(AppScreens.SIGN_UP);

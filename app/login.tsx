@@ -81,7 +81,7 @@ export default function Login(): ReactNode {
           error={errors["password"]}
         />
         <Button
-          title={LanguageService.translate("Login")}
+          text={LanguageService.translate("Login")}
           onPress={onLoginPress}
           disabled={isButtonDisabled}
           color={AppColors.POSITIVE}
@@ -100,7 +100,7 @@ export default function Login(): ReactNode {
       <View style={styles.bottom}>
         <View style={styles.withoutLoginButtonContainer}>
           <Button
-            title={LanguageService.translate("Continue without login")}
+            text={LanguageService.translate("Continue without login")}
             onPress={onWithoutLoginClick}
             color={AppColors.ACCENT}
             disabled={isLoading}
