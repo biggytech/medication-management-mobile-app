@@ -31,5 +31,6 @@
   "Add New Medicine": "Add New Medicine",
   "Title": "Title",
   "Title is required": "Title is required",
-  "Title cannot be long than 255 characters": "Title cannot be long than 255 characters"
+  "Title cannot be long than 255 characters": "Title cannot be long than 255 characters",
+  "Add": "Add"
 }

@@ -31,5 +31,6 @@
   "Add New Medicine": "Добавить Новое Лекарство",
   "Title": "Название",
   "Title is required": "Название обязательно",
-  "Title cannot be long than 255 characters": "Название не может быть длинее, чем 255 символов"
+  "Title cannot be long than 255 characters": "Название не может быть длинее, чем 255 символов",
+  "Add": "Добавить"
 }

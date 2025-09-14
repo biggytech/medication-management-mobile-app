@@ -157,4 +157,19 @@ export class APIService {
       return result;
     },
   };
+
+  public static medicines = {
+    path: "/medicines",
+
+    async add(data: { title: string }) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.POST,
+        url: `${this.path}/add`,
+        requiresAuth: true,
+        body: data,
+      });
+
+      return result;
+    },
+  };
 }
