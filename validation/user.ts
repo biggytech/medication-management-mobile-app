@@ -35,3 +35,9 @@ export const getNewUserSchema = () =>
     email: getEmailSchema(),
     password: getPasswordSchema(),
   });
+
+export const getSignInDefaultSchema = () =>
+  yup.object().shape({
+    email: getEmailSchema(),
+    password: getPasswordSchema(),
+  });

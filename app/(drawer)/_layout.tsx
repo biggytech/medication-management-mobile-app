@@ -12,7 +12,7 @@ import { useAuthSession } from "@/providers/AuthProvider";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AppColors } from "@/constants/styling/colors";
 import { Text } from "@/components/typography/Text";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import { AuthService } from "@/services/auth/AuthService";
 import { Button } from "@/components/Button";
 import { FontSizes } from "@/constants/styling/fonts";
@@ -24,13 +24,37 @@ const FOCUSED_COLOR = AppColors.SECONDARY;
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { signOut } = useAuthSession();
 
+  const handleSignOutClick = () => {
+    if (AuthService.isGuest) {
+      Alert.alert(
+        LanguageService.translate("You're logged in as a guest"),
+        LanguageService.translate(
+          "You will lose all your data if you log out as a guest user. Are you sure to logout?",
+        ),
+        [
+          {
+            text: LanguageService.translate("Cancel"),
+            onPress: () => {},
+            style: "cancel",
+          },
+          {
+            text: LanguageService.translate("Yes, logout"),
+            onPress: () => signOut(),
+          },
+        ],
+      );
+    } else {
+      signOut();
+    }
+  };
+
   return (
     <View style={styles.drawerContent}>
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
         <DrawerItem
           label={LanguageService.translate("Logout")}
-          onPress={signOut}
+          onPress={handleSignOutClick}
           icon={({ focused, size, color }) => (
             <Ionicons
               name={"exit"}

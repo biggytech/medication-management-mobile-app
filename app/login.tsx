@@ -13,6 +13,8 @@ import { AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { InlineLoader } from "@/components/loaders/InlineLoader";
+import { validateObject } from "@/utils/validation/validateObject";
+import { getSignInDefaultSchema } from "@/validation/user";
 
 export default function Login(): ReactNode {
   const [email, setEmail] = useState<string>("");
@@ -44,7 +46,12 @@ export default function Login(): ReactNode {
     }
   };
 
-  const isButtonDisabled = isLoading || !email || !password;
+  const { isValid, errors } = validateObject(getSignInDefaultSchema(), {
+    email,
+    password,
+  });
+
+  const isButtonDisabled = isLoading || !isValid;
 
   return (
     <View style={BASIC_STYLES.screen}>
@@ -62,6 +69,7 @@ export default function Login(): ReactNode {
           placeholder={LanguageService.translate("Email")}
           value={email}
           onChangeText={(text) => setEmail(text.trim())}
+          error={errors["email"]}
         />
         <Input
           placeholder={LanguageService.translate("Password")}
@@ -70,6 +78,7 @@ export default function Login(): ReactNode {
           secureTextEntry
           value={password}
           onChangeText={setPassword}
+          error={errors["password"]}
         />
         <Button
           title={LanguageService.translate("Login")}

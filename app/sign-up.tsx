@@ -98,5 +98,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: "auto",
     marginBottom: "auto",
+    alignItems: "center",
   },
 });

@@ -28,9 +28,9 @@ export class APIService {
     url: string;
     params?: Record<string, unknown>;
     body?: Record<string, unknown>;
-    requiresAuth?: boolean;
+    requiresAuth: boolean;
   }): Promise<T> {
-    const { method, url, params, body, requiresAuth = true } = options;
+    const { method, url, params, body, requiresAuth } = options;
 
     console.log(`[${method}] ${url}`, new Date());
     params && console.log(`params - ${JSON.stringify(params)}`);
@@ -138,6 +138,20 @@ export class APIService {
         url: `${this.path}/default`,
         requiresAuth: false,
         body: data,
+      });
+
+      return result;
+    },
+  };
+
+  public static signOut = {
+    path: "/sign-out",
+
+    async anonymous() {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.POST,
+        url: `${this.path}/anonymous`,
+        requiresAuth: true,
       });
 
       return result;
