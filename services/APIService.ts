@@ -3,6 +3,7 @@ import { showError } from "@/utils/ui/showError";
 import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
+import type { Medicine } from "@/types/medicines";
 
 enum Methods {
   GET = "GET",
@@ -167,6 +168,16 @@ export class APIService {
         url: `${this.path}/add`,
         requiresAuth: true,
         body: data,
+      });
+
+      return result;
+    },
+
+    async list() {
+      const result = await APIService.getInstance().makeRequest<Medicine[]>({
+        method: Methods.GET,
+        url: `${this.path}/list`,
+        requiresAuth: true,
       });
 
       return result;

@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { Button } from "@/components/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { Screen } from "@/components/Screen";
+import { APIService } from "@/services/APIService";
+import type { Medicine } from "@/types/medicines";
+import { Text } from "@/components/typography/Text";
 
 const Medicines: React.FC = () => {
   // open single medicine
@@ -15,22 +18,22 @@ const Medicines: React.FC = () => {
   //   params: { medicine: "adsfkjd" },
   // });
 
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+
+  useEffect(() => {
+    APIService.medicines.list().then(setMedicines);
+  }, []);
+
   const handlePress = () => {
     router.push(AppScreens.MEDICINES_NEW);
   };
 
-  // Sample data for the list
-  // const data = Array.from({ length: 50 }, (_, index) => ({
-  //   id: index.toString(),
-  //   title: `Item ${index + 1}`,
-  // }));
-
-  // Render each item in the FlatList
-  // const renderItem = ({ item }) => (
-  //   <View style={styles.item}>
-  //     <Text style={styles.title}>{item.title}</Text>
-  //   </View>
-  // );
+  // TODO: stylize items
+  const renderItem = ({ item }: { item: Medicine }) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{item.title}</Text>
+    </View>
+  );
 
   return (
     <Screen>
@@ -43,13 +46,12 @@ const Medicines: React.FC = () => {
         elevated
       />
 
-      {/* Scrollable List */}
-      {/*<FlatList*/}
-      {/*  data={data}*/}
-      {/*  keyExtractor={(item) => item.id}*/}
-      {/*  renderItem={renderItem}*/}
-      {/*  contentContainerStyle={styles.list}*/}
-      {/*/>*/}
+      <FlatList
+        data={medicines}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={styles.list}
+      />
     </Screen>
   );
 };
@@ -60,16 +62,19 @@ const styles = StyleSheet.create({
     bottom: 30,
     right: 30,
   },
-  // list: {
-  //   padding: 10,
-  // },
-  // item: {
-  //   // backgroundColor: colors.secondary, // Replace with your secondary color
-  //   padding: 10,
-  //   marginVertical: 8,
-  //   borderRadius: 8,
-  //   width: "100%",
-  // },
+  list: {
+    padding: 10,
+  },
+  item: {
+    backgroundColor: AppColors.SECONDARY,
+    padding: 10,
+    marginVertical: 8,
+    borderRadius: 8,
+    width: "100%",
+  },
+  title: {
+    color: AppColors.WHITE,
+  },
 });
 
 export default Medicines;
