@@ -10,7 +10,19 @@ export const getTitleSchema = () =>
       LanguageService.translate("Title cannot be long than 255 characters"),
     );
 
-export const getNewMedicineSchema = () =>
+export const getFormSchema = () =>
+  yup.string().required(LanguageService.translate("Form is required"));
+// .max(
+//   255,
+//   LanguageService.translate("Title cannot be long than 255 characters"),
+// );
+
+export const getNewMedicineTitleSchema = () =>
   yup.object().shape({
     title: getTitleSchema(),
+  });
+
+export const getNewMedicineFormSchema = () =>
+  yup.object().shape({
+    form: getFormSchema(),
   });

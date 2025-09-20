@@ -1,14 +1,17 @@
 import React, { useMemo } from "react";
-import { Screen } from "@/components/Screen";
-import { Title } from "@/components/typography/Title";
 import { LanguageService } from "@/services/language/LanguageService";
-import { Form } from "@/components/Form";
 import { Input } from "@/components/Input";
-import { getNewMedicineSchema } from "@/validation/medicine";
+import {
+  getNewMedicineFormSchema,
+  getNewMedicineTitleSchema,
+} from "@/validation/medicine";
 import { APIService } from "@/services/APIService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { Wizard } from "@/components/Wizard";
+import { View } from "react-native";
+import type { WizardScreen } from "@/components/Wizard/types";
+import { Screen } from "@/components/Screen";
 
 const NewMedicine: React.FC = () => {
   const handleSubmit = async (data: { title: string }) => {
@@ -16,69 +19,44 @@ const NewMedicine: React.FC = () => {
     router.replace(AppScreens.MEDICINES);
   };
 
-  const screens = useMemo(() => {
+  const screens: WizardScreen[] = useMemo(() => {
     return [
       {
-        key: "title-form",
-        node: (
-          <Form
-            getSchema={getNewMedicineSchema}
-            onSubmit={handleSubmit}
-            submitText={LanguageService.translate("Add")}
-          >
-            {({ data, setValue, errors }) => (
-              <>
-                <Input
-                  placeholder={LanguageService.translate("Title")}
-                  value={data["title"]}
-                  onChangeText={(text) => setValue("title", text)}
-                  error={errors["title"]}
-                />
-              </>
-            )}
-          </Form>
+        key: "title",
+        title: LanguageService.translate(
+          "💊 What is the title of the medicine?",
+        ),
+        getValidationSchema: getNewMedicineTitleSchema,
+        node: ({ data, setValue, errors }) => (
+          <View>
+            <>
+              <Input
+                placeholder={LanguageService.translate("Title")}
+                value={data["title"]}
+                onChangeText={(text) => setValue("title", text)}
+                error={errors["title"]}
+              />
+            </>
+          </View>
         ),
       },
       {
-        key: "other-form",
-        node: (
-          <Form
-            getSchema={getNewMedicineSchema}
-            onSubmit={handleSubmit}
-            submitText={LanguageService.translate("Add")}
-          >
-            {({ data, setValue, errors }) => (
-              <>
-                <Input
-                  placeholder={LanguageService.translate("Kuku")}
-                  value={data["title"]}
-                  onChangeText={(text) => setValue("title", text)}
-                  error={errors["title"]}
-                />
-              </>
-            )}
-          </Form>
+        key: "form",
+        title: LanguageService.translate(
+          "💉 What form does the medicine come in?",
         ),
-      },
-      {
-        key: "3-form",
-        node: (
-          <Form
-            getSchema={getNewMedicineSchema}
-            onSubmit={handleSubmit}
-            submitText={LanguageService.translate("Add")}
-          >
-            {({ data, setValue, errors }) => (
-              <>
-                <Input
-                  placeholder={LanguageService.translate("3rd")}
-                  value={data["title"]}
-                  onChangeText={(text) => setValue("title", text)}
-                  error={errors["title"]}
-                />
-              </>
-            )}
-          </Form>
+        getValidationSchema: getNewMedicineFormSchema,
+        node: ({ data, setValue, errors }) => (
+          <View>
+            <>
+              <Input
+                placeholder={LanguageService.translate("Form")}
+                value={data["form"]}
+                onChangeText={(text) => setValue("form", text)}
+                error={errors["form"]}
+              />
+            </>
+          </View>
         ),
       },
     ];
@@ -86,7 +64,6 @@ const NewMedicine: React.FC = () => {
 
   return (
     <Screen>
-      <Title>{LanguageService.translate("Add New Medicine")}</Title>
       <Wizard screens={screens} />
     </Screen>
   );

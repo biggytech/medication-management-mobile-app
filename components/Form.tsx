@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import * as yup from "yup";
@@ -19,8 +19,9 @@ interface FormProps<T extends DataForValidation = DataForValidation> {
     } & ReturnType<typeof validateObject>,
   ) => ReactNode;
   style?: StyleProp<ViewStyle>;
-  onSubmit: (data: T) => Promise<void>;
-  submitText: string;
+  onSubmit?: (data: T) => Promise<void>;
+  onSubmitDisabled?: (isDisabled: boolean) => void;
+  submitText?: string;
   isDisabled?: boolean;
 }
 
@@ -29,6 +30,7 @@ export const Form = <T extends DataForValidation = DataForValidation>({
   children,
   style,
   onSubmit,
+  onSubmitDisabled,
   submitText,
   isDisabled = false,
 }: FormProps<T>) => {
@@ -47,21 +49,27 @@ export const Form = <T extends DataForValidation = DataForValidation>({
     try {
       setIsLoading(true);
 
-      await onSubmit(data as Required<T>);
+      await onSubmit?.(data as Required<T>);
     } finally {
       setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    onSubmitDisabled?.(isButtonDisabled);
+  }, [isButtonDisabled, onSubmitDisabled]);
+
   return (
     <View style={[styles.form, style]}>
       {children({ data, setValue, ...validationResult })}
-      <Button
-        text={submitText}
-        onPress={handleSubmit}
-        disabled={isButtonDisabled}
-        color={AppColors.POSITIVE}
-      />
+      {onSubmit && submitText && (
+        <Button
+          text={submitText}
+          onPress={handleSubmit}
+          disabled={isButtonDisabled}
+          color={AppColors.POSITIVE}
+        />
+      )}
       <InlineLoader isLoading={isLoading} />
     </View>
   );

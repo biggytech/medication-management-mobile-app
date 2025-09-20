@@ -33,5 +33,9 @@
   "Title is required": "Название обязательно",
   "Title cannot be long than 255 characters": "Название не может быть длинее, чем 255 символов",
   "Add": "Добавить",
-  "Next": "Далее"
+  "Next": "Далее",
+  "\uD83D\uDC8A What is the title of the medicine?": "\uD83D\uDC8A Как называется лекарство?",
+  "\uD83D\uDC89 What form does the medicine come in?": "\uD83D\uDC89 Какая форма выпуска у лекарства?",
+  "Form": "Форма",
+  "Form is required": "Форма обязательна"
 }

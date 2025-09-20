@@ -1,12 +1,12 @@
 import React, { useCallback, useRef, useState } from "react";
 import {
   Animated,
+  type NativeSyntheticEvent,
   ScrollView,
+  TouchableOpacity,
   useAnimatedValue,
   useWindowDimensions,
   View,
-  type NativeSyntheticEvent,
-  TouchableOpacity,
 } from "react-native";
 import { AppColors } from "@/constants/styling/colors";
 import { SCREEN_PADDING } from "@/components/Screen";
@@ -15,9 +15,12 @@ import type { WizardProps } from "./types";
 import { styles } from "./styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Spacings } from "@/constants/styling/spacings";
+import { Heading } from "@/components/typography/Heading";
+import { Form } from "@/components/Form";
 
 const Wizard: React.FC<WizardProps> = ({ screens }) => {
   const [activeScreenIndex, setActiveScreenIndex] = useState<number>(0);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false);
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   const scrollX = useAnimatedValue(0);
@@ -66,8 +69,14 @@ const Wizard: React.FC<WizardProps> = ({ screens }) => {
     [singleScreenWidth],
   );
 
+  const handleSubmitDisabled = useCallback((isDisabled: boolean) => {
+    setIsSubmitDisabled(isDisabled);
+  }, []);
+
   const hasPrev = activeScreenIndex !== 0;
   const hasNext = activeScreenIndex !== screens.length - 1;
+
+  const activeScreenTitle = screens[activeScreenIndex]?.title ?? null;
 
   return (
     <View style={styles.container}>
@@ -97,36 +106,41 @@ const Wizard: React.FC<WizardProps> = ({ screens }) => {
                 }
               : {}
           }
-          disabled={!hasNext}
+          disabled={!hasNext || isSubmitDisabled}
           onPress={handleNextClick}
         >
           <Ionicons
             name="arrow-forward"
             size={Spacings.BIG}
-            color={AppColors.WHITE}
+            color={isSubmitDisabled ? AppColors.DISABLED : AppColors.WHITE}
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.progressBar}>
-        <Animated.View
-          style={[
-            styles.progress,
-            {
-              transform: [
-                {
-                  translateX: scrollX.interpolate({
-                    inputRange: [0, singleScreenWidth * (screens.length - 1)],
-                    outputRange: [
-                      (-singleScreenWidth * (screens.length - 1)) /
-                        screens.length,
-                      0,
-                    ],
-                  }),
-                },
-              ],
-            },
-          ]}
-        />
+      <View style={styles.header}>
+        <Heading style={styles.title}>{activeScreenTitle}</Heading>
+      </View>
+      <View style={styles.progressBarContainer}>
+        <View style={styles.progressBar}>
+          <Animated.View
+            style={[
+              styles.progress,
+              {
+                transform: [
+                  {
+                    translateX: scrollX.interpolate({
+                      inputRange: [0, singleScreenWidth * (screens.length - 1)],
+                      outputRange: [
+                        (-singleScreenWidth * (screens.length - 1)) /
+                          screens.length,
+                        0,
+                      ],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          />
+        </View>
       </View>
       <View style={styles.content}>
         <Animated.ScrollView
@@ -152,7 +166,7 @@ const Wizard: React.FC<WizardProps> = ({ screens }) => {
           scrollEventThrottle={1}
           showsHorizontalScrollIndicator={false}
         >
-          {screens.map(({ key, node }) => (
+          {screens.map(({ key, title, getValidationSchema, node }) => (
             <View
               key={key}
               style={[
@@ -162,7 +176,21 @@ const Wizard: React.FC<WizardProps> = ({ screens }) => {
                 },
               ]}
             >
-              <View style={styles.node}>{node}</View>
+              <View style={styles.node}>
+                <Form
+                  getSchema={getValidationSchema}
+                  onSubmitDisabled={handleSubmitDisabled}
+                >
+                  {({ data, setValue, isValid, errors }) =>
+                    node({
+                      data,
+                      setValue,
+                      isValid,
+                      errors,
+                    })
+                  }
+                </Form>
+              </View>
             </View>
           ))}
         </Animated.ScrollView>

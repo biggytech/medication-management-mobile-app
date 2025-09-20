@@ -33,5 +33,9 @@
   "Title is required": "Title is required",
   "Title cannot be long than 255 characters": "Title cannot be long than 255 characters",
   "Add": "Add",
-  "Next": "Next"
+  "Next": "Next",
+  "\uD83D\uDC8A What is the title of the medicine?": "\uD83D\uDC8A What is the title of the medicine?",
+  "\uD83D\uDC89 What form does the medicine come in?": "\uD83D\uDC89 What form does the medicine come in?",
+  "Form": "Form",
+  "Form is required": "Form is required"
 }

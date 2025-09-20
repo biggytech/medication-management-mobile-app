@@ -4,7 +4,8 @@ import { Spacings } from "@/constants/styling/spacings";
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: AppColors.ACCENT,
+    backgroundColor: AppColors.SECONDARY,
+    flex: 1,
   },
   controls: {
     padding: Spacings.SMALL,
@@ -12,25 +13,41 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  header: {
+    padding: Spacings.STANDART,
+  },
+  title: {
+    color: AppColors.WHITE,
+  },
+  progressBarContainer: {
+    paddingHorizontal: Spacings.STANDART,
+  },
   progressBar: {
-    height: 6,
+    height: 4,
     overflow: "hidden",
     backgroundColor: AppColors.DISABLED,
   },
   progress: {
-    backgroundColor: AppColors.WHITE,
+    backgroundColor: AppColors.PRIMARY,
     height: "100%",
     transform: [{ translateX: -10000 }],
   },
   content: {
     width: "100%",
     overflow: "hidden",
+    flex: 1,
   },
   screens: {},
   screen: {
     width: "100%",
-    padding: Spacings.STANDART,
+    flex: 1,
   },
-  node: {},
-  bottom: {},
+  node: {
+    backgroundColor: AppColors.WHITE,
+    borderTopLeftRadius: Spacings.SMALL,
+    borderTopRightRadius: Spacings.SMALL,
+    flex: 1,
+    padding: Spacings.STANDART,
+    alignItems: "center",
+  },
 });
