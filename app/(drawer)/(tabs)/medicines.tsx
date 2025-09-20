@@ -18,6 +18,7 @@ const Medicines: React.FC = () => {
   //   params: { medicine: "adsfkjd" },
   // });
 
+  // TODO: use query library
   const [medicines, setMedicines] = useState<Medicine[]>([]);
 
   useEffect(() => {
@@ -37,6 +38,13 @@ const Medicines: React.FC = () => {
 
   return (
     <Screen>
+      <FlatList
+        data={medicines}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={styles.list}
+      />
+
       <Button
         color={AppColors.POSITIVE}
         style={styles.floatingButton}
@@ -44,13 +52,6 @@ const Medicines: React.FC = () => {
         text={<Ionicons size={FontSizes.HUGE} name="add" />}
         rounded
         elevated
-      />
-
-      <FlatList
-        data={medicines}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
       />
     </Screen>
   );

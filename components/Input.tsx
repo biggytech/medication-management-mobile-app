@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.STANDART,
     color: AppColors.FONT,
     fontFamily: Fonts.DEFAULT,
+    backgroundColor: AppColors.WHITE,
   },
   focused: {
     borderColor: AppColors.ACCENT,

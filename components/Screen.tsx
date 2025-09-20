@@ -7,6 +7,8 @@ interface ScreenProps {
   children: ReactNode;
 }
 
+export const SCREEN_PADDING = Spacings.STANDART;
+
 export const Screen: React.FC<ScreenProps> = ({ children }) => {
   return <View style={styles.screen}>{children}</View>;
 };
@@ -14,7 +16,7 @@ export const Screen: React.FC<ScreenProps> = ({ children }) => {
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: AppColors.BACKGROUND,
-    padding: Spacings.STANDART,
+    padding: SCREEN_PADDING,
     flex: 1,
   },
 });
