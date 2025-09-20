@@ -1,22 +1,21 @@
 import type { ReactNode } from "react";
 import * as yup from "yup";
-import {
-  type DataForValidation,
-  validateObject,
-} from "@/utils/validation/validateObject";
+import { type DataForValidation } from "@/utils/validation/validateObject";
+import type { FormProps } from "@/components/inputs/Form";
 
 export interface WizardScreen<T extends DataForValidation = DataForValidation> {
   key: string;
   title: string;
   getValidationSchema: () => yup.ObjectSchema<Partial<T>>;
   node: (
-    params: {
-      data: Partial<T>;
-      setValue: (field: keyof T, value: any) => void;
-    } & ReturnType<typeof validateObject>,
+    params: Parameters<FormProps<T>["children"]>[0] & {
+      onScreenSubmit: () => void;
+    },
   ) => ReactNode;
 }
 
-export interface WizardProps {
+export interface WizardProps<T extends DataForValidation = DataForValidation> {
   screens: WizardScreen[];
+  onCancel: () => void;
+  onSubmit: (data: T) => void;
 }

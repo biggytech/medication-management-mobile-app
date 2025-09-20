@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 4,
-    boxShadow: `0px 3px 5px ${AppColors.DISABLED}`,
+    boxShadow: `0px 3px 5px ${AppColors.GREY}`,
   },
   disabledButton: {
-    backgroundColor: AppColors.DISABLED,
+    backgroundColor: AppColors.GREY,
   },
   roundedButton: {
     borderRadius: "50%",

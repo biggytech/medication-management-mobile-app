@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
     color: AppColors.SECONDARY,
   },
   disabledText: {
-    color: AppColors.DISABLED,
+    color: AppColors.GREY,
   },
 });

@@ -37,5 +37,12 @@
   "\uD83D\uDC8A What is the title of the medicine?": "\uD83D\uDC8A What is the title of the medicine?",
   "\uD83D\uDC89 What form does the medicine come in?": "\uD83D\uDC89 What form does the medicine come in?",
   "Form": "Form",
-  "Form is required": "Form is required"
+  "Form is required": "Form is required",
+  "tablet": "tablet",
+  "injection": "injection",
+  "solution": "solution",
+  "drops": "drops",
+  "inhaler": "inhaler",
+  "powder": "powder",
+  "other": "other"
 }

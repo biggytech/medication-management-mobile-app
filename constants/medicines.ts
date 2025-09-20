@@ -1,4 +1,4 @@
-export enum MedicineTypes {
+export enum MedicineForms {
   TABLET = "tablet",
   INJECTION = "injection",
   SOLUTION = "solution",

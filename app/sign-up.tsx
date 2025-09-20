@@ -2,14 +2,14 @@ import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
-import { Input } from "@/components/Input";
+import { Input } from "@/components/inputs/Input";
 import { AuthType } from "@/services/auth/AuthService";
 import { Title } from "@/components/typography/Title";
 import { getNewUserSchema } from "@/validation/user";
 import { Screen } from "@/components/Screen";
-import { Form } from "@/components/Form";
+import { Form } from "@/components/inputs/Form";
 
-export default function SignUp(): ReactNode {
+export default function SignUpScreen(): ReactNode {
   const { signIn, getIsAuthenticated } = useAuthSession();
 
   const onSignUpPress = async (data: {
@@ -36,7 +36,7 @@ export default function SignUp(): ReactNode {
         }
         style={styles.form}
       >
-        {({ data, setValue, errors }) => (
+        {({ data, setValue, setTouched, errors }) => (
           <>
             <Title>{LanguageService.translate("Sign Up")}</Title>
             <Input
@@ -44,6 +44,7 @@ export default function SignUp(): ReactNode {
               placeholder={LanguageService.translate("Full Name")}
               value={data["fullName"]}
               onChangeText={(text) => setValue("fullName", text.trim())}
+              onBlur={() => setTouched("fullName")}
               error={errors["fullName"]}
             />
             <Input
@@ -51,6 +52,7 @@ export default function SignUp(): ReactNode {
               placeholder={LanguageService.translate("Email")}
               value={data["email"]}
               onChangeText={(text) => setValue("email", text.trim())}
+              onBlur={() => setTouched("email")}
               error={errors["email"]}
             />
             <Input
@@ -60,6 +62,7 @@ export default function SignUp(): ReactNode {
               secureTextEntry
               value={data["password"]}
               onChangeText={(text) => setValue("password", text)}
+              onBlur={() => setTouched("password")}
               error={errors["password"]}
             />
           </>

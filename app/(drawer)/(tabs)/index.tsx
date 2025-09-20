@@ -3,7 +3,7 @@ import { Text } from "@/components/typography/Text";
 import { PushNotificationDebugger } from "@/components/notifications/PushNotificationDebugger";
 import { Screen } from "@/components/Screen";
 
-const Home: React.FC = () => {
+const HomeScreen: React.FC = () => {
   return (
     <Screen>
       <Text>Home</Text>
@@ -12,4 +12,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default HomeScreen;

@@ -37,5 +37,12 @@
   "\uD83D\uDC8A What is the title of the medicine?": "\uD83D\uDC8A Как называется лекарство?",
   "\uD83D\uDC89 What form does the medicine come in?": "\uD83D\uDC89 Какая форма выпуска у лекарства?",
   "Form": "Форма",
-  "Form is required": "Форма обязательна"
+  "Form is required": "Форма обязательна",
+  "tablet": "таблетка",
+  "injection": "инъекция",
+  "solution": "раствор",
+  "drops": "капли",
+  "inhaler": "ингалятор",
+  "powder": "порошок",
+  "other": "другое"
 }

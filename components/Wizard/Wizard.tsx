@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import {
   Animated,
+  Keyboard,
   type NativeSyntheticEvent,
   ScrollView,
   TouchableOpacity,
@@ -9,25 +10,37 @@ import {
   View,
 } from "react-native";
 import { AppColors } from "@/constants/styling/colors";
-import { SCREEN_PADDING } from "@/components/Screen";
 import type { NativeScrollEvent } from "react-native/Libraries/Components/ScrollView/ScrollView";
 import type { WizardProps } from "./types";
 import { styles } from "./styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Spacings } from "@/constants/styling/spacings";
 import { Heading } from "@/components/typography/Heading";
-import { Form } from "@/components/Form";
+import { Form, type FormInterface } from "@/components/inputs/Form";
+import {
+  type DataForValidation,
+  validateObject,
+} from "@/utils/validation/validateObject";
+import { ReactMemoWithGeneric } from "@/utils/types/reactMemoWithGeneric";
 
-const Wizard: React.FC<WizardProps> = ({ screens }) => {
+const Wizard = <T extends DataForValidation = DataForValidation>({
+  screens,
+  onCancel,
+  onSubmit,
+}: WizardProps<T>) => {
   const [activeScreenIndex, setActiveScreenIndex] = useState<number>(0);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false);
   const scrollViewRef = useRef<ScrollView | null>(null);
 
+  const formRef = useRef<FormInterface<T> | null>(null);
+
   const scrollX = useAnimatedValue(0);
   const { width: windowWidth } = useWindowDimensions();
-  const singleScreenWidth = windowWidth - SCREEN_PADDING * 2;
+  const singleScreenWidth = windowWidth;
 
   const handlePrevClick = useCallback(() => {
+    Keyboard.dismiss();
+
     const prevScreenIndex = screens[activeScreenIndex - 1]
       ? activeScreenIndex - 1
       : -1;
@@ -41,17 +54,24 @@ const Wizard: React.FC<WizardProps> = ({ screens }) => {
   }, [activeScreenIndex, screens, singleScreenWidth]);
 
   const handleNextClick = useCallback(() => {
+    Keyboard.dismiss();
+
     const nextScreenIndex = screens[activeScreenIndex + 1]
       ? activeScreenIndex + 1
       : -1;
 
-    if (nextScreenIndex === -1) return;
+    if (nextScreenIndex === -1) {
+      const formData = formRef.current?.getData();
+      if (formData) {
+        return onSubmit(formData as Required<T>);
+      }
+    }
 
     scrollViewRef.current?.scrollTo({
       x: nextScreenIndex * singleScreenWidth,
       animated: true,
     });
-  }, [activeScreenIndex, screens, singleScreenWidth]);
+  }, [activeScreenIndex, onSubmit, screens, singleScreenWidth]);
 
   const handleScroll = useCallback(
     ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -78,43 +98,53 @@ const Wizard: React.FC<WizardProps> = ({ screens }) => {
 
   const activeScreenTitle = screens[activeScreenIndex]?.title ?? null;
 
+  const getValidationSchema = screens[activeScreenIndex]?.getValidationSchema;
+
   return (
     <View style={styles.container}>
       <View style={styles.controls}>
-        <TouchableOpacity
-          style={
-            !hasPrev
-              ? {
-                  opacity: 0,
-                }
-              : {}
-          }
-          disabled={!hasPrev}
-          onPress={handlePrevClick}
-        >
-          <Ionicons
-            name="arrow-back"
-            size={Spacings.BIG}
-            color={AppColors.WHITE}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            !hasNext
-              ? {
-                  opacity: 0,
-                }
-              : {}
-          }
-          disabled={!hasNext || isSubmitDisabled}
-          onPress={handleNextClick}
-        >
-          <Ionicons
-            name="arrow-forward"
-            size={Spacings.BIG}
-            color={isSubmitDisabled ? AppColors.DISABLED : AppColors.WHITE}
-          />
-        </TouchableOpacity>
+        {!hasPrev && (
+          <TouchableOpacity onPress={onCancel}>
+            <Ionicons
+              name="close"
+              size={Spacings.BIG}
+              color={AppColors.WHITE}
+            />
+          </TouchableOpacity>
+        )}
+        {hasPrev && (
+          <TouchableOpacity onPress={handlePrevClick}>
+            <Ionicons
+              name="arrow-back"
+              size={Spacings.BIG}
+              color={AppColors.WHITE}
+            />
+          </TouchableOpacity>
+        )}
+        {hasNext && (
+          <TouchableOpacity
+            disabled={isSubmitDisabled}
+            onPress={handleNextClick}
+          >
+            <Ionicons
+              name="arrow-forward"
+              size={Spacings.BIG}
+              color={isSubmitDisabled ? AppColors.GREY : AppColors.WHITE}
+            />
+          </TouchableOpacity>
+        )}
+        {!hasNext && (
+          <TouchableOpacity
+            disabled={isSubmitDisabled}
+            onPress={handleNextClick}
+          >
+            <Ionicons
+              name="checkmark"
+              size={Spacings.BIG}
+              color={isSubmitDisabled ? AppColors.GREY : AppColors.WHITE}
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.header}>
         <Heading style={styles.title}>{activeScreenTitle}</Heading>
@@ -143,60 +173,77 @@ const Wizard: React.FC<WizardProps> = ({ screens }) => {
         </View>
       </View>
       <View style={styles.content}>
-        <Animated.ScrollView
-          ref={scrollViewRef}
-          style={styles.screens}
-          horizontal
-          pagingEnabled
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    x: scrollX,
-                  },
-                },
-              },
-            ],
-            {
-              useNativeDriver: true,
-              listener: handleScroll,
-            },
-          )}
-          scrollEventThrottle={1}
-          showsHorizontalScrollIndicator={false}
+        <Form
+          ref={formRef}
+          getSchema={getValidationSchema}
+          onSubmitDisabled={handleSubmitDisabled}
+          shouldShowLoader={false}
         >
-          {screens.map(({ key, title, getValidationSchema, node }) => (
-            <View
-              key={key}
-              style={[
-                styles.screen,
+          {({ data, setValue, setTouched, isValid, errors }) => (
+            <Animated.ScrollView
+              ref={scrollViewRef}
+              contentContainerStyle={styles.screens}
+              horizontal
+              pagingEnabled
+              scrollEnabled={false}
+              onScroll={Animated.event(
+                [
+                  {
+                    nativeEvent: {
+                      contentOffset: {
+                        x: scrollX,
+                      },
+                    },
+                  },
+                ],
                 {
-                  width: singleScreenWidth,
+                  useNativeDriver: true,
+                  listener: handleScroll,
                 },
-              ]}
+              )}
+              scrollEventThrottle={1}
+              showsHorizontalScrollIndicator={false}
             >
-              <View style={styles.node}>
-                <Form
-                  getSchema={getValidationSchema}
-                  onSubmitDisabled={handleSubmitDisabled}
+              {screens.map(({ key, getValidationSchema, node }) => (
+                <View
+                  key={key}
+                  style={[
+                    styles.screen,
+                    {
+                      width: singleScreenWidth,
+                    },
+                  ]}
                 >
-                  {({ data, setValue, isValid, errors }) =>
-                    node({
+                  <View style={styles.node}>
+                    {node({
                       data,
                       setValue,
+                      setTouched,
                       isValid,
                       errors,
-                    })
-                  }
-                </Form>
-              </View>
-            </View>
-          ))}
-        </Animated.ScrollView>
+                      onScreenSubmit: () => {
+                        const immediateData = formRef.current?.getData();
+                        if (immediateData) {
+                          const { isValid: isValidImmediate } = validateObject(
+                            getValidationSchema(),
+                            {},
+                            immediateData,
+                          );
+                          if (isValidImmediate) {
+                            handleNextClick();
+                          }
+                        }
+                      },
+                    })}
+                  </View>
+                </View>
+              ))}
+            </Animated.ScrollView>
+          )}
+        </Form>
       </View>
     </View>
   );
 };
 
-export default React.memo(Wizard);
+export default ReactMemoWithGeneric(Wizard);

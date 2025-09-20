@@ -2,8 +2,8 @@ import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode, useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
-import { LanguagePicker } from "@/components/LanguagePicker";
-import { Input } from "@/components/Input";
+import { LanguagePicker } from "@/components/inputs/LanguagePicker";
+import { Input } from "@/components/inputs/Input";
 import { Button } from "@/components/Button";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
@@ -13,9 +13,9 @@ import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { getSignInDefaultSchema } from "@/validation/user";
 import { Screen } from "@/components/Screen";
-import { Form } from "@/components/Form";
+import { Form } from "@/components/inputs/Form";
 
-export default function Login(): ReactNode {
+export default function LoginScreen(): ReactNode {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { signIn } = useAuthSession();
@@ -35,7 +35,7 @@ export default function Login(): ReactNode {
   };
 
   return (
-    <Screen>
+    <Screen style={styles.screen}>
       <View style={styles.languagePickerContainer}>
         <LanguagePicker />
       </View>
@@ -46,7 +46,7 @@ export default function Login(): ReactNode {
         onSubmit={onLoginPress}
         isDisabled={isLoading}
       >
-        {({ data, setValue, errors }) => (
+        {({ data, setValue, setTouched, errors }) => (
           <>
             <Image
               alt={"Медика"}
@@ -58,6 +58,7 @@ export default function Login(): ReactNode {
               placeholder={LanguageService.translate("Email")}
               value={data["email"]}
               onChangeText={(text) => setValue("email", text.trim())}
+              onBlur={() => setTouched("email")}
               error={errors["email"]}
             />
             <Input
@@ -67,6 +68,7 @@ export default function Login(): ReactNode {
               secureTextEntry
               value={data["password"]}
               onChangeText={(text) => setValue("password", text)}
+              onBlur={() => setTouched("password")}
               error={errors["password"]}
             />
           </>
@@ -104,6 +106,9 @@ export default function Login(): ReactNode {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    padding: Spacings.STANDART,
+  },
   languagePickerContainer: {
     marginLeft: "auto",
   },

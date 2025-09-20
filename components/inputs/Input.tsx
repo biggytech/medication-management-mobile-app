@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { TextInput, StyleSheet, type TextInputProps, View } from "react-native";
+import {
+  TextInput,
+  StyleSheet,
+  type TextInputProps,
+  View,
+  Keyboard,
+} from "react-native";
 import { AppColors } from "@/constants/styling/colors";
 import { Fonts, FontSizes } from "@/constants/styling/fonts";
 import { Text } from "@/components/typography/Text";
@@ -13,6 +19,7 @@ export const Input: React.FC<InputProps> = ({
   onFocus,
   onBlur,
   error,
+  onSubmitEditing,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -33,6 +40,10 @@ export const Input: React.FC<InputProps> = ({
         onBlur={(event) => {
           setIsFocused(false);
           onBlur?.(event);
+        }}
+        onSubmitEditing={(event) => {
+          Keyboard.dismiss();
+          onSubmitEditing?.(event);
         }}
         {...props}
       />

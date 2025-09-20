@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
   progressBar: {
     height: 4,
     overflow: "hidden",
-    backgroundColor: AppColors.DISABLED,
+    backgroundColor: AppColors.GREY,
   },
   progress: {
     backgroundColor: AppColors.PRIMARY,
@@ -34,13 +34,14 @@ export const styles = StyleSheet.create({
   },
   content: {
     width: "100%",
-    overflow: "hidden",
     flex: 1,
+    backgroundColor: "grey",
   },
   screens: {},
   screen: {
-    width: "100%",
     flex: 1,
+    flexShrink: 0,
+    flexGrow: 1,
   },
   node: {
     backgroundColor: AppColors.WHITE,
@@ -49,5 +50,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: Spacings.STANDART,
     alignItems: "center",
+    width: "100%",
   },
 });

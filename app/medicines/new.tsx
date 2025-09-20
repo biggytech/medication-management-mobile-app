@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { LanguageService } from "@/services/language/LanguageService";
-import { Input } from "@/components/Input";
+import { Input } from "@/components/inputs/Input";
 import {
   getNewMedicineFormSchema,
   getNewMedicineTitleSchema,
@@ -9,15 +9,28 @@ import { APIService } from "@/services/APIService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { Wizard } from "@/components/Wizard";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import type { WizardScreen } from "@/components/Wizard/types";
 import { Screen } from "@/components/Screen";
+import { SelectableList } from "@/components/inputs/SelectableList";
+import type { SelectableListOption } from "@/components/inputs/SelectableList/types";
+import { MedicineForms } from "@/constants/medicines";
+import type { NewMedicine } from "@/types/medicines";
 
-const NewMedicine: React.FC = () => {
-  const handleSubmit = async (data: { title: string }) => {
+const NewMedicineScreen: React.FC = () => {
+  const handleSubmit = useCallback(async (data: NewMedicine) => {
     await APIService.medicines.add(data);
     router.replace(AppScreens.MEDICINES);
-  };
+  }, []);
+
+  const formOptions: SelectableListOption[] = useMemo(
+    () =>
+      Object.values(MedicineForms).map((value) => ({
+        title: LanguageService.translate(value),
+        id: value,
+      })),
+    [],
+  );
 
   const screens: WizardScreen[] = useMemo(() => {
     return [
@@ -27,16 +40,16 @@ const NewMedicine: React.FC = () => {
           "💊 What is the title of the medicine?",
         ),
         getValidationSchema: getNewMedicineTitleSchema,
-        node: ({ data, setValue, errors }) => (
-          <View>
-            <>
-              <Input
-                placeholder={LanguageService.translate("Title")}
-                value={data["title"]}
-                onChangeText={(text) => setValue("title", text)}
-                error={errors["title"]}
-              />
-            </>
+        node: ({ data, setValue, setTouched, onScreenSubmit, errors }) => (
+          <View style={styles.screen}>
+            <Input
+              placeholder={LanguageService.translate("Title")}
+              value={data["title"]}
+              onChangeText={(text) => setValue("title", text)}
+              onBlur={() => setTouched("title")}
+              error={errors["title"]}
+              onSubmitEditing={onScreenSubmit}
+            />
           </View>
         ),
       },
@@ -46,27 +59,52 @@ const NewMedicine: React.FC = () => {
           "💉 What form does the medicine come in?",
         ),
         getValidationSchema: getNewMedicineFormSchema,
-        node: ({ data, setValue, errors }) => (
-          <View>
-            <>
-              <Input
-                placeholder={LanguageService.translate("Form")}
-                value={data["form"]}
-                onChangeText={(text) => setValue("form", text)}
-                error={errors["form"]}
-              />
-            </>
+        node: ({ data, setValue, errors, onScreenSubmit }) => (
+          <View style={styles.screen}>
+            <SelectableList
+              options={formOptions}
+              selectedId={data["form"]}
+              onSelect={(id) => {
+                setValue("form", id);
+              }}
+            />
           </View>
         ),
       },
+      // {
+      //   key: "schedule",
+      //   title: "Schedule Mock",
+      //   getValidationSchema: getNewMedicineFormSchema, // TODO: use valid schema
+      //   node: ({ data, setValue, errors, onScreenSubmit }) => (
+      //     <View style={styles.screen}>
+      //       <Text>Schedule Mock</Text>
+      //     </View>
+      //   ),
+      // },
     ];
+  }, [formOptions]);
+
+  const handleGoBack = useCallback(() => {
+    router.back();
   }, []);
 
   return (
     <Screen>
-      <Wizard screens={screens} />
+      <Wizard<NewMedicine>
+        onCancel={handleGoBack}
+        onSubmit={handleSubmit}
+        screens={screens}
+      />
     </Screen>
   );
 };
 
-export default NewMedicine;
+const styles = StyleSheet.create({
+  screen: {
+    width: "100%",
+    alignItems: "center",
+    flex: 1,
+  },
+});
+
+export default NewMedicineScreen;

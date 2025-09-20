@@ -11,7 +11,7 @@ import { APIService } from "@/services/APIService";
 import type { Medicine } from "@/types/medicines";
 import { Text } from "@/components/typography/Text";
 
-const Medicines: React.FC = () => {
+const MedicinesScreen: React.FC = () => {
   // open single medicine
   // router.push({
   //   pathname: AppScreens.MEDICINES_SINGLE,
@@ -78,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Medicines;
+export default MedicinesScreen;

@@ -3,7 +3,7 @@ import { Text } from "@/components/typography/Text";
 import { useLocalSearchParams } from "expo-router";
 import { Screen } from "@/components/Screen";
 
-const Medicine: React.FC = () => {
+const MedicineScreen: React.FC = () => {
   const { medicine } = useLocalSearchParams();
 
   return (
@@ -13,4 +13,4 @@ const Medicine: React.FC = () => {
   );
 };
 
-export default Medicine;
+export default MedicineScreen;

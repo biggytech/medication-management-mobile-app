@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import { LanguageService } from "@/services/language/LanguageService";
+import { MedicineForms } from "@/constants/medicines";
 
 export const getTitleSchema = () =>
   yup
@@ -11,11 +12,10 @@ export const getTitleSchema = () =>
     );
 
 export const getFormSchema = () =>
-  yup.string().required(LanguageService.translate("Form is required"));
-// .max(
-//   255,
-//   LanguageService.translate("Title cannot be long than 255 characters"),
-// );
+  yup
+    .string()
+    .required(LanguageService.translate("Form is required"))
+    .oneOf(Object.values(MedicineForms));
 
 export const getNewMedicineTitleSchema = () =>
   yup.object().shape({

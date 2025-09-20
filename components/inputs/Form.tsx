@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import React, {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+  type ReactNode,
+} from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import * as yup from "yup";
 import {
@@ -10,12 +16,20 @@ import { AppColors } from "@/constants/styling/colors";
 import { Button } from "@/components/Button";
 import { InlineLoader } from "@/components/loaders/InlineLoader";
 
-interface FormProps<T extends DataForValidation = DataForValidation> {
+export interface FormInterface<
+  T extends DataForValidation = DataForValidation,
+> {
+  getData: () => Partial<T>;
+}
+
+export interface FormProps<T extends DataForValidation = DataForValidation> {
+  ref?: RefObject<FormInterface<T> | null>;
   getSchema: () => yup.ObjectSchema<Partial<T>>;
   children: (
     params: {
       data: Partial<T>;
       setValue: (field: keyof T, value: any) => void;
+      setTouched: (field: keyof T) => void;
     } & ReturnType<typeof validateObject>,
   ) => ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -23,9 +37,11 @@ interface FormProps<T extends DataForValidation = DataForValidation> {
   onSubmitDisabled?: (isDisabled: boolean) => void;
   submitText?: string;
   isDisabled?: boolean;
+  shouldShowLoader?: boolean;
 }
 
 export const Form = <T extends DataForValidation = DataForValidation>({
+  ref,
   getSchema,
   children,
   style,
@@ -33,17 +49,28 @@ export const Form = <T extends DataForValidation = DataForValidation>({
   onSubmitDisabled,
   submitText,
   isDisabled = false,
+  shouldShowLoader = true,
 }: FormProps<T>) => {
   const [data, setData] = useState<Partial<T>>({});
+  const [touchedFields, setTouchedFields] = useState<
+    Partial<{
+      [key in keyof T]: boolean;
+    }>
+  >({});
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const validationResult = validateObject(getSchema(), data);
+  const validationResult = validateObject(getSchema(), touchedFields, data);
 
   const isButtonDisabled = isDisabled || isLoading || !validationResult.isValid;
 
-  const setValue = (field: keyof T, value: any) => {
+  const setValue = useCallback((field: keyof T, value: any) => {
     setData((data) => ({ ...data, [field]: value }));
-  };
+  }, []);
+
+  const setTouched = useCallback((field: keyof T) => {
+    setTouchedFields((data) => ({ ...data, [field]: true }));
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -59,9 +86,17 @@ export const Form = <T extends DataForValidation = DataForValidation>({
     onSubmitDisabled?.(isButtonDisabled);
   }, [isButtonDisabled, onSubmitDisabled]);
 
+  useImperativeHandle(ref, () => {
+    return {
+      getData() {
+        return data;
+      },
+    };
+  }, [data]);
+
   return (
     <View style={[styles.form, style]}>
-      {children({ data, setValue, ...validationResult })}
+      {children({ data, setValue, setTouched, ...validationResult })}
       {onSubmit && submitText && (
         <Button
           text={submitText}
@@ -70,7 +105,7 @@ export const Form = <T extends DataForValidation = DataForValidation>({
           color={AppColors.POSITIVE}
         />
       )}
-      <InlineLoader isLoading={isLoading} />
+      {shouldShowLoader && <InlineLoader isLoading={isLoading} />}
     </View>
   );
 };
@@ -78,5 +113,8 @@ export const Form = <T extends DataForValidation = DataForValidation>({
 const styles = StyleSheet.create({
   form: {
     alignSelf: "center",
+    width: "100%",
+    alignItems: "center",
+    flex: 1,
   },
 });

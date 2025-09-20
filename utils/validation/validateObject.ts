@@ -10,7 +10,10 @@ export type ValidationOutput<T extends DataForValidation = DataForValidation> =
 
 export const validateObject = <T extends DataForValidation = DataForValidation>(
   schema: yup.ObjectSchema<Partial<T>>,
-  value: T,
+  touchedFields: Partial<{
+    [key in keyof T]: boolean;
+  }>,
+  data: Partial<T>,
 ): {
   isValid: boolean;
   errors: ValidationOutput<T>;
@@ -21,14 +24,14 @@ export const validateObject = <T extends DataForValidation = DataForValidation>(
   >((acc, curr) => ({ ...acc, [curr]: null }), {} as ValidationOutput<T>);
 
   try {
-    schema.validateSync(value);
+    schema.validateSync(data);
   } catch (error) {
     if (error instanceof ValidationError) {
       isValid = false;
 
       const { path, message } = error;
       const field = path?.split(".")[0];
-      if (field && field in errors) {
+      if (field && field in errors && touchedFields[field]) {
         errors[field as keyof ValidationOutput<T>] = message;
       }
     }
