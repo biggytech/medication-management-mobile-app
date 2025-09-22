@@ -17,6 +17,14 @@ export const getFormSchema = () =>
     .required(LanguageService.translate("Form is required"))
     .oneOf(Object.values(MedicineForms));
 
+export const getDoseSchema = () =>
+  yup
+    .number()
+    .typeError(LanguageService.translate("Dose is required"))
+    .required(LanguageService.translate("Dose is required"))
+    .min(1, LanguageService.translate("Dose should be between 1 and 100"))
+    .max(100, LanguageService.translate("Dose should be between 1 and 100"));
+
 export const getNewMedicineTitleSchema = () =>
   yup.object().shape({
     title: getTitleSchema(),
@@ -25,4 +33,11 @@ export const getNewMedicineTitleSchema = () =>
 export const getNewMedicineFormSchema = () =>
   yup.object().shape({
     form: getFormSchema(),
+  });
+
+export const getNewMedicineDoseSchema = () =>
+  yup.object().shape({
+    setting: yup.object().shape({
+      dose: getDoseSchema(),
+    }),
   });

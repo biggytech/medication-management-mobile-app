@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { LanguageService } from "@/services/language/LanguageService";
 import { Input } from "@/components/inputs/Input";
 import {
+  getNewMedicineDoseSchema,
   getNewMedicineFormSchema,
   getNewMedicineTitleSchema,
 } from "@/validation/medicine";
@@ -49,6 +50,7 @@ const NewMedicineScreen: React.FC = () => {
               onBlur={() => setTouched("title")}
               error={errors["title"]}
               onSubmitEditing={onScreenSubmit}
+              returnKeyType="next"
             />
           </View>
         ),
@@ -71,16 +73,29 @@ const NewMedicineScreen: React.FC = () => {
           </View>
         ),
       },
-      // {
-      //   key: "schedule",
-      //   title: "Schedule Mock",
-      //   getValidationSchema: getNewMedicineFormSchema, // TODO: use valid schema
-      //   node: ({ data, setValue, errors, onScreenSubmit }) => (
-      //     <View style={styles.screen}>
-      //       <Text>Schedule Mock</Text>
-      //     </View>
-      //   ),
-      // },
+      {
+        key: "dose",
+        title: LanguageService.translate(
+          "\uD83E\uDDEE How much do you need to take?",
+        ),
+        getValidationSchema: getNewMedicineDoseSchema,
+        node: ({ data, setValue, errors, onScreenSubmit, setTouched }) => (
+          <View style={styles.screen}>
+            <Input
+              placeholder={LanguageService.translate("Dose")}
+              value={data["setting.dose"]}
+              onChangeText={(text) => setValue("setting.dose", text)}
+              onBlur={() => setTouched("setting.dose")}
+              error={errors["setting.dose"]}
+              onSubmitEditing={onScreenSubmit}
+              keyboardType="numeric"
+              inputMode="numeric"
+              maxLength={3}
+              returnKeyType="next"
+            />
+          </View>
+        ),
+      },
     ];
   }, [formOptions]);
 

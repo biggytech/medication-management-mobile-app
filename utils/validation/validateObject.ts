@@ -30,9 +30,8 @@ export const validateObject = <T extends DataForValidation = DataForValidation>(
       isValid = false;
 
       const { path, message } = error;
-      const field = path?.split(".")[0];
-      if (field && field in errors && touchedFields[field]) {
-        errors[field as keyof ValidationOutput<T>] = message;
+      if (path && touchedFields[path]) {
+        errors[path as keyof ValidationOutput<T>] = message;
       }
     }
   }

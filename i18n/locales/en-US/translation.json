@@ -44,5 +44,9 @@
   "drops": "drops",
   "inhaler": "inhaler",
   "powder": "powder",
-  "other": "other"
+  "other": "other",
+  "\uD83E\uDDEE How much do you need to take?": "\uD83E\uDDEE How much do you need to take?",
+  "Dose is required": "Dose is required",
+  "Dose": "Dose",
+  "Dose should be between 1 and 100": "Dose should be between 1 and 100"
 }

@@ -44,5 +44,9 @@
   "drops": "капли",
   "inhaler": "ингалятор",
   "powder": "порошок",
-  "other": "другое"
+  "other": "другое",
+  "\uD83E\uDDEE How much do you need to take?": "\uD83E\uDDEE Сколько необходимо принять?",
+  "Dose is required": "Дозировка обязательна",
+  "Dose": "Дозировка",
+  "Dose should be between 1 and 100": "Дозировка должна быть от 1 до 100"
 }

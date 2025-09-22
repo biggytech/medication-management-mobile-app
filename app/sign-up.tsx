@@ -54,6 +54,7 @@ export default function SignUpScreen(): ReactNode {
               onChangeText={(text) => setValue("email", text.trim())}
               onBlur={() => setTouched("email")}
               error={errors["email"]}
+              autoComplete="email"
             />
             <Input
               placeholder={LanguageService.translate("Password")}
@@ -64,6 +65,7 @@ export default function SignUpScreen(): ReactNode {
               onChangeText={(text) => setValue("password", text)}
               onBlur={() => setTouched("password")}
               error={errors["password"]}
+              autoComplete="password-new"
             />
           </>
         )}

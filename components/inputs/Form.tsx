@@ -5,6 +5,7 @@ import React, {
   useImperativeHandle,
   useState,
   type ReactNode,
+  useMemo,
 } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import * as yup from "yup";
@@ -15,6 +16,7 @@ import {
 import { AppColors } from "@/constants/styling/colors";
 import { Button } from "@/components/Button";
 import { InlineLoader } from "@/components/loaders/InlineLoader";
+import { deepen } from "@/utils/other/deepen";
 
 export interface FormInterface<
   T extends DataForValidation = DataForValidation,
@@ -58,9 +60,15 @@ export const Form = <T extends DataForValidation = DataForValidation>({
     }>
   >({});
 
+  const deepenedData = useMemo(() => deepen(data), [data]);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const validationResult = validateObject(getSchema(), touchedFields, data);
+  const validationResult = validateObject(
+    getSchema(),
+    touchedFields,
+    deepenedData,
+  );
 
   const isButtonDisabled = isDisabled || isLoading || !validationResult.isValid;
 
@@ -76,7 +84,7 @@ export const Form = <T extends DataForValidation = DataForValidation>({
     try {
       setIsLoading(true);
 
-      await onSubmit?.(data as Required<T>);
+      await onSubmit?.(deepenedData as Required<T>);
     } finally {
       setIsLoading(false);
     }
@@ -89,14 +97,19 @@ export const Form = <T extends DataForValidation = DataForValidation>({
   useImperativeHandle(ref, () => {
     return {
       getData() {
-        return data;
+        return deepenedData;
       },
     };
-  }, [data]);
+  }, [deepenedData]);
 
   return (
     <View style={[styles.form, style]}>
-      {children({ data, setValue, setTouched, ...validationResult })}
+      {children({
+        data: deepenedData,
+        setValue,
+        setTouched,
+        ...validationResult,
+      })}
       {onSubmit && submitText && (
         <Button
           text={submitText}
