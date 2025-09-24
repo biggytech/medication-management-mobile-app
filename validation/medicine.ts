@@ -25,6 +25,21 @@ export const getDoseSchema = () =>
     .min(1, LanguageService.translate("Dose should be between 1 and 100"))
     .max(100, LanguageService.translate("Dose should be between 1 and 100"));
 
+const getTodayAtMidnight = () => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+export const getOptionalEndDateSchema = () =>
+  yup
+    .date()
+    .nullable()
+    .min(
+      getTodayAtMidnight(),
+      LanguageService.translate("End date cannot be in the past"),
+    );
+
 export const getNewMedicineTitleSchema = () =>
   yup.object().shape({
     title: getTitleSchema(),
@@ -39,5 +54,12 @@ export const getNewMedicineDoseSchema = () =>
   yup.object().shape({
     setting: yup.object().shape({
       dose: getDoseSchema(),
+    }),
+  });
+
+export const getNewMedicineEndDateSchema = () =>
+  yup.object().shape({
+    setting: yup.object().shape({
+      endDate: getOptionalEndDateSchema(),
     }),
   });

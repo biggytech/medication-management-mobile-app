@@ -5,6 +5,7 @@ import {
   getNewMedicineDoseSchema,
   getNewMedicineFormSchema,
   getNewMedicineTitleSchema,
+  getNewMedicineEndDateSchema,
 } from "@/validation/medicine";
 import { APIService } from "@/services/APIService";
 import { router } from "expo-router";
@@ -17,6 +18,7 @@ import { SelectableList } from "@/components/inputs/SelectableList";
 import type { SelectableListOption } from "@/components/inputs/SelectableList/types";
 import { MedicineForms } from "@/constants/medicines";
 import type { NewMedicine } from "@/types/medicines";
+import { DatePicker } from "@/components/inputs/DatePicker";
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: NewMedicine) => {
@@ -83,7 +85,7 @@ const NewMedicineScreen: React.FC = () => {
           <View style={styles.screen}>
             <Input
               placeholder={LanguageService.translate("Dose")}
-              value={data["setting.dose"]}
+              value={data.setting?.dose}
               onChangeText={(text) => setValue("setting.dose", text)}
               onBlur={() => setTouched("setting.dose")}
               error={errors["setting.dose"]}
@@ -92,6 +94,24 @@ const NewMedicineScreen: React.FC = () => {
               inputMode="numeric"
               maxLength={3}
               returnKeyType="next"
+            />
+          </View>
+        ),
+      },
+      {
+        key: "endDate",
+        title: LanguageService.translate("📅 When do you plan to finish?"),
+        getValidationSchema: getNewMedicineEndDateSchema,
+        node: ({ data, setValue }) => (
+          <View style={styles.screen}>
+            <DatePicker
+              placeholder={LanguageService.translate("End date")}
+              value={data.setting?.endDate as Date | null}
+              onChange={(val: Date | null) => {
+                setValue("setting.endDate", val);
+              }}
+              minDate={new Date()}
+              allowClear
             />
           </View>
         ),

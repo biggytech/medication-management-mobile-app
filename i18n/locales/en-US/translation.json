@@ -34,8 +34,8 @@
   "Title cannot be long than 255 characters": "Title cannot be long than 255 characters",
   "Add": "Add",
   "Next": "Next",
-  "\uD83D\uDC8A What is the title of the medicine?": "\uD83D\uDC8A What is the title of the medicine?",
-  "\uD83D\uDC89 What form does the medicine come in?": "\uD83D\uDC89 What form does the medicine come in?",
+  "💊 What is the title of the medicine?": "💊 What is the title of the medicine?",
+  "💉 What form does the medicine come in?": "💉 What form does the medicine come in?",
   "Form": "Form",
   "Form is required": "Form is required",
   "tablet": "tablet",
@@ -45,8 +45,15 @@
   "inhaler": "inhaler",
   "powder": "powder",
   "other": "other",
-  "\uD83E\uDDEE How much do you need to take?": "\uD83E\uDDEE How much do you need to take?",
+  "🧮 How much do you need to take?": "🧮 How much do you need to take?",
   "Dose is required": "Dose is required",
   "Dose": "Dose",
-  "Dose should be between 1 and 100": "Dose should be between 1 and 100"
+  "Dose should be between 1 and 100": "Dose should be between 1 and 100",
+  "End date": "End date",
+  "Select date": "Select date",
+  "Today": "Today",
+  "Skip": "Skip",
+  "Apply": "Apply",
+  "📅 When do you plan to finish?": "📅 When do you plan to finish?",
+  "End date cannot be in the past": "End date cannot be in the past"
 }
