@@ -22,6 +22,7 @@ import {
   validateObject,
 } from "@/utils/validation/validateObject";
 import { ReactMemoWithGeneric } from "@/utils/types/reactMemoWithGeneric";
+import type { AnyObject } from "yup";
 
 const Wizard = <T extends DataForValidation = DataForValidation>({
   screens,
@@ -53,25 +54,28 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
     });
   }, [activeScreenIndex, screens, singleScreenWidth]);
 
-  const handleNextClick = useCallback(() => {
-    Keyboard.dismiss();
+  const handleNextClick = useCallback(
+    (formData?: Partial<AnyObject>) => {
+      Keyboard.dismiss();
 
-    const nextScreenIndex = screens[activeScreenIndex + 1]
-      ? activeScreenIndex + 1
-      : -1;
+      const nextScreenIndex = screens[activeScreenIndex + 1]
+        ? activeScreenIndex + 1
+        : -1;
 
-    if (nextScreenIndex === -1) {
-      const formData = formRef.current?.getData();
-      if (formData) {
-        return onSubmit(formData as Required<T>);
+      if (nextScreenIndex === -1) {
+        const immediateData = formData || formRef.current?.getData();
+        if (immediateData) {
+          return onSubmit(immediateData as Required<T>);
+        }
       }
-    }
 
-    scrollViewRef.current?.scrollTo({
-      x: nextScreenIndex * singleScreenWidth,
-      animated: true,
-    });
-  }, [activeScreenIndex, onSubmit, screens, singleScreenWidth]);
+      scrollViewRef.current?.scrollTo({
+        x: nextScreenIndex * singleScreenWidth,
+        animated: true,
+      });
+    },
+    [activeScreenIndex, onSubmit, screens, singleScreenWidth],
+  );
 
   const handleScroll = useCallback(
     ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -121,30 +125,16 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
             />
           </TouchableOpacity>
         )}
-        {hasNext && (
-          <TouchableOpacity
-            disabled={isSubmitDisabled}
-            onPress={handleNextClick}
-          >
-            <Ionicons
-              name="arrow-forward"
-              size={Spacings.BIG}
-              color={isSubmitDisabled ? AppColors.GREY : AppColors.WHITE}
-            />
-          </TouchableOpacity>
-        )}
-        {!hasNext && (
-          <TouchableOpacity
-            disabled={isSubmitDisabled}
-            onPress={handleNextClick}
-          >
-            <Ionicons
-              name="checkmark"
-              size={Spacings.BIG}
-              color={isSubmitDisabled ? AppColors.GREY : AppColors.WHITE}
-            />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          disabled={isSubmitDisabled}
+          onPress={() => handleNextClick()}
+        >
+          <Ionicons
+            name={hasNext ? "arrow-forward" : "checkmark"}
+            size={Spacings.BIG}
+            color={isSubmitDisabled ? AppColors.GREY : AppColors.WHITE}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.header}>
         <Heading style={styles.title}>{activeScreenTitle}</Heading>
@@ -221,8 +211,9 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
                       setTouched,
                       isValid,
                       errors,
-                      onScreenSubmit: () => {
-                        const immediateData = formRef.current?.getData();
+                      onScreenSubmit: (formData?: Partial<AnyObject>) => {
+                        const immediateData =
+                          formData || formRef.current?.getData();
                         if (immediateData) {
                           const { isValid: isValidImmediate } = validateObject(
                             getValidationSchema(),
@@ -230,7 +221,7 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
                             immediateData,
                           );
                           if (isValidImmediate) {
-                            handleNextClick();
+                            handleNextClick(immediateData);
                           }
                         }
                       },

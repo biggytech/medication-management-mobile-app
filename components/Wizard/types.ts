@@ -9,7 +9,7 @@ export interface WizardScreen<T extends DataForValidation = DataForValidation> {
   getValidationSchema: () => yup.ObjectSchema<Partial<T>>;
   node: (
     params: Parameters<FormProps<T>["children"]>[0] & {
-      onScreenSubmit: () => void;
+      onScreenSubmit: (formData?: Partial<T>) => void;
     },
   ) => ReactNode;
 }

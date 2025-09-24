@@ -51,7 +51,7 @@ const NewMedicineScreen: React.FC = () => {
               onChangeText={(text) => setValue("title", text)}
               onBlur={() => setTouched("title")}
               error={errors["title"]}
-              onSubmitEditing={onScreenSubmit}
+              onSubmitEditing={() => onScreenSubmit()}
               returnKeyType="next"
             />
           </View>
@@ -89,7 +89,7 @@ const NewMedicineScreen: React.FC = () => {
               onChangeText={(text) => setValue("setting.dose", text)}
               onBlur={() => setTouched("setting.dose")}
               error={errors["setting.dose"]}
-              onSubmitEditing={onScreenSubmit}
+              onSubmitEditing={() => onScreenSubmit()}
               keyboardType="numeric"
               inputMode="numeric"
               maxLength={3}
@@ -113,7 +113,16 @@ const NewMedicineScreen: React.FC = () => {
                 }}
                 minDate={new Date()}
                 allowSkip
-                onSkipClick={onScreenSubmit}
+                onSkipClick={() => {
+                  setValue("setting.endDate", null);
+                  onScreenSubmit({
+                    ...data,
+                    setting: {
+                      ...data.setting,
+                      endDate: null,
+                    },
+                  });
+                }}
                 error={errors["setting.endDate"]}
                 onBlur={() => setTouched("setting.endDate")}
               />
