@@ -16,6 +16,9 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: AppColors.GREY,
   },
+  errored: {
+    borderColor: AppColors.NEGATIVE,
+  },
   controlText: {
     color: AppColors.FONT,
     fontSize: FontSizes.STANDART,

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { AppColors } from "@/constants/styling/colors";
 import { Fonts, FontSizes } from "@/constants/styling/fonts";
-import { Text } from "@/components/typography/Text";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 interface InputProps extends TextInputProps {
   error?: string | null;
@@ -47,7 +47,7 @@ export const Input: React.FC<InputProps> = ({
         }}
         {...props}
       />
-      {error && <Text style={styles.error}>{error}</Text>}
+      <ErrorMessage text={error} />
     </View>
   );
 };
@@ -72,9 +72,5 @@ const styles = StyleSheet.create({
   },
   errored: {
     borderColor: AppColors.NEGATIVE,
-  },
-  error: {
-    color: AppColors.NEGATIVE,
-    fontSize: FontSizes.SMALL,
   },
 });

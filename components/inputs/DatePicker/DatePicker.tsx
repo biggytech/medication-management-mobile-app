@@ -10,6 +10,7 @@ import { Button } from "@/components/Button";
 import { Link } from "@/components/Link";
 import { LanguageService } from "@/services/language/LanguageService";
 import { clampToDateOnly, ddmmyyyyFromDate } from "@/utils/date";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 const DatePicker: React.FC<DatePickerProps> = ({
   value,
@@ -17,7 +18,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
   minDate,
   placeholder,
   style,
-  allowClear = true,
+  allowSkip = true,
+  onSkipClick,
+  error,
+  onBlur,
 }) => {
   const valueAsDate = value ?? null;
 
@@ -42,16 +46,18 @@ const DatePicker: React.FC<DatePickerProps> = ({
       onChange(clamped);
       setIsPickerVisible(false);
     }
+    onBlur?.();
   };
 
   return (
     <View style={[styles.container, style]}>
       <TouchableOpacity
-        style={styles.control}
+        style={[styles.control, error ? styles.errored : {}]}
         onPress={() => setIsPickerVisible((v) => !v)}
       >
         <Text style={styles.controlText}>{displayText}</Text>
       </TouchableOpacity>
+      <ErrorMessage text={error} />
       <View style={styles.actions}>
         <Button
           style={styles.action}
@@ -62,13 +68,14 @@ const DatePicker: React.FC<DatePickerProps> = ({
             setIsPickerVisible(false);
           }}
         />
-        {allowClear && (
+        {allowSkip && (
           <Link
             style={styles.action}
             text={LanguageService.translate("Skip")}
             onPress={() => {
               onChange(null);
               setIsPickerVisible(false);
+              onSkipClick?.();
             }}
           />
         )}

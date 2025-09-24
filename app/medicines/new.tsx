@@ -102,18 +102,23 @@ const NewMedicineScreen: React.FC = () => {
         key: "endDate",
         title: LanguageService.translate("📅 When do you plan to finish?"),
         getValidationSchema: getNewMedicineEndDateSchema,
-        node: ({ data, setValue }) => (
-          <View style={styles.screen}>
-            <DatePicker
-              placeholder={LanguageService.translate("End date")}
-              value={data.setting?.endDate as Date | null}
-              onChange={(val: Date | null) => {
-                setValue("setting.endDate", val);
-              }}
-              minDate={new Date()}
-              allowClear
-            />
-          </View>
+        node: ({ data, setValue, onScreenSubmit, errors, setTouched }) => (
+          <>
+            <View style={styles.screen}>
+              <DatePicker
+                placeholder={LanguageService.translate("End date")}
+                value={data.setting?.endDate as Date | null}
+                onChange={(val: Date | null) => {
+                  setValue("setting.endDate", val);
+                }}
+                minDate={new Date()}
+                allowSkip
+                onSkipClick={onScreenSubmit}
+                error={errors["setting.endDate"]}
+                onBlur={() => setTouched("setting.endDate")}
+              />
+            </View>
+          </>
         ),
       },
     ];

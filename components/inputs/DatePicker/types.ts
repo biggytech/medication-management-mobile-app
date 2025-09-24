@@ -6,5 +6,8 @@ export interface DatePickerProps {
   minDate?: Date; // inclusive
   placeholder?: string;
   style?: ViewStyle;
-  allowClear?: boolean; // show a clear/skip control
+  allowSkip?: boolean; // show a clear/skip control
+  onSkipClick?: () => void;
+  error?: string | null;
+  onBlur?: () => void;
 }
