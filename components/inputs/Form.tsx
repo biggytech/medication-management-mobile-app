@@ -16,7 +16,7 @@ import {
 import { AppColors } from "@/constants/styling/colors";
 import { Button } from "@/components/Button";
 import { InlineLoader } from "@/components/loaders/InlineLoader";
-import { deepen } from "@/utils/other/deepen";
+import { deepen } from "@/utils/objects/deepen";
 
 export interface FormInterface<
   T extends DataForValidation = DataForValidation,

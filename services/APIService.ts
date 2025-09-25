@@ -3,7 +3,7 @@ import { showError } from "@/utils/ui/showError";
 import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
-import type { Medicine } from "@/types/medicines";
+import type { Medicine, NewMedicine } from "@/types/medicines";
 
 enum Methods {
   GET = "GET",
@@ -27,8 +27,8 @@ export class APIService {
   private async makeRequest<T>(options: {
     method: Methods;
     url: string;
-    params?: Record<string, unknown>;
-    body?: Record<string, unknown>;
+    params?: object;
+    body?: object;
     requiresAuth: boolean;
   }): Promise<T> {
     const { method, url, params, body, requiresAuth } = options;
@@ -162,7 +162,7 @@ export class APIService {
   public static medicines = {
     path: "/medicines",
 
-    async add(data: { title: string }) {
+    async add(data: NewMedicine) {
       const result = await APIService.getInstance().makeRequest<{}>({
         method: Methods.POST,
         url: `${this.path}/add`,
