@@ -17,8 +17,9 @@ import type { WizardScreen } from "@/components/Wizard/types";
 import { Screen } from "@/components/Screen";
 import {
   DEFAULT_MEDICINE_NOTIFICATION_TIME,
-  MedicationScheduleOption,
+  MedicineScheduleTypes,
   MedicineForms,
+  MEDICINE_SCHEDULE_TYPE_LABELS,
 } from "@/constants/medicines";
 import { type NewMedicine, type MedicationSchedule } from "@/types/medicines";
 import { DatePicker } from "@/components/inputs/DatePicker";
@@ -34,9 +35,19 @@ import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleSe
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
-    await APIService.medicines.add(
-      camelCaseToSnakeCaseObject(data) as NewMedicine,
-    );
+    // Add medicine to backend
+    const medicineData = camelCaseToSnakeCaseObject(data) as NewMedicine;
+    await APIService.medicines.add(medicineData);
+
+    // Schedule local push notifications for the medicine
+    // Only schedule notifications for emulated devices as per requirements
+    // if (__DEV__) {
+    //   await NotificationSchedulingService.scheduleMedicineNotifications(
+    //     medicineData,
+    //   );
+    //   console.log("✅ Medication notifications scheduled successfully");
+    // }
+
     router.replace(AppScreens.MEDICINES);
   }, []);
 
@@ -51,8 +62,8 @@ const NewMedicineScreen: React.FC = () => {
 
   const scheduleTypeOptions: SelectableListOption[] = useMemo(
     () =>
-      Object.values(MedicationScheduleOption).map((value) => ({
-        title: LanguageService.translate(value),
+      Object.values(MedicineScheduleTypes).map((value) => ({
+        title: LanguageService.translate(MEDICINE_SCHEDULE_TYPE_LABELS[value]),
         id: value,
       })),
     [],
@@ -99,29 +110,6 @@ const NewMedicineScreen: React.FC = () => {
         ),
       },
       {
-        key: "dose",
-        title: LanguageService.translate(
-          "\uD83E\uDDEE How much do you need to take?",
-        ),
-        getValidationSchema: getNewMedicineDoseSchema,
-        node: ({ data, setValue, errors, onScreenSubmit, setTouched }) => (
-          <View style={styles.screen}>
-            <Input
-              placeholder={LanguageService.translate("Dose")}
-              value={data.setting?.dose}
-              onChangeText={(text) => setValue("setting.dose", text)}
-              onBlur={() => setTouched("setting.dose")}
-              error={errors["setting.dose"]}
-              onSubmitEditing={() => onScreenSubmit()}
-              keyboardType="numeric"
-              inputMode="numeric"
-              maxLength={3}
-              returnKeyType="next"
-            />
-          </View>
-        ),
-      },
-      {
         key: "scheduleType",
         title: LanguageService.translate(
           "⏰ How should we schedule reminders?",
@@ -129,15 +117,15 @@ const NewMedicineScreen: React.FC = () => {
         getValidationSchema: getNewMedicineScheduleSchema,
         node: ({ data, setValue, onScreenSubmit }) => {
           const schedule: MedicationSchedule =
-            (data.setting as any)?.schedule ??
+            (data.schedule as any) ??
             MedicineScheduleService.getDefaultSchedule();
 
-          const setType = (type: MedicationScheduleOption) => {
+          const setType = (type: MedicineScheduleTypes) => {
             const updatedSchedule = MedicineScheduleService.getScheduleForType(
               schedule,
               type,
             );
-            setValue("setting.schedule", updatedSchedule);
+            setValue("schedule", updatedSchedule);
             onScreenSubmit();
           };
 
@@ -146,7 +134,7 @@ const NewMedicineScreen: React.FC = () => {
               <SelectableList
                 options={scheduleTypeOptions}
                 selectedId={schedule.type}
-                onSelect={(id) => setType(id as MedicationScheduleOption)}
+                onSelect={(id) => setType(id as MedicineScheduleTypes)}
               />
             </View>
           );
@@ -158,17 +146,17 @@ const NewMedicineScreen: React.FC = () => {
         getValidationSchema: getNewMedicineScheduleSchema,
         node: ({ data, setValue, errors, setTouched }) => {
           const schedule: MedicationSchedule =
-            (data.setting as any)?.schedule ??
+            (data.schedule as any) ??
             MedicineScheduleService.getDefaultSchedule();
 
           const setSchedule = (key: keyof MedicationSchedule, value: any) => {
             const next = { ...schedule, [key]: value } as MedicationSchedule;
-            setValue("setting.schedule", next);
+            setValue("schedule", next);
           };
 
           return (
             <View style={styles.screen}>
-              {schedule.type === MedicationScheduleOption.EVERY_DAY && (
+              {schedule.type === MedicineScheduleTypes.EVERY_DAY && (
                 <>
                   <NumberInput
                     value={schedule.notificationTimes.length || 1}
@@ -181,10 +169,8 @@ const NewMedicineScreen: React.FC = () => {
                     min={1}
                     max={12}
                     label={LanguageService.translate("Times per day")}
-                    onBlur={() =>
-                      setTouched("setting.schedule.notificationTimes")
-                    }
-                    error={errors["setting.schedule.notificationTimes"]}
+                    onBlur={() => setTouched("schedule.notificationTimes")}
+                    error={errors["schedule.notificationTimes"]}
                   />
                   <TimesEditor
                     values={schedule.notificationTimes}
@@ -198,7 +184,7 @@ const NewMedicineScreen: React.FC = () => {
                 </>
               )}
 
-              {schedule.type === MedicationScheduleOption.EVERY_OTHER_DAY && (
+              {schedule.type === MedicineScheduleTypes.EVERY_OTHER_DAY && (
                 <>
                   <View style={styles.labelContainer}>
                     <Text style={styles.label}>
@@ -211,8 +197,8 @@ const NewMedicineScreen: React.FC = () => {
                     onChange={(d) => setSchedule("nextDoseDate", d)}
                     minDate={new Date()}
                     allowSkip={false}
-                    error={errors["setting.schedule.nextDoseDate"]}
-                    onBlur={() => setTouched("setting.schedule.nextDoseDate")}
+                    error={errors["schedule.nextDoseDate"]}
+                    onBlur={() => setTouched("schedule.nextDoseDate")}
                   />
                   <TimePicker
                     value={schedule.notificationTimes[0] || null}
@@ -221,16 +207,14 @@ const NewMedicineScreen: React.FC = () => {
                     }
                     placeholder={LanguageService.translate("Reminder time")}
                     allowClear={false}
-                    error={errors["setting.schedule.notificationTimes"]}
-                    onBlur={() =>
-                      setTouched("setting.schedule.notificationTimes")
-                    }
+                    error={errors["schedule.notificationTimes"]}
+                    onBlur={() => setTouched("schedule.notificationTimes")}
                     label={LanguageService.translate("Reminder time")}
                   />
                 </>
               )}
 
-              {schedule.type === MedicationScheduleOption.EVERY_X_DAYS && (
+              {schedule.type === MedicineScheduleTypes.EVERY_X_DAYS && (
                 <>
                   <NumberInput
                     value={schedule.everyXDays || 1}
@@ -238,8 +222,8 @@ const NewMedicineScreen: React.FC = () => {
                     min={1}
                     max={365}
                     label={LanguageService.translate("Every X days (1-365)")}
-                    onBlur={() => setTouched("setting.schedule.everyXDays")}
-                    error={errors["setting.schedule.everyXDays"]}
+                    onBlur={() => setTouched("schedule.everyXDays")}
+                    error={errors["schedule.everyXDays"]}
                   />
                   <View style={styles.labelContainer}>
                     <Text style={styles.label}>
@@ -252,8 +236,8 @@ const NewMedicineScreen: React.FC = () => {
                     onChange={(d) => setSchedule("nextDoseDate", d)}
                     minDate={new Date()}
                     allowSkip={false}
-                    error={errors["setting.schedule.nextDoseDate"]}
-                    onBlur={() => setTouched("setting.schedule.nextDoseDate")}
+                    error={errors["schedule.nextDoseDate"]}
+                    onBlur={() => setTouched("schedule.nextDoseDate")}
                   />
                   <TimePicker
                     value={schedule.notificationTimes[0] || null}
@@ -262,17 +246,14 @@ const NewMedicineScreen: React.FC = () => {
                     }
                     placeholder={LanguageService.translate("Reminder time")}
                     allowClear={false}
-                    error={errors["setting.schedule.notificationTimes"]}
-                    onBlur={() =>
-                      setTouched("setting.schedule.notificationTimes")
-                    }
+                    error={errors["schedule.notificationTimes"]}
+                    onBlur={() => setTouched("schedule.notificationTimes")}
                     label={LanguageService.translate("Reminder time")}
                   />
                 </>
               )}
 
-              {schedule.type ===
-                MedicationScheduleOption.SPECIFIC_WEEK_DAYS && (
+              {schedule.type === MedicineScheduleTypes.SPECIFIC_WEEK_DAYS && (
                 <>
                   <View style={styles.labelContainer}>
                     <Text style={styles.label}>
@@ -292,20 +273,40 @@ const NewMedicineScreen: React.FC = () => {
                     }
                     placeholder={LanguageService.translate("Reminder time")}
                     allowClear={false}
-                    error={errors["setting.schedule.notificationTimes"]}
-                    onBlur={() =>
-                      setTouched("setting.schedule.notificationTimes")
-                    }
+                    error={errors["schedule.notificationTimes"]}
+                    onBlur={() => setTouched("schedule.notificationTimes")}
                     label={LanguageService.translate("Reminder time")}
                   />
                 </>
               )}
 
-              {schedule.type === MedicationScheduleOption.ONLY_AS_NEEDED &&
-                null}
+              {schedule.type === MedicineScheduleTypes.ONLY_AS_NEEDED && null}
             </View>
           );
         },
+      },
+      {
+        key: "dose",
+        title: LanguageService.translate(
+          "\uD83E\uDDEE How much do you need to take?",
+        ),
+        getValidationSchema: getNewMedicineDoseSchema,
+        node: ({ data, setValue, errors, onScreenSubmit, setTouched }) => (
+          <View style={styles.screen}>
+            <Input
+              placeholder={LanguageService.translate("Dose")}
+              value={data.schedule?.dose}
+              onChangeText={(text) => setValue("schedule.dose", text)}
+              onBlur={() => setTouched("schedule.dose")}
+              error={errors["schedule.dose"]}
+              onSubmitEditing={() => onScreenSubmit()}
+              keyboardType="numeric"
+              inputMode="numeric"
+              maxLength={3}
+              returnKeyType="next"
+            />
+          </View>
+        ),
       },
       {
         key: "endDate",
@@ -316,24 +317,24 @@ const NewMedicineScreen: React.FC = () => {
             <View style={styles.screen}>
               <DatePicker
                 placeholder={LanguageService.translate("End date")}
-                value={data.setting?.endDate as Date | null}
+                value={data.schedule?.endDate as Date | null}
                 onChange={(val: Date | null) => {
-                  setValue("setting.endDate", val);
+                  setValue("schedule.endDate", val);
                 }}
                 minDate={new Date()}
                 allowSkip
                 onSkipClick={() => {
-                  setValue("setting.endDate", null);
+                  setValue("schedule.endDate", null);
                   onScreenSubmit({
                     ...data,
-                    setting: {
-                      ...data.setting,
+                    schedule: {
+                      ...data.schedule,
                       endDate: null,
                     },
                   });
                 }}
-                error={errors["setting.endDate"]}
-                onBlur={() => setTouched("setting.endDate")}
+                error={errors["schedule.endDate"]}
+                onBlur={() => setTouched("schedule.endDate")}
               />
             </View>
           </>

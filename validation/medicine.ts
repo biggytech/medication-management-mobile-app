@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { LanguageService } from "@/services/language/LanguageService";
-import { MedicationScheduleOption, MedicineForms } from "@/constants/medicines";
+import { MedicineScheduleTypes, MedicineForms } from "@/constants/medicines";
 
 export const getTitleSchema = () =>
   yup
@@ -52,14 +52,14 @@ export const getNewMedicineFormSchema = () =>
 
 export const getNewMedicineDoseSchema = () =>
   yup.object().shape({
-    setting: yup.object().shape({
+    schedule: yup.object().shape({
       dose: getDoseSchema(),
     }),
   });
 
 export const getNewMedicineEndDateSchema = () =>
   yup.object().shape({
-    setting: yup.object().shape({
+    schedule: yup.object().shape({
       endDate: getOptionalEndDateSchema(),
     }),
   });
@@ -73,8 +73,8 @@ export const getScheduleSchema = () =>
     .object()
     .shape({
       type: yup
-        .mixed<MedicationScheduleOption>()
-        .oneOf(Object.values(MedicationScheduleOption))
+        .mixed<MedicineScheduleTypes>()
+        .oneOf(Object.values(MedicineScheduleTypes))
         .required(),
       everyXDays: yup.number().required().min(0).max(365),
       notificationTimes: yup
@@ -106,7 +106,7 @@ export const getScheduleSchema = () =>
           daysOfWeek,
         } = val as any;
 
-        if (type === MedicationScheduleOption.ONLY_AS_NEEDED) {
+        if (type === MedicineScheduleTypes.ONLY_AS_NEEDED) {
           return (
             everyXDays === 0 &&
             (!notificationTimes || notificationTimes.length === 0) &&
@@ -117,20 +117,20 @@ export const getScheduleSchema = () =>
         if (!notificationTimes || notificationTimes.length === 0) return false;
 
         switch (type) {
-          case MedicationScheduleOption.EVERY_DAY:
+          case MedicineScheduleTypes.EVERY_DAY:
             return (
               notificationTimes.length >= 1 && notificationTimes.length <= 12
             );
-          case MedicationScheduleOption.EVERY_OTHER_DAY:
+          case MedicineScheduleTypes.EVERY_OTHER_DAY:
             return !!nextDoseDate && notificationTimes.length === 1;
-          case MedicationScheduleOption.EVERY_X_DAYS:
+          case MedicineScheduleTypes.EVERY_X_DAYS:
             return (
               !!nextDoseDate &&
               everyXDays >= 1 &&
               everyXDays <= 365 &&
               notificationTimes.length === 1
             );
-          case MedicationScheduleOption.SPECIFIC_WEEK_DAYS:
+          case MedicineScheduleTypes.SPECIFIC_WEEK_DAYS:
             return (
               Array.isArray(daysOfWeek) &&
               daysOfWeek.length > 0 &&
@@ -143,7 +143,7 @@ export const getScheduleSchema = () =>
 
 export const getNewMedicineScheduleSchema = () =>
   yup.object().shape({
-    setting: yup.object().shape({
+    schedule: yup.object().shape({
       schedule: getScheduleSchema(),
     }),
   });
