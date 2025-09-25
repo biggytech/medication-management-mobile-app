@@ -143,7 +143,5 @@ export const getScheduleSchema = () =>
 
 export const getNewMedicineScheduleSchema = () =>
   yup.object().shape({
-    schedule: yup.object().shape({
-      schedule: getScheduleSchema(),
-    }),
+    schedule: getScheduleSchema(),
   });

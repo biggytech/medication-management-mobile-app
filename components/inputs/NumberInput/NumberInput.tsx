@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TextInput, TouchableOpacity, Text } from "react-native";
 import { styles } from "./styles";
 import type { NumberInputProps } from "./types";
@@ -18,6 +18,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
   inputMode = "numeric",
 }) => {
   const [inputValue, setInputValue] = useState(value.toString());
+
+  useEffect(() => {
+    setInputValue(value.toString());
+  }, [value]);
 
   const handleIncrement = () => {
     const newValue = Math.min(value + step, max);
