@@ -11,6 +11,8 @@ import { Fonts } from "@/constants/styling/fonts";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { TOAST_MANAGER_OPTIONS } from "@/constants/toaster";
 import * as Notifications from "expo-notifications";
+import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
+import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,6 +33,13 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
+      if (FEATURE_FLAGS.SCHEDULE_LOCAL_PUSH_NOTIFICATIONS) {
+        // Initialize notification service
+        NotificationSchedulingService.initialize().catch((error) => {
+          console.error("Failed to initialize notification service:", error);
+        });
+      }
+
       SplashScreen.hideAsync();
     }
   }, [loaded]);

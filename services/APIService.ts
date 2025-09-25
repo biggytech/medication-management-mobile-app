@@ -4,6 +4,7 @@ import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
 import type { Medicine, NewMedicine } from "@/types/medicines";
+import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 
 enum Methods {
   GET = "GET",
@@ -167,7 +168,7 @@ export class APIService {
         method: Methods.POST,
         url: `${this.path}/add`,
         requiresAuth: true,
-        body: data,
+        body: camelCaseToSnakeCaseObject(data),
       });
 
       return result;

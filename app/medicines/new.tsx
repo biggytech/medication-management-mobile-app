@@ -29,24 +29,26 @@ import { TimePicker } from "@/components/inputs/TimePicker";
 import { TimesEditor } from "@/components/inputs/TimesEditor";
 import { DaysOfWeekPicker } from "@/components/inputs/DaysOfWeekPicker";
 import { NumberInput } from "@/components/inputs/NumberInput";
-import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { Text } from "@/components/typography/Text";
 import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
+import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
+import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
     // Add medicine to backend
-    const medicineData = camelCaseToSnakeCaseObject(data) as NewMedicine;
+    const medicineData = data as unknown as NewMedicine;
     await APIService.medicines.add(medicineData);
 
     // Schedule local push notifications for the medicine
     // Only schedule notifications for emulated devices as per requirements
-    // if (__DEV__) {
-    //   await NotificationSchedulingService.scheduleMedicineNotifications(
-    //     medicineData,
-    //   );
-    //   console.log("✅ Medication notifications scheduled successfully");
-    // }
+    if (FEATURE_FLAGS.SCHEDULE_LOCAL_PUSH_NOTIFICATIONS) {
+      console.log("medicineData", medicineData);
+      await NotificationSchedulingService.scheduleMedicineNotifications(
+        medicineData,
+      );
+      console.log("✅ Medication notifications scheduled successfully");
+    }
 
     router.replace(AppScreens.MEDICINES);
   }, []);

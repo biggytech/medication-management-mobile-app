@@ -7,6 +7,7 @@ import type { TimePickerProps } from "./types";
 import { Text } from "@/components/typography/Text";
 import { LanguageService } from "@/services/language/LanguageService";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 // Renders a native time picker using @react-native-community/datetimepicker with configurable minute intervals.
 const TimePicker: React.FC<TimePickerProps> = ({
@@ -17,7 +18,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
   error,
   onBlur,
   label,
-  minuteStep = 15,
+  minuteStep = FEATURE_FLAGS.TIME_PICKER_INTERVAL,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
 

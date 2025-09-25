@@ -83,5 +83,7 @@
   "Times per day": "Times per day",
   "Notification times": "Notification times",
   "Select days of the week": "Select days of the week",
-  "Medication Reminder": "Medication Reminder"
+  "Medication Reminder": "Medication Reminder",
+  "In order to receive notifications you must grant the permission": "In order to receive notifications you must grant the permission",
+  "Hey, you need to take": "Hey, you need to take"
 }

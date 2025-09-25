@@ -1,0 +1,11 @@
+export const FEATURE_FLAGS = {
+  SCHEDULE_LOCAL_PUSH_NOTIFICATIONS: true,
+
+  /**
+   * Notifications Debuggers
+   */
+  SHOW_LOCAL_NOTIFICATIONS_DEBUGGER: true,
+  SHOW_REMOTE_NOTIFICATIONS_DEBUGGER: false,
+
+  TIME_PICKER_INTERVAL: 1,
+};

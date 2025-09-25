@@ -4,7 +4,7 @@ import { usePushNotifications } from "@/hooks/notifications/usePushNotifications
 import { schedulePushNotification } from "@/utils/notifications/schedulePushNotification";
 import { SchedulableTriggerInputTypes } from "expo-notifications";
 
-export const PushNotificationDebugger: React.FC = () => {
+export const RemoteNotificationsDebugger: React.FC = () => {
   const { expoPushToken, notification, channels } = usePushNotifications();
 
   return (

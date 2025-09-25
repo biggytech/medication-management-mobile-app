@@ -83,5 +83,7 @@
   "Times per day": "Количество раз в день",
   "Notification times": "Время уведомлений",
   "Select days of the week": "Выберите дни недели",
-  "Medication Reminder": "Напоминание о лекарстве"
+  "Medication Reminder": "Напоминание о лекарстве",
+  "In order to receive notifications you must grant the permission": "Для получения уведомлений вы должны дать разрешение",
+  "Hey, you need to take": "Эй, вам необходимо принять"
 }

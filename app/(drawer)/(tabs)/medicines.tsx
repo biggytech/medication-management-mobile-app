@@ -10,6 +10,8 @@ import { Screen } from "@/components/Screen";
 import { APIService } from "@/services/APIService";
 import type { Medicine } from "@/types/medicines";
 import { Text } from "@/components/typography/Text";
+import { LocalNotificationsDebugger } from "@/components/notifications/LocalNotificationsDebugger";
+import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 const MedicinesScreen: React.FC = () => {
   // open single medicine
@@ -43,6 +45,11 @@ const MedicinesScreen: React.FC = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
+        ListHeaderComponent={
+          FEATURE_FLAGS.SHOW_LOCAL_NOTIFICATIONS_DEBUGGER ? (
+            <LocalNotificationsDebugger />
+          ) : null
+        }
       />
 
       <Button
