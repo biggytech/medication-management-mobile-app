@@ -26,6 +26,9 @@ export const styles = StyleSheet.create({
     borderRadius: "50%",
     marginHorizontal: Spacings.SMALL,
   },
+  disabledButton: {
+    backgroundColor: AppColors.GREY,
+  },
   buttonText: {
     fontSize: FontSizes.HUGE,
     fontWeight: "bold",

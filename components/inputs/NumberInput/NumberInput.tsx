@@ -59,6 +59,9 @@ const NumberInput: React.FC<NumberInputProps> = ({
     onBlur?.();
   };
 
+  const isDecreaseDisabled = value <= min;
+  const isIncreaseDisabled = value >= max;
+
   return (
     <View style={styles.container}>
       {label && (
@@ -68,9 +71,12 @@ const NumberInput: React.FC<NumberInputProps> = ({
       )}
       <View style={styles.inputContainer}>
         <TouchableOpacity
-          style={styles.button}
+          style={[
+            styles.button,
+            isDecreaseDisabled ? styles.disabledButton : {},
+          ]}
           onPress={handleDecrement}
-          disabled={value <= min}
+          disabled={isDecreaseDisabled}
         >
           <Text style={styles.buttonText}>−</Text>
         </TouchableOpacity>
@@ -86,9 +92,12 @@ const NumberInput: React.FC<NumberInputProps> = ({
           error={error}
         />
         <TouchableOpacity
-          style={styles.button}
+          style={[
+            styles.button,
+            isIncreaseDisabled ? styles.disabledButton : {},
+          ]}
           onPress={handleIncrement}
-          disabled={value >= max}
+          disabled={isIncreaseDisabled}
         >
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
