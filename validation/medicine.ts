@@ -40,6 +40,15 @@ export const getOptionalEndDateSchema = () =>
       LanguageService.translate("End date cannot be in the past"),
     );
 
+export const getNotesSchema = () =>
+  yup
+    .string()
+    .nullable()
+    .max(
+      255,
+      LanguageService.translate("Notes cannot be long than 255 characters"),
+    );
+
 export const getNewMedicineTitleSchema = () =>
   yup.object().shape({
     title: getTitleSchema(),
@@ -144,4 +153,9 @@ export const getScheduleSchema = () =>
 export const getNewMedicineScheduleSchema = () =>
   yup.object().shape({
     schedule: getScheduleSchema(),
+  });
+
+export const getNewMedicineNotesSchema = () =>
+  yup.object().shape({
+    notes: getNotesSchema(),
   });

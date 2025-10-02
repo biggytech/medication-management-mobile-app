@@ -7,6 +7,7 @@ import {
   getNewMedicineTitleSchema,
   getNewMedicineEndDateSchema,
   getNewMedicineScheduleSchema,
+  getNewMedicineNotesSchema,
 } from "@/validation/medicine";
 import { APIService } from "@/services/APIService";
 import { router } from "expo-router";
@@ -33,6 +34,7 @@ import { Text } from "@/components/typography/Text";
 import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
+import { TextArea } from "@/components/inputs/TextArea";
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
@@ -43,7 +45,6 @@ const NewMedicineScreen: React.FC = () => {
     // Schedule local push notifications for the medicine
     // Only schedule notifications for emulated devices as per requirements
     if (FEATURE_FLAGS.SCHEDULE_LOCAL_PUSH_NOTIFICATIONS) {
-      console.log("medicineData", medicineData);
       await NotificationSchedulingService.scheduleMedicineNotifications(
         medicineData,
       );
@@ -337,6 +338,26 @@ const NewMedicineScreen: React.FC = () => {
                 }}
                 error={errors["schedule.endDate"]}
                 onBlur={() => setTouched("schedule.endDate")}
+              />
+            </View>
+          </>
+        ),
+      },
+      {
+        key: "notes",
+        title: LanguageService.translate("🗒️ Do you want to add notes?"),
+        getValidationSchema: getNewMedicineNotesSchema,
+        node: ({ data, setValue, onScreenSubmit, errors, setTouched }) => (
+          <>
+            <View style={styles.screen}>
+              <TextArea
+                placeholder={LanguageService.translate("Notes")}
+                value={data["notes"]}
+                onChangeText={(text) => setValue("notes", text)}
+                onBlur={() => setTouched("notes")}
+                error={errors["notes"]}
+                onSubmitEditing={() => onScreenSubmit()}
+                returnKeyType="done"
               />
             </View>
           </>
