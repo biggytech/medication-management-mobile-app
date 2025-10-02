@@ -35,6 +35,7 @@ import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleSe
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { TextArea } from "@/components/inputs/TextArea";
+import { Spacings } from "@/constants/styling/spacings";
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
@@ -170,7 +171,7 @@ const NewMedicineScreen: React.FC = () => {
                       setSchedule("notificationTimes", times);
                     }}
                     min={1}
-                    max={12}
+                    max={6}
                     label={LanguageService.translate("Times per day")}
                     onBlur={() => setTouched("schedule.notificationTimes")}
                     error={errors["schedule.notificationTimes"]}
@@ -181,8 +182,9 @@ const NewMedicineScreen: React.FC = () => {
                       setSchedule("notificationTimes", vals)
                     }
                     min={1}
-                    max={12}
+                    max={6}
                     label={LanguageService.translate("Notification times")}
+                    style={styles.timeEditor}
                   />
                 </>
               )}
@@ -397,6 +399,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#333333",
     marginBottom: 4,
+  },
+  timeEditor: {
+    flex: 1,
+    marginTop: Spacings.SMALL,
   },
 });
 

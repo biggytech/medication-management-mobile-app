@@ -7,7 +7,7 @@ import { styles } from "./styles";
 import type { DatePickerProps } from "./types";
 import { Text } from "@/components/typography/Text";
 import { Button } from "@/components/Button";
-import { Link } from "@/components/Link";
+import { Link } from "@/components/buttons/Link";
 import { LanguageService } from "@/services/language/LanguageService";
 import { clampToDateOnly, ddmmyyyyFromDate } from "@/utils/date";
 import { ErrorMessage } from "@/components/ErrorMessage";

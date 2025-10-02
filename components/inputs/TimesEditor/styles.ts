@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Spacings } from "@/constants/styling/spacings";
+import { FontSizes } from "@/constants/styling/fonts";
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,24 +12,26 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333333",
+    fontSize: FontSizes.STANDART,
+    textAlign: "center",
   },
   scrollContainer: {
     width: "100%",
-    maxHeight: 200,
   },
   row: {
-    width: "100%",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     marginTop: Spacings.SMALL,
+    marginBottom: Spacings.STANDART,
   },
-  time: {
-    flex: 1,
-  },
-  action: {
+  time: {},
+  removeButton: {
     marginLeft: Spacings.SMALL,
+    alignSelf: "flex-start",
+    marginTop: 6,
+  },
+  addButtonContainer: {
+    marginTop: Spacings.STANDART,
   },
 });

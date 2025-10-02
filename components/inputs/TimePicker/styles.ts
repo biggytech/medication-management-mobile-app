@@ -5,23 +5,22 @@ import { Spacings } from "@/constants/styling/spacings";
 export const styles = StyleSheet.create({
   container: {
     width: "100%",
-    alignItems: "center",
   },
   labelContainer: {
     width: "100%",
-    marginBottom: 8,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333333",
-  },
+  label: {},
   control: {
-    width: "100%",
+    width: 150,
     paddingVertical: Spacings.SMALL,
-    paddingHorizontal: Spacings.STANDART,
-    borderRadius: 12,
-    backgroundColor: AppColors.GREY,
+    paddingLeft: Spacings.STANDART,
+    paddingRight: Spacings.SMALL,
+    borderRadius: Spacings.SMALL,
+    borderWidth: 1,
+    borderColor: AppColors.GREY,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   controlText: {
     color: AppColors.FONT,
@@ -30,17 +29,10 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: AppColors.NEGATIVE,
   },
-  clearButton: {
-    marginTop: Spacings.SMALL,
-    paddingVertical: Spacings.SMALL,
-    paddingHorizontal: Spacings.STANDART,
-    borderRadius: 8,
-    backgroundColor: AppColors.GREY,
+  clearButtonContainer: {
     alignSelf: "flex-start",
   },
-  clearButtonText: {
-    color: AppColors.FONT,
-    fontSize: 14,
-    fontWeight: "500",
+  clearButtonStyle: {
+    marginTop: 2,
   },
 });

@@ -1,11 +1,15 @@
 import React, { useCallback } from "react";
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView } from "react-native";
 import type { TimesEditorProps } from "./types";
 import { styles } from "./styles";
 import { Button } from "@/components/Button";
-import { Link } from "@/components/Link";
+import { Link } from "@/components/buttons/Link";
 import { TimePicker } from "@/components/inputs/TimePicker";
 import { LanguageService } from "@/services/language/LanguageService";
+import { Text } from "@/components/typography/Text";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { FontSizes } from "@/constants/styling/fonts";
+import { AppColors } from "@/constants/styling/colors";
 
 const TimesEditor: React.FC<TimesEditorProps> = ({
   values,
@@ -14,6 +18,8 @@ const TimesEditor: React.FC<TimesEditorProps> = ({
   max = 12,
   allowDuplicates = false,
   label,
+  style,
+  showAddButton = false,
 }) => {
   const updateAt = useCallback(
     (idx: number, val: string | null) => {
@@ -42,7 +48,7 @@ const TimesEditor: React.FC<TimesEditorProps> = ({
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       {label && (
         <View style={styles.labelContainer}>
           <Text style={styles.label}>🕐 {label}</Text>
@@ -52,20 +58,34 @@ const TimesEditor: React.FC<TimesEditorProps> = ({
         {values.map((t, idx) => (
           <View key={`${t}-${idx}`} style={styles.row}>
             <View style={styles.time}>
-              <TimePicker value={t} onChange={(v: string | null) => updateAt(idx, v)} />
+              <TimePicker
+                value={t}
+                onChange={(v: string | null) => updateAt(idx, v)}
+              />
             </View>
             {values.length > min && (
               <Link
-                style={styles.action}
-                text={LanguageService.translate("Remove")}
+                style={styles.removeButton}
+                text={
+                  <Ionicons
+                    name={"trash"}
+                    size={FontSizes.BIG}
+                    color={AppColors.NEGATIVE}
+                  />
+                }
                 onPress={() => removeAt(idx)}
               />
             )}
           </View>
         ))}
       </ScrollView>
-      {values.length < max && (
-        <Button text={LanguageService.translate("Add time")} onPress={addTime} />
+      {showAddButton && values.length < max && (
+        <View style={styles.addButtonContainer}>
+          <Button
+            text={LanguageService.translate("Add time")}
+            onPress={addTime}
+          />
+        </View>
       )}
     </View>
   );
@@ -78,4 +98,3 @@ function dedupe(list: string[], allowDuplicates: boolean): string[] {
 }
 
 export default React.memo(TimesEditor);
-

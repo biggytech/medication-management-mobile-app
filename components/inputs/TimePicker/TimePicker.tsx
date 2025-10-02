@@ -8,13 +8,17 @@ import { Text } from "@/components/typography/Text";
 import { LanguageService } from "@/services/language/LanguageService";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
+import { Link } from "@/components/buttons/Link";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { FontSizes } from "@/constants/styling/fonts";
+import { AppColors } from "@/constants/styling/colors";
 
 // Renders a native time picker using @react-native-community/datetimepicker with configurable minute intervals.
 const TimePicker: React.FC<TimePickerProps> = ({
   value,
   onChange,
   placeholder,
-  allowClear = true,
+  allowClear = false,
   error,
   onBlur,
   label,
@@ -76,15 +80,22 @@ const TimePicker: React.FC<TimePickerProps> = ({
         onPress={() => setShowPicker(true)}
       >
         <Text style={styles.controlText}>{displayText}</Text>
+        {allowClear && value && (
+          <View style={styles.clearButtonContainer}>
+            <Link
+              style={styles.clearButtonStyle}
+              onPress={handleClear}
+              text={
+                <Ionicons
+                  name={"close"}
+                  size={FontSizes.STANDART}
+                  color={AppColors.SECONDARY}
+                />
+              }
+            />
+          </View>
+        )}
       </TouchableOpacity>
-
-      {allowClear && value && (
-        <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
-          <Text style={styles.clearButtonText}>
-            {LanguageService.translate("Clear")}
-          </Text>
-        </TouchableOpacity>
-      )}
 
       <ErrorMessage text={error} />
 

@@ -7,7 +7,7 @@ import { Input } from "@/components/inputs/Input";
 import { Button } from "@/components/Button";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
-import { Link } from "@/components/Link";
+import { Link } from "@/components/buttons/Link";
 import { AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
