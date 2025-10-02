@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, TouchableOpacity, Text } from "react-native";
+import { View, TextInput, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
 import type { NumberInputProps } from "./types";
-import { ErrorMessage } from "@/components/ErrorMessage";
+import { Input } from "@/components/inputs/Input";
+import { Text } from "@/components/typography/Text";
 
 const NumberInput: React.FC<NumberInputProps> = ({
   value,
@@ -62,10 +63,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
     <View style={styles.container}>
       {label && (
         <View style={styles.labelContainer}>
-          <Text style={styles.label}>🔢 {label}</Text>
+          <Text style={styles.label}>{label}</Text>
         </View>
       )}
-      <View style={[styles.inputContainer, error ? styles.errored : {}]}>
+      <View style={styles.inputContainer}>
         <TouchableOpacity
           style={styles.button}
           onPress={handleDecrement}
@@ -73,7 +74,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         >
           <Text style={styles.buttonText}>−</Text>
         </TouchableOpacity>
-        <TextInput
+        <Input
           style={styles.input}
           value={inputValue}
           onChangeText={handleTextChange}
@@ -82,6 +83,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
           keyboardType={keyboardType}
           inputMode={inputMode}
           selectTextOnFocus
+          error={error}
         />
         <TouchableOpacity
           style={styles.button}
@@ -91,7 +93,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
-      <ErrorMessage text={error} />
     </View>
   );
 };
