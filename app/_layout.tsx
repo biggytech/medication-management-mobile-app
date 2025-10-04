@@ -8,7 +8,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import "@/i18n"; // localization
 import ToastManager from "toastify-react-native";
 import { Fonts } from "@/constants/styling/fonts";
-import { QueryProvider } from "@/providers/QueryProvider";
+import {
+  QueryProvider,
+  setupQueryRefetch,
+  useQueryRefetchOnAppFocus,
+} from "@/providers/QueryProvider";
 import { TOAST_MANAGER_OPTIONS } from "@/constants/toaster";
 import * as Notifications from "expo-notifications";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
@@ -26,10 +30,14 @@ Notifications.setNotificationHandler({
   }),
 });
 
+setupQueryRefetch();
+
 export default function RootLayout() {
   const [loaded] = useFonts({
     [Fonts.DEFAULT]: require("../assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
   });
+
+  useQueryRefetchOnAppFocus();
 
   useEffect(() => {
     if (loaded) {

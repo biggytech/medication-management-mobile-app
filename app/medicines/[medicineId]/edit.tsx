@@ -55,7 +55,7 @@ const EditMedicineScreen: React.FC = () => {
         showSuccess(LanguageService.translate("Medicine updated successfully"));
         router.replace({
           pathname: AppScreens.MEDICINES_SINGLE,
-          params: { medicine: medicineData.id.toString() },
+          params: { medicineId: medicineData.id.toString() },
         });
       } catch (error) {
         console.error("Failed to update medicine:", error);
