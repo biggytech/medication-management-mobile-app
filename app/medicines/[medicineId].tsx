@@ -20,16 +20,15 @@ import { ddmmyyyyFromDate } from "@/utils/date/ddmmyyyyFromDate";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const MedicineScreen: React.FC = () => {
-  const { id } = useLocalSearchParams();
+  const { medicineId } = useLocalSearchParams();
   const [medicineData, setMedicineData] = useState<Medicine | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMedicine = async () => {
       try {
-        if (id && typeof id === "string") {
-          const medicineId = parseInt(id, 10);
-          const data = await APIService.medicines.get(medicineId);
+        if (medicineId && typeof medicineId === "string") {
+          const data = await APIService.medicines.get(parseInt(medicineId, 10));
           setMedicineData(data);
         }
       } catch (error) {
@@ -40,13 +39,13 @@ const MedicineScreen: React.FC = () => {
     };
 
     fetchMedicine();
-  }, [id]);
+  }, [medicineId]);
 
   const handleEdit = () => {
-    if (id && typeof id === "string") {
+    if (medicineId && typeof medicineId === "string") {
       router.push({
         pathname: AppScreens.MEDICINES_EDIT,
-        params: { id },
+        params: { medicineId },
       });
     }
   };

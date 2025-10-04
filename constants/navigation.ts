@@ -4,6 +4,6 @@ export enum AppScreens {
   HOME = "/(drawer)/(tabs)",
   MEDICINES = "/(drawer)/(tabs)/medicines",
   MEDICINES_NEW = "/medicines/new",
-  MEDICINES_SINGLE = "/medicines/[id]",
-  MEDICINES_EDIT = "/medicines/[id]/edit",
+  MEDICINES_SINGLE = "/medicines/[medicineId]",
+  MEDICINES_EDIT = "/medicines/[medicineId]/edit",
 }

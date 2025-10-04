@@ -28,7 +28,7 @@ const MedicinesScreen: React.FC = () => {
   const handleMedicinePress = useCallback(({ id }: Medicine) => {
     router.push({
       pathname: AppScreens.MEDICINES_SINGLE,
-      params: { id },
+      params: { medicineId: id },
     });
   }, []);
 

@@ -13,16 +13,15 @@ import { showSuccess } from "@/utils/ui/showSuccess";
 import { Text } from "@/components/common/typography/Text";
 
 const EditMedicineScreen: React.FC = () => {
-  const { id } = useLocalSearchParams();
+  const { medicineId } = useLocalSearchParams();
   const [medicineData, setMedicineData] = useState<Medicine | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMedicine = async () => {
       try {
-        if (id && typeof id === "string") {
-          const medicineId = parseInt(id, 10);
-          const data = await APIService.medicines.get(medicineId);
+        if (medicineId && typeof medicineId === "string") {
+          const data = await APIService.medicines.get(parseInt(medicineId, 10));
           setMedicineData(data);
         }
       } catch (error) {
@@ -33,7 +32,7 @@ const EditMedicineScreen: React.FC = () => {
     };
 
     fetchMedicine();
-  }, [id]);
+  }, [medicineId]);
 
   const handleSubmit = useCallback(
     async (data: Record<string, unknown>) => {
