@@ -24,6 +24,7 @@ import {
 import { ReactMemoWithGeneric } from "@/utils/types/reactMemoWithGeneric";
 import type { AnyObject } from "yup";
 import type { FormInterface } from "@/components/common/inputs/Form/types";
+import { IconButton } from "@/components/common/buttons/IconButton";
 
 const Wizard = <T extends DataForValidation = DataForValidation>({
   screens,
@@ -109,23 +110,9 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
   return (
     <View style={styles.container}>
       <View style={styles.controls}>
-        {!hasPrev && (
-          <TouchableOpacity onPress={onCancel}>
-            <Ionicons
-              name="close"
-              size={Spacings.BIG}
-              color={AppColors.WHITE}
-            />
-          </TouchableOpacity>
-        )}
+        {!hasPrev && <IconButton onPress={onCancel} iconName={"close"} />}
         {hasPrev && (
-          <TouchableOpacity onPress={handlePrevClick}>
-            <Ionicons
-              name="arrow-back"
-              size={Spacings.BIG}
-              color={AppColors.WHITE}
-            />
-          </TouchableOpacity>
+          <IconButton onPress={handlePrevClick} iconName={"arrow-back"} />
         )}
         <TouchableOpacity
           disabled={isSubmitDisabled}

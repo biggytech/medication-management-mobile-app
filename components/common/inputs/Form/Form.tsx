@@ -11,7 +11,7 @@ import {
   validateObject,
 } from "@/utils/validation/validateObject";
 import { AppColors } from "@/constants/styling/colors";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/buttons/Button";
 import { InlineLoader } from "@/components/common/loaders/InlineLoader";
 import { deepen } from "@/utils/objects/deepen";
 import { styles } from "@/components/common/inputs/Form/styles";

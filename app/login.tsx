@@ -1,10 +1,10 @@
 import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
 import { LanguagePicker } from "@/components/common/inputs/LanguagePicker";
 import { Input } from "@/components/common/inputs/Input";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/buttons/Button";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/common/buttons/Link";

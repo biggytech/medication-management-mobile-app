@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Alert } from "react-native";
-import { Button } from "@/components/common/Button";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import { Button } from "@/components/common/buttons/Button";
 import { Text } from "@/components/common/typography/Text";
 import { Title } from "@/components/common/typography/Title";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";

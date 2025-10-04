@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { FlatList, StyleSheet, View, TouchableOpacity } from "react-native";
-import { Button } from "@/components/common/Button";
+import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { Button } from "@/components/common/buttons/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
 import { router } from "expo-router";

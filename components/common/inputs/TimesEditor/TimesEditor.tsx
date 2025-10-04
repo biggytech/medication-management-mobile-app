@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import { View, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import type { TimesEditorProps } from "./types";
 import { styles } from "./styles";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/buttons/Button";
 import { Link } from "@/components/common/buttons/Link";
 import { TimePicker } from "@/components/common/inputs/TimePicker";
 import { LanguageService } from "@/services/language/LanguageService";
