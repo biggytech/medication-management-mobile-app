@@ -1,25 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { FlatList, StyleSheet, View } from "react-native";
-import { Button } from "@/components/Button";
+import { FlatList, StyleSheet, View, TouchableOpacity } from "react-native";
+import { Button } from "@/components/common/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
-import { Screen } from "@/components/Screen";
+import { Screen } from "../../../components/common/Screen";
 import { APIService } from "@/services/APIService";
 import type { Medicine } from "@/types/medicines";
-import { Text } from "@/components/typography/Text";
-import { LocalNotificationsDebugger } from "@/components/notifications/LocalNotificationsDebugger";
+import { Text } from "@/components/common/typography/Text";
+import { LocalNotificationsDebugger } from "@/components/common/notifications/LocalNotificationsDebugger";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 const MedicinesScreen: React.FC = () => {
-  // open single medicine
-  // router.push({
-  //   pathname: AppScreens.MEDICINES_SINGLE,
-  //   params: { medicine: "adsfkjd" },
-  // });
-
   // TODO: use query library
   const [medicines, setMedicines] = useState<Medicine[]>([]);
 
@@ -27,15 +21,27 @@ const MedicinesScreen: React.FC = () => {
     APIService.medicines.list().then(setMedicines);
   }, []);
 
-  const handlePress = () => {
+  const handleAddNewMedicinePress = () => {
     router.push(AppScreens.MEDICINES_NEW);
   };
 
+  const handleMedicinePress = useCallback(({ id }: Medicine) => {
+    router.push({
+      pathname: AppScreens.MEDICINES_SINGLE,
+      params: { id },
+    });
+  }, []);
+
   // TODO: stylize items
   const renderItem = ({ item }: { item: Medicine }) => (
-    <View style={styles.item}>
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() => handleMedicinePress(item)}
+      activeOpacity={0.7}
+    >
       <Text style={styles.title}>{item.title}</Text>
-    </View>
+      <Ionicons name="chevron-forward" size={20} color={AppColors.WHITE} />
+    </TouchableOpacity>
   );
 
   return (
@@ -55,7 +61,7 @@ const MedicinesScreen: React.FC = () => {
       <Button
         color={AppColors.POSITIVE}
         style={styles.floatingButton}
-        onPress={handlePress}
+        onPress={handleAddNewMedicinePress}
         text={<Ionicons size={FontSizes.HUGE} name="add" />}
         rounded
         elevated
@@ -79,6 +85,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 8,
     width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   title: {
     color: AppColors.WHITE,

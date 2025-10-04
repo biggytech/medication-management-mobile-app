@@ -1,7 +1,7 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { schedulePushNotification } from "@/utils/notifications/schedulePushNotification";
-import type { NewMedicine, MedicationSchedule } from "@/types/medicines";
+import type { MedicineData, MedicationSchedule } from "@/types/medicines";
 import { MedicineScheduleTypes } from "@/constants/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
@@ -52,7 +52,7 @@ export class NotificationSchedulingService {
    * notification triggers for each case.
    */
   public static async scheduleMedicineNotifications(
-    medicine: NewMedicine,
+    medicine: MedicineData,
   ): Promise<void> {
     if (!(await checkNotificationsPermissions())) {
       alert(

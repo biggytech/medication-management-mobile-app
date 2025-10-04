@@ -89,5 +89,21 @@
   "\uD83D\uDDD2\uFE0F Do you want to add notes?": "\uD83D\uDDD2\uFE0F Do you want to add notes?",
   "Notes cannot be long than 255 characters": "Notes cannot be long than 255 characters",
   "Notes": "Notes",
-  "No schedule details": "No schedule details"
+  "No schedule details": "No schedule details",
+  "Edit": "Edit",
+  "Medicine Details": "Medicine Details",
+  "Form": "Form",
+  "Schedule": "Schedule",
+  "Dose": "Dose",
+  "End Date": "End Date",
+  "No end date": "No end date",
+  "Edit Medicine": "Edit Medicine",
+  "Save Changes": "Save Changes",
+  "Medicine updated successfully": "Medicine updated successfully",
+  "Loading...": "Loading...",
+  "Medicine not found": "Medicine not found",
+  "times": "times",
+  "Next dose": "Next dose",
+  "days selected": "days selected",
+  "mg": "mg"
 }

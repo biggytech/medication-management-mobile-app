@@ -2,18 +2,18 @@ import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode, useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
-import { LanguagePicker } from "@/components/inputs/LanguagePicker";
-import { Input } from "@/components/inputs/Input";
-import { Button } from "@/components/Button";
+import { LanguagePicker } from "@/components/common/inputs/LanguagePicker";
+import { Input } from "@/components/common/inputs/Input";
+import { Button } from "@/components/common/Button";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
-import { Link } from "@/components/buttons/Link";
+import { Link } from "@/components/common/buttons/Link";
 import { AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { getSignInDefaultSchema } from "@/validation/user";
-import { Screen } from "@/components/Screen";
-import { Form } from "@/components/inputs/Form";
+import { Screen } from "@/components/common/Screen";
+import { Form } from "@/components/common/inputs/Form";
 
 export default function LoginScreen(): ReactNode {
   const [isLoading, setIsLoading] = useState<boolean>(false);

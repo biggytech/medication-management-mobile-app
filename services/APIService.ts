@@ -3,12 +3,13 @@ import { showError } from "@/utils/ui/showError";
 import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
-import type { Medicine, NewMedicine } from "@/types/medicines";
+import type { Medicine, MedicineData } from "@/types/medicines";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 
 enum Methods {
   GET = "GET",
   POST = "POST",
+  PUT = "PUT",
 }
 
 export class APIService {
@@ -163,7 +164,7 @@ export class APIService {
   public static medicines = {
     path: "/medicines",
 
-    async add(data: NewMedicine) {
+    async add(data: MedicineData) {
       const result = await APIService.getInstance().makeRequest<{}>({
         method: Methods.POST,
         url: `${this.path}/add`,
@@ -179,6 +180,27 @@ export class APIService {
         method: Methods.GET,
         url: `${this.path}/list`,
         requiresAuth: true,
+      });
+
+      return result;
+    },
+
+    async get(id: number) {
+      const result = await APIService.getInstance().makeRequest<Medicine>({
+        method: Methods.GET,
+        url: `${this.path}/${id}`,
+        requiresAuth: true,
+      });
+
+      return result;
+    },
+
+    async update(id: number, data: MedicineData) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.PUT,
+        url: `${this.path}/${id}`,
+        requiresAuth: true,
+        body: camelCaseToSnakeCaseObject(data),
       });
 
       return result;

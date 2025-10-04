@@ -1,4 +1,4 @@
-import { Toaster, type ToasterProps } from "@/components/Toaster";
+import { Toaster, type ToasterProps } from "@/components/common/Toaster";
 
 const TOAST_MANAGER_CONFIG = {
   custom: (props: ToasterProps) => <Toaster {...props} />,

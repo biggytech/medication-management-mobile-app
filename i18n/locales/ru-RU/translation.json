@@ -89,5 +89,21 @@
   "\uD83D\uDDD2\uFE0F Do you want to add notes?": "\uD83D\uDDD2\uFE0F Хотите добавить заметку?",
   "Notes cannot be long than 255 characters": "Заметка не может быть длиннее, чем 255 символов",
   "Notes": "Заметка",
-  "No schedule details": "Нет деталей расписания"
+  "No schedule details": "Нет деталей расписания",
+  "Edit": "Редактировать",
+  "Medicine Details": "Детали лекарства",
+  "Form": "Форма",
+  "Schedule": "Расписание",
+  "Dose": "Дозировка",
+  "End Date": "Дата окончания",
+  "No end date": "Без даты окончания",
+  "Edit Medicine": "Редактировать лекарство",
+  "Save Changes": "Сохранить изменения",
+  "Medicine updated successfully": "Лекарство успешно обновлено",
+  "Loading...": "Загрузка...",
+  "Medicine not found": "Лекарство не найдено",
+  "times": "раз",
+  "Next dose": "Следующий прием",
+  "days selected": "дней выбрано",
+  "mg": "мг"
 }

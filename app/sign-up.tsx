@@ -2,12 +2,12 @@ import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
-import { Input } from "@/components/inputs/Input";
+import { Input } from "@/components/common/inputs/Input";
 import { AuthType } from "@/services/auth/AuthService";
-import { Title } from "@/components/typography/Title";
+import { Title } from "@/components/common/typography/Title";
 import { getNewUserSchema } from "@/validation/user";
-import { Screen } from "@/components/Screen";
-import { Form } from "@/components/inputs/Form";
+import { Screen } from "../components/common/Screen";
+import { Form } from "@/components/common/inputs/Form";
 
 export default function SignUpScreen(): ReactNode {
   const { signIn, getIsAuthenticated } = useAuthSession();

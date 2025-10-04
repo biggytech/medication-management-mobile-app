@@ -11,10 +11,10 @@ import {
 import { useAuthSession } from "@/providers/AuthProvider";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AppColors } from "@/constants/styling/colors";
-import { Text } from "@/components/typography/Text";
+import { Text } from "@/components/common/typography/Text";
 import { StyleSheet, View, Alert } from "react-native";
 import { AuthService } from "@/services/auth/AuthService";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/common/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";

@@ -3,13 +3,14 @@ import {
   type MedicineForms,
 } from "@/constants/medicines";
 
-export interface NewMedicine {
+export interface MedicineData {
   title: string;
   form: MedicineForms;
   schedule: MedicationSchedule;
+  notes?: string;
 }
 
-export interface Medicine extends NewMedicine {
+export interface Medicine extends MedicineData {
   id: number;
 }
 

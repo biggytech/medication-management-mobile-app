@@ -1,6 +1,6 @@
 import { Link, Stack } from "expo-router";
 import { StyleSheet, Text } from "react-native";
-import { Screen } from "@/components/Screen";
+import { Screen } from "@/components/common/Screen";
 
 // TODO: styles
 // TODO: translations
