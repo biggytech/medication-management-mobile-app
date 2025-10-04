@@ -12,7 +12,7 @@ import { AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { getSignInDefaultSchema } from "@/validation/user";
-import { Screen } from "@/components/common/Screen";
+import { Screen } from "@/components/common/markup/Screen";
 import { Form } from "@/components/common/inputs/Form";
 
 export default function LoginScreen(): ReactNode {

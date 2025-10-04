@@ -4,7 +4,7 @@ export const FEATURE_FLAGS = {
   /**
    * Notifications Debuggers
    */
-  SHOW_LOCAL_NOTIFICATIONS_DEBUGGER: true,
+  SHOW_LOCAL_NOTIFICATIONS_DEBUGGER: false,
   SHOW_REMOTE_NOTIFICATIONS_DEBUGGER: false,
 
   TIME_PICKER_INTERVAL: 1,

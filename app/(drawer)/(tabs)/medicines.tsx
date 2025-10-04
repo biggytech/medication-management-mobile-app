@@ -6,7 +6,7 @@ import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
-import { Screen } from "../../../components/common/Screen";
+import { Screen } from "@/components/common/markup/Screen";
 import { APIService } from "@/services/APIService";
 import type { MedicineFromApi } from "@/types/medicines";
 import { Text } from "@/components/common/typography/Text";

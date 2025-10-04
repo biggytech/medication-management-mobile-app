@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { Screen } from "../../../components/common/Screen";
-import { Wizard } from "../../../components/common/Wizard";
+import { Screen } from "@/components/common/markup/Screen";
+import { Wizard } from "@/components/common/Wizard";
 import { APIService } from "@/services/APIService";
 import { AppScreens } from "@/constants/navigation";
 import { type MedicineData, type MedicineFromApi } from "@/types/medicines";
@@ -11,6 +11,7 @@ import { MedicineWizard } from "@/components/entities/medicine/MedicineWizard/Me
 import { LanguageService } from "@/services/language/LanguageService";
 import { showSuccess } from "@/utils/ui/showSuccess";
 import { Text } from "@/components/common/typography/Text";
+import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 
 const EditMedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams();
@@ -77,11 +78,7 @@ const EditMedicineScreen: React.FC = () => {
   const screens = MedicineWizard.getScreens();
 
   if (loading) {
-    return (
-      <Screen>
-        <Text>{LanguageService.translate("Loading...")}</Text>
-      </Screen>
-    );
+    return <BlockingLoader />;
   }
 
   if (!medicineData) {

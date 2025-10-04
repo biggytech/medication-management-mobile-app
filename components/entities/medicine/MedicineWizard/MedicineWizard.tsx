@@ -25,7 +25,7 @@ import {
   MedicineScheduleTypes,
 } from "@/constants/medicines";
 import { type MedicationSchedule, type MedicineData } from "@/types/medicines";
-import { Gap } from "@/components/common/Gap";
+import { Gap } from "@/components/common/markup/Gap";
 import type { WizardScreen } from "@/components/common/Wizard/types";
 import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
 import { getMedicineDoseText } from "@/utils/ui/getMedicineDoseText";
@@ -272,7 +272,7 @@ export class MedicineWizard {
             <View style={styles.row}>
               <Input
                 placeholder={LanguageService.translate("Dose")}
-                value={data.schedule?.dose}
+                value={String(data.schedule?.dose ?? "")}
                 onChangeText={(text) => setValue("schedule.dose", text)}
                 onBlur={() => setTouched("schedule.dose")}
                 error={errors["schedule.dose"]}

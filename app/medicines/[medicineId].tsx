@@ -1,14 +1,13 @@
 import React, { useMemo } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { Screen } from "@/components/common/Screen";
+import { Screen } from "../../components/common/markup/Screen";
 import { Text } from "@/components/common/typography/Text";
 import { APIService } from "@/services/APIService";
 import { LanguageService } from "@/services/language/LanguageService";
 import { AppScreens } from "@/constants/navigation";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
-import { FontSizes } from "@/constants/styling/fonts";
 import { ddmmyyyyFromDate } from "@/utils/date/ddmmyyyyFromDate";
 import { useQuery } from "@tanstack/react-query";
 import { formatScheduleInfo } from "@/utils/formatters/medicine/formatScheduleInfo";
@@ -21,6 +20,7 @@ import type { DetailsCardItem } from "@/components/common/DetailsCard/types";
 import { DetailsCard } from "@/components/common/DetailsCard";
 import { GradientHeader } from "@/components/common/GradientHeader";
 import { IconButton } from "@/components/common/buttons/IconButton";
+import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
@@ -85,13 +85,7 @@ const MedicineScreen: React.FC = () => {
   }, [medicine]);
 
   if (loading) {
-    return (
-      <Screen>
-        <View style={styles.loadingContainer}>
-          <Text>{LanguageService.translate("Loading...")}</Text>
-        </View>
-      </Screen>
-    );
+    return <BlockingLoader />;
   }
 
   if (!medicine) {
@@ -142,34 +136,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {},
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    marginBottom: Spacings.BIG,
     alignItems: "center",
   },
   title: {
     color: AppColors.WHITE,
     textAlign: "center",
     marginBottom: Spacings.SMALL,
-  },
-  subtitle: {
-    color: AppColors.GREY,
-    fontSize: FontSizes.STANDART,
-  },
-  actionsContainer: {
-    marginTop: Spacings.BIG,
-  },
-  editButton: {
-    width: "100%",
   },
 });
 

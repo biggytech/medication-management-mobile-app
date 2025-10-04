@@ -3,7 +3,7 @@ import { APIService } from "@/services/APIService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { Wizard } from "@/components/common/Wizard";
-import { Screen } from "@/components/common/Screen";
+import { Screen } from "@/components/common/markup/Screen";
 import { type MedicineData } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";

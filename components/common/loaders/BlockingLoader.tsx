@@ -1,18 +1,10 @@
-import { StyleSheet, View } from "react-native";
 import { Loader } from "@/components/common/loaders/Loader";
+import { Centered } from "@/components/common/markup/Centered";
 
 export const BlockingLoader = () => {
   return (
-    <View style={styles.container}>
+    <Centered>
       <Loader />
-    </View>
+    </Centered>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
