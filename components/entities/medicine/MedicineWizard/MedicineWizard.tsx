@@ -1,14 +1,14 @@
-import React, { useCallback, useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
 import { Input } from "@/components/common/inputs/Input";
 import {
   getNewMedicineDoseSchema,
-  getNewMedicineFormSchema,
-  getNewMedicineTitleSchema,
   getNewMedicineEndDateSchema,
-  getNewMedicineScheduleSchema,
+  getNewMedicineFormSchema,
   getNewMedicineNotesSchema,
+  getNewMedicineScheduleSchema,
+  getNewMedicineTitleSchema,
 } from "@/validation/medicine";
 import { SelectableList } from "@/components/common/inputs/SelectableList";
 import { DatePicker } from "@/components/common/inputs/DatePicker";
@@ -24,10 +24,11 @@ import {
   DEFAULT_MEDICINE_NOTIFICATION_TIME,
   MedicineScheduleTypes,
 } from "@/constants/medicines";
-import { type MedicineData, type MedicationSchedule } from "@/types/medicines";
-import { Spacings } from "@/constants/styling/spacings";
+import { type MedicationSchedule, type MedicineData } from "@/types/medicines";
 import { Gap } from "@/components/common/Gap";
 import type { WizardScreen } from "@/components/common/Wizard/types";
+import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
+import { getMedicineDoseText } from "@/utils/ui/getMedicineDoseText";
 
 /**
  * Shared medicine wizard screens configuration
@@ -268,18 +269,23 @@ export class MedicineWizard {
         getValidationSchema: getNewMedicineDoseSchema,
         node: ({ data, setValue, errors, onScreenSubmit, setTouched }) => (
           <View style={styles.screen}>
-            <Input
-              placeholder={LanguageService.translate("Dose")}
-              value={data.schedule?.dose}
-              onChangeText={(text) => setValue("schedule.dose", text)}
-              onBlur={() => setTouched("schedule.dose")}
-              error={errors["schedule.dose"]}
-              onSubmitEditing={() => onScreenSubmit()}
-              keyboardType="numeric"
-              inputMode="numeric"
-              maxLength={3}
-              returnKeyType="next"
-            />
+            <View style={styles.row}>
+              <Input
+                placeholder={LanguageService.translate("Dose")}
+                value={data.schedule?.dose}
+                onChangeText={(text) => setValue("schedule.dose", text)}
+                onBlur={() => setTouched("schedule.dose")}
+                error={errors["schedule.dose"]}
+                onSubmitEditing={() => onScreenSubmit()}
+                keyboardType="numeric"
+                inputMode="numeric"
+                maxLength={3}
+                returnKeyType="next"
+              />
+              <Text style={styles.label}>
+                {getMedicineDoseText(data as MedicineData)}
+              </Text>
+            </View>
           </View>
         ),
       },
@@ -338,26 +344,3 @@ export class MedicineWizard {
     ];
   }
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    width: "100%",
-    alignItems: "center",
-    flex: 1,
-  },
-  labelContainer: {
-    width: "100%",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333333",
-    marginBottom: 4,
-  },
-  timeEditor: {
-    flex: 1,
-    marginTop: Spacings.SMALL,
-  },
-});

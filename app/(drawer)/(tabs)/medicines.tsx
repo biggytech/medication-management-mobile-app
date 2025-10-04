@@ -8,14 +8,16 @@ import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { Screen } from "../../../components/common/Screen";
 import { APIService } from "@/services/APIService";
-import type { Medicine } from "@/types/medicines";
+import type { MedicineFromApi } from "@/types/medicines";
 import { Text } from "@/components/common/typography/Text";
 import { LocalNotificationsDebugger } from "@/components/common/notifications/LocalNotificationsDebugger";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 const MedicinesScreen: React.FC = () => {
   // TODO: use query library
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [medicines, setMedicines] = useState<MedicineFromApi[]>([]);
+
+  console.log("list", medicines);
 
   useEffect(() => {
     APIService.medicines.list().then(setMedicines);
@@ -25,7 +27,7 @@ const MedicinesScreen: React.FC = () => {
     router.push(AppScreens.MEDICINES_NEW);
   };
 
-  const handleMedicinePress = useCallback(({ id }: Medicine) => {
+  const handleMedicinePress = useCallback(({ id }: MedicineFromApi) => {
     router.push({
       pathname: AppScreens.MEDICINES_SINGLE,
       params: { medicineId: id },
@@ -33,7 +35,7 @@ const MedicinesScreen: React.FC = () => {
   }, []);
 
   // TODO: stylize items
-  const renderItem = ({ item }: { item: Medicine }) => (
+  const renderItem = ({ item }: { item: MedicineFromApi }) => (
     <TouchableOpacity
       style={styles.item}
       onPress={() => handleMedicinePress(item)}

@@ -1,4 +1,4 @@
-import type { Medicine, MedicineData } from "@/types/medicines";
+import type { MedicineFromApi, MedicineData } from "@/types/medicines";
 
 export interface MedicineWizardProps {
   initialData?: Partial<MedicineData>;

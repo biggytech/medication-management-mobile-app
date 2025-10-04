@@ -6,6 +6,7 @@ import { MedicineScheduleTypes } from "@/constants/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
 import { checkNotificationsPermissions } from "@/utils/notifications/checkNotificationsPermissions";
+import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
 
 /**
  * Service for scheduling local push notifications for medication reminders.
@@ -66,7 +67,7 @@ export class NotificationSchedulingService {
     const { title, schedule, form } = medicine;
 
     // Get medication emoji based on form
-    const emoji = this.getMedicationEmoji(form);
+    const emoji = getMedicineEmoji(medicine);
 
     // Create notification content
     const notificationContent = this.createNotificationContent(title, emoji);
@@ -330,22 +331,5 @@ export class NotificationSchedulingService {
       sound: "default",
       priority: Notifications.AndroidNotificationPriority.HIGH,
     };
-  }
-
-  /**
-   * Get appropriate emoji for medication form.
-   */
-  private static getMedicationEmoji(form: string): string {
-    const emojiMap: Record<string, string> = {
-      tablet: "💊",
-      injection: "💉",
-      solution: "🧪",
-      drops: "💧",
-      inhaler: "🌬️",
-      powder: "🥄",
-      other: "💊",
-    };
-
-    return emojiMap[form] || "💊";
   }
 }
