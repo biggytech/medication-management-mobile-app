@@ -36,6 +36,7 @@ import { NotificationSchedulingService } from "@/services/notifications/Notifica
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { TextArea } from "@/components/inputs/TextArea";
 import { Spacings } from "@/constants/styling/spacings";
+import { Gap } from "@/components/Gap";
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
@@ -205,6 +206,7 @@ const NewMedicineScreen: React.FC = () => {
                     error={errors["schedule.nextDoseDate"]}
                     onBlur={() => setTouched("schedule.nextDoseDate")}
                   />
+                  <Gap />
                   <TimePicker
                     value={schedule.notificationTimes[0] || null}
                     onChange={(t: string | null) =>
@@ -244,6 +246,7 @@ const NewMedicineScreen: React.FC = () => {
                     error={errors["schedule.nextDoseDate"]}
                     onBlur={() => setTouched("schedule.nextDoseDate")}
                   />
+                  <Gap />
                   <TimePicker
                     value={schedule.notificationTimes[0] || null}
                     onChange={(t: string | null) =>
@@ -271,6 +274,7 @@ const NewMedicineScreen: React.FC = () => {
                       setSchedule("daysOfWeek", vals)
                     }
                   />
+                  <Gap />
                   <TimePicker
                     value={schedule.notificationTimes[0] || null}
                     onChange={(t: string | null) =>
@@ -285,7 +289,9 @@ const NewMedicineScreen: React.FC = () => {
                 </>
               )}
 
-              {schedule.type === MedicineScheduleTypes.ONLY_AS_NEEDED && null}
+              {schedule.type === MedicineScheduleTypes.ONLY_AS_NEEDED && (
+                <Text>{LanguageService.translate("No schedule details")}</Text>
+              )}
             </View>
           );
         },

@@ -88,5 +88,6 @@
   "Hey, you need to take": "Эй, вам необходимо принять",
   "\uD83D\uDDD2\uFE0F Do you want to add notes?": "\uD83D\uDDD2\uFE0F Хотите добавить заметку?",
   "Notes cannot be long than 255 characters": "Заметка не может быть длиннее, чем 255 символов",
-  "Notes": "Заметка"
+  "Notes": "Заметка",
+  "No schedule details": "Нет деталей расписания"
 }

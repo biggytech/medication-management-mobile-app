@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
   },
   labelContainer: {
     width: "100%",
+    marginBottom: Spacings.SMALL,
   },
   label: {},
   control: {

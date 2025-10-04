@@ -11,13 +11,13 @@ const DaysOfWeekPicker: React.FC<DaysOfWeekPickerProps> = ({
 }) => {
   const days = useMemo(
     () => [
-      LanguageService.translate("Sun"),
-      LanguageService.translate("Mon"),
-      LanguageService.translate("Tue"),
-      LanguageService.translate("Wed"),
-      LanguageService.translate("Thu"),
-      LanguageService.translate("Fri"),
-      LanguageService.translate("Sat"),
+      { label: LanguageService.translate("Mon"), value: 1 },
+      { label: LanguageService.translate("Tue"), value: 2 },
+      { label: LanguageService.translate("Wed"), value: 3 },
+      { label: LanguageService.translate("Thu"), value: 4 },
+      { label: LanguageService.translate("Fri"), value: 5 },
+      { label: LanguageService.translate("Sat"), value: 6 },
+      { label: LanguageService.translate("Sun"), value: 0 },
     ],
     [],
   );
@@ -25,20 +25,20 @@ const DaysOfWeekPicker: React.FC<DaysOfWeekPickerProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.grid}>
-        {days.map((d, idx) => {
-          const selected = values.includes(idx);
+        {days.map(({ label, value }) => {
+          const selected = values.includes(value);
           return (
             <TouchableOpacity
-              key={idx}
+              key={value}
               style={[styles.day, selected ? styles.selected : {}]}
               onPress={() => {
                 const next = selected
-                  ? values.filter((v) => v !== idx)
-                  : [...values, idx];
+                  ? values.filter((v) => v !== value)
+                  : [...values, value];
                 onChange(next.sort());
               }}
             >
-              <Text>{d}</Text>
+              <Text>{label}</Text>
             </TouchableOpacity>
           );
         })}

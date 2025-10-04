@@ -16,7 +16,7 @@ const TimesEditor: React.FC<TimesEditorProps> = ({
   onChange,
   min = 1,
   max = 12,
-  allowDuplicates = false,
+  allowDuplicates = true,
   label,
   style,
   showAddButton = false,
