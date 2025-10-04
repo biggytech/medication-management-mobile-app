@@ -18,36 +18,23 @@ import {
 import { type Medicine } from "@/types/medicines";
 import { ddmmyyyyFromDate } from "@/utils/date/ddmmyyyyFromDate";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useQuery } from "@tanstack/react-query";
 
 const MedicineScreen: React.FC = () => {
-  const { medicineId } = useLocalSearchParams();
-  const [medicineData, setMedicineData] = useState<Medicine | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { medicineId } = useLocalSearchParams<{
+    medicineId: string;
+  }>();
 
-  useEffect(() => {
-    const fetchMedicine = async () => {
-      try {
-        if (medicineId && typeof medicineId === "string") {
-          const data = await APIService.medicines.get(parseInt(medicineId, 10));
-          setMedicineData(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch medicine:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMedicine();
-  }, [medicineId]);
+  const { data: medicineData = null, isLoading: loading } = useQuery({
+    queryKey: ["medicine", medicineId],
+    queryFn: () => APIService.medicines.get(parseInt(medicineId, 10)),
+  });
 
   const handleEdit = () => {
-    if (medicineId && typeof medicineId === "string") {
-      router.push({
-        pathname: AppScreens.MEDICINES_EDIT,
-        params: { medicineId },
-      });
-    }
+    router.push({
+      pathname: AppScreens.MEDICINES_EDIT,
+      params: { medicineId },
+    });
   };
 
   const formatScheduleInfo = (schedule: Medicine["schedule"]) => {
