@@ -15,12 +15,12 @@ import { useQuery } from "@tanstack/react-query";
 import { formatScheduleInfo } from "@/utils/formatters/medicine/formatScheduleInfo";
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
 import { getMedicineDoseText } from "@/utils/ui/getMedicineDoseText";
-import { LinearGradient } from "expo-linear-gradient";
 import { fontSizesStyles } from "@/assets/styles/fonts";
 import { Heading } from "@/components/common/typography/Heading";
 import { Round } from "@/components/common/Round";
 import type { DetailsCardItem } from "@/components/common/DetailsCard/types";
 import { DetailsCard } from "@/components/common/DetailsCard";
+import { GradientHeader } from "@/components/common/GradientHeader";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
@@ -112,17 +112,14 @@ const MedicineScreen: React.FC = () => {
           style={styles.container}
           contentContainerStyle={styles.content}
         >
-          <LinearGradient
-            colors={[AppColors.PRIMARY, AppColors.SECONDARY]}
-            style={styles.header}
-          >
+          <GradientHeader>
             <Round>
               <Text style={[fontSizesStyles.huge]}>
                 {getMedicineEmoji(medicine)}
               </Text>
             </Round>
             <Heading style={styles.title}>{medicine.title}</Heading>
-          </LinearGradient>
+          </GradientHeader>
 
           <DetailsCard items={detailsItems} />
 

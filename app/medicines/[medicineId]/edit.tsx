@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useLocalSearchParams, router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/common/Screen";
 import { Wizard } from "../../../components/common/Wizard";
 import { APIService } from "@/services/APIService";
 import { AppScreens } from "@/constants/navigation";
-import { type MedicineData, type Medicine } from "@/types/medicines";
+import { type MedicineData, type MedicineFromApi } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { MedicineWizard } from "@/components/entities/medicine/MedicineWizard/MedicineWizard";
@@ -14,7 +14,9 @@ import { Text } from "@/components/common/typography/Text";
 
 const EditMedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams();
-  const [medicineData, setMedicineData] = useState<Medicine | null>(null);
+  const [medicineData, setMedicineData] = useState<MedicineFromApi | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +54,9 @@ const EditMedicineScreen: React.FC = () => {
           console.log("✅ Medication notifications rescheduled successfully");
         }
 
-        showSuccess(LanguageService.translate("Medicine updated successfully"));
+        showSuccess(
+          LanguageService.translate("MedicineFromApi updated successfully"),
+        );
         router.replace({
           pathname: AppScreens.MEDICINES_SINGLE,
           params: { medicineId: medicineData.id.toString() },
@@ -92,7 +96,15 @@ const EditMedicineScreen: React.FC = () => {
   const initialData: Partial<MedicineData> = {
     title: medicineData.title,
     form: medicineData.form,
-    schedule: medicineData.schedule,
+    schedule: {
+      ...medicineData.schedule,
+      endDate: medicineData.schedule.endDate
+        ? new Date(medicineData.schedule.endDate)
+        : null,
+      nextDoseDate: medicineData.schedule.nextDoseDate
+        ? new Date(medicineData.schedule.nextDoseDate)
+        : null,
+    },
     notes: medicineData.notes || "",
   };
 
