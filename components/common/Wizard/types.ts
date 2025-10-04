@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import * as yup from "yup";
 import { type DataForValidation } from "@/utils/validation/validateObject";
-import type { FormProps } from "@/components/common/inputs/Form";
+
+import type { FormProps } from "@/components/common/inputs/Form/types";
 
 export interface WizardScreen<T extends DataForValidation = DataForValidation> {
   key: string;

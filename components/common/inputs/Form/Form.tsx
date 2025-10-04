@@ -1,48 +1,23 @@
 import React, {
-  type RefObject,
   useCallback,
   useEffect,
   useImperativeHandle,
-  useState,
-  type ReactNode,
   useMemo,
+  useState,
 } from "react";
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
-import * as yup from "yup";
+import { View } from "react-native";
 import {
-  validateObject,
   type DataForValidation,
+  validateObject,
 } from "@/utils/validation/validateObject";
 import { AppColors } from "@/constants/styling/colors";
 import { Button } from "@/components/common/Button";
 import { InlineLoader } from "@/components/common/loaders/InlineLoader";
 import { deepen } from "@/utils/objects/deepen";
+import { styles } from "@/components/common/inputs/Form/styles";
+import type { FormProps } from "@/components/common/inputs/Form/types";
 
-export interface FormInterface<
-  T extends DataForValidation = DataForValidation,
-> {
-  getData: () => Partial<T>;
-}
-
-export interface FormProps<T extends DataForValidation = DataForValidation> {
-  ref?: RefObject<FormInterface<T> | null>;
-  getSchema: () => yup.ObjectSchema<Partial<T>>;
-  children: (
-    params: {
-      data: Partial<T>;
-      setValue: (field: keyof T, value: any) => void;
-      setTouched: (field: keyof T) => void;
-    } & ReturnType<typeof validateObject>,
-  ) => ReactNode;
-  style?: StyleProp<ViewStyle>;
-  onSubmit?: (data: T) => Promise<void>;
-  onSubmitDisabled?: (isDisabled: boolean) => void;
-  submitText?: string;
-  isDisabled?: boolean;
-  shouldShowLoader?: boolean;
-}
-
-export const Form = <T extends DataForValidation = DataForValidation>({
+const Form = <T extends DataForValidation = DataForValidation>({
   ref,
   getSchema,
   children,
@@ -123,11 +98,4 @@ export const Form = <T extends DataForValidation = DataForValidation>({
   );
 };
 
-const styles = StyleSheet.create({
-  form: {
-    alignSelf: "center",
-    width: "100%",
-    alignItems: "center",
-    flex: 1,
-  },
-});
+export default React.memo(Form);

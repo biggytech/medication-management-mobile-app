@@ -16,13 +16,14 @@ import { styles } from "./styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Spacings } from "@/constants/styling/spacings";
 import { Heading } from "@/components/common/typography/Heading";
-import { Form, type FormInterface } from "@/components/common/inputs/Form";
+import { Form } from "@/components/common/inputs/Form";
 import {
   type DataForValidation,
   validateObject,
 } from "@/utils/validation/validateObject";
 import { ReactMemoWithGeneric } from "@/utils/types/reactMemoWithGeneric";
 import type { AnyObject } from "yup";
+import type { FormInterface } from "@/components/common/inputs/Form/types";
 
 const Wizard = <T extends DataForValidation = DataForValidation>({
   screens,
