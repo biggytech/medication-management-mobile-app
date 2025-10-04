@@ -3,8 +3,9 @@ import { showError } from "@/utils/ui/showError";
 import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
-import type { Medicine, MedicineData } from "@/types/medicines";
+import type { MedicineFromApi, MedicineData } from "@/types/medicines";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
+import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 
 enum Methods {
   GET = "GET",
@@ -52,13 +53,13 @@ export class APIService {
           "Content-Type": "application/json",
           Authorization: requiresAuth ? `Bearer ${token}` : "",
         },
-        body: body ? JSON.stringify(body) : null,
+        body: body ? JSON.stringify(camelCaseToSnakeCaseObject(body)) : null,
       });
 
       if (isSuccessfulStatus(response)) {
         const json = await response.json();
         console.log(`response - ${JSON.stringify(json)}`);
-        return json;
+        return snakeCaseToCamelCaseObject(json);
       }
 
       const error = await getErrorMessage(response);
@@ -169,14 +170,16 @@ export class APIService {
         method: Methods.POST,
         url: `${this.path}/add`,
         requiresAuth: true,
-        body: camelCaseToSnakeCaseObject(data),
+        body: data,
       });
 
       return result;
     },
 
     async list() {
-      const result = await APIService.getInstance().makeRequest<Medicine[]>({
+      const result = await APIService.getInstance().makeRequest<
+        MedicineFromApi[]
+      >({
         method: Methods.GET,
         url: `${this.path}/list`,
         requiresAuth: true,
@@ -186,11 +189,12 @@ export class APIService {
     },
 
     async get(id: number) {
-      const result = await APIService.getInstance().makeRequest<Medicine>({
-        method: Methods.GET,
-        url: `${this.path}/${id}`,
-        requiresAuth: true,
-      });
+      const result =
+        await APIService.getInstance().makeRequest<MedicineFromApi>({
+          method: Methods.GET,
+          url: `${this.path}/${id}`,
+          requiresAuth: true,
+        });
 
       return result;
     },
@@ -200,7 +204,7 @@ export class APIService {
         method: Methods.PUT,
         url: `${this.path}/${id}`,
         requiresAuth: true,
-        body: camelCaseToSnakeCaseObject(data),
+        body: data,
       });
 
       return result;

@@ -1,5 +1,5 @@
 export interface DetailsCardItem {
-  key: "string";
+  key: string;
   iconName: string;
   label: string;
   value: string;

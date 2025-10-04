@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
-import { Screen } from "../../components/common/Screen";
+import React, { useMemo } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { Screen } from "@/components/common/Screen";
 import { Text } from "@/components/common/typography/Text";
-import { Title } from "@/components/common/typography/Title";
 import { Button } from "@/components/common/Button";
 import { APIService } from "@/services/APIService";
 import { LanguageService } from "@/services/language/LanguageService";
@@ -11,21 +10,24 @@ import { AppScreens } from "@/constants/navigation";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
 import { FontSizes } from "@/constants/styling/fonts";
-import {
-  MedicineScheduleTypes,
-  MEDICINE_SCHEDULE_TYPE_LABELS,
-} from "@/constants/medicines";
-import { type Medicine } from "@/types/medicines";
 import { ddmmyyyyFromDate } from "@/utils/date/ddmmyyyyFromDate";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "@tanstack/react-query";
+import { formatScheduleInfo } from "@/utils/formatters/medicine/formatScheduleInfo";
+import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
+import { getMedicineDoseText } from "@/utils/ui/getMedicineDoseText";
+import { LinearGradient } from "expo-linear-gradient";
+import { fontSizesStyles } from "@/assets/styles/fonts";
+import { Heading } from "@/components/common/typography/Heading";
+import { Round } from "@/components/common/Round";
+import type { DetailsCardItem } from "@/components/common/DetailsCard/types";
+import { DetailsCard } from "@/components/common/DetailsCard";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
     medicineId: string;
   }>();
 
-  const { data: medicineData = null, isLoading: loading } = useQuery({
+  const { data: medicine = null, isLoading: loading } = useQuery({
     queryKey: ["medicine", medicineId],
     queryFn: () => APIService.medicines.get(parseInt(medicineId, 10)),
   });
@@ -37,25 +39,50 @@ const MedicineScreen: React.FC = () => {
     });
   };
 
-  const formatScheduleInfo = (schedule: Medicine["schedule"]) => {
-    const scheduleTypeLabel = LanguageService.translate(
-      MEDICINE_SCHEDULE_TYPE_LABELS[schedule.type],
-    );
+  const detailsItems: DetailsCardItem[] = useMemo(() => {
+    if (!medicine) return [] as DetailsCardItem[];
 
-    switch (schedule.type) {
-      case MedicineScheduleTypes.EVERY_DAY:
-        return `${scheduleTypeLabel} - ${schedule.notificationTimes.length} ${LanguageService.translate("times")}`;
-      case MedicineScheduleTypes.EVERY_OTHER_DAY:
-      case MedicineScheduleTypes.EVERY_X_DAYS:
-        return `${scheduleTypeLabel} - ${LanguageService.translate("Next dose")}: ${schedule.nextDoseDate ? ddmmyyyyFromDate(schedule.nextDoseDate) : "N/A"}`;
-      case MedicineScheduleTypes.SPECIFIC_WEEK_DAYS:
-        return `${scheduleTypeLabel} - ${schedule.daysOfWeek?.length || 0} ${LanguageService.translate("days selected")}`;
-      case MedicineScheduleTypes.ONLY_AS_NEEDED:
-        return scheduleTypeLabel;
-      default:
-        return scheduleTypeLabel;
+    const items = [
+      {
+        key: "form",
+        iconName: "medical",
+        label: LanguageService.translate("Form"),
+        value: LanguageService.translate(medicine.form),
+      },
+      {
+        key: "schedule",
+        iconName: "time",
+        label: LanguageService.translate("Schedule"),
+        value: formatScheduleInfo(medicine.schedule),
+      },
+      {
+        key: "dose",
+        iconName: "fitness",
+        label: LanguageService.translate("Dose"),
+        value: `${medicine.schedule.dose} ${getMedicineDoseText(medicine)}`,
+      },
+    ];
+
+    if (medicine.schedule.endDate) {
+      items.push({
+        key: "endDate",
+        iconName: "calendar",
+        label: LanguageService.translate("End Date"),
+        value: ddmmyyyyFromDate(new Date(medicine.schedule.endDate)),
+      });
     }
-  };
+
+    if (medicine.notes) {
+      items.push({
+        key: "notes",
+        iconName: "document-text",
+        label: LanguageService.translate("Notes"),
+        value: medicine.notes,
+      });
+    }
+
+    return items;
+  }, [medicine]);
 
   if (loading) {
     return (
@@ -67,7 +94,7 @@ const MedicineScreen: React.FC = () => {
     );
   }
 
-  if (!medicineData) {
+  if (!medicine) {
     return (
       <Screen>
         <View style={styles.errorContainer}>
@@ -78,96 +105,38 @@ const MedicineScreen: React.FC = () => {
   }
 
   return (
-    <Screen>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.content}
-      >
-        <View style={styles.header}>
-          <Title style={styles.title}>{medicineData.title}</Title>
-          <Text style={styles.subtitle}>
-            {LanguageService.translate("Medicine Details")}
-          </Text>
-        </View>
-
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailRow}>
-            <View style={styles.detailLabel}>
-              <Ionicons name="medical" size={20} color={AppColors.PRIMARY} />
-              <Text style={styles.detailLabelText}>
-                {LanguageService.translate("Form")}
+    medicine && (
+      <Screen>
+        {/*TODO: add back button here or to header of the navigation*/}
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.content}
+        >
+          <LinearGradient
+            colors={[AppColors.PRIMARY, AppColors.SECONDARY]}
+            style={styles.header}
+          >
+            <Round>
+              <Text style={[fontSizesStyles.huge]}>
+                {getMedicineEmoji(medicine)}
               </Text>
-            </View>
-            <Text style={styles.detailValue}>
-              {LanguageService.translate(medicineData.form)}
-            </Text>
+            </Round>
+            <Heading style={styles.title}>{medicine.title}</Heading>
+          </LinearGradient>
+
+          <DetailsCard items={detailsItems} />
+
+          <View style={styles.actionsContainer}>
+            <Button
+              color={AppColors.PRIMARY}
+              onPress={handleEdit}
+              text={LanguageService.translate("Edit")}
+              style={styles.editButton}
+            />
           </View>
-
-          <View style={styles.detailRow}>
-            <View style={styles.detailLabel}>
-              <Ionicons name="time" size={20} color={AppColors.PRIMARY} />
-              <Text style={styles.detailLabelText}>
-                {LanguageService.translate("Schedule")}
-              </Text>
-            </View>
-            <Text style={styles.detailValue}>
-              {formatScheduleInfo(medicineData.schedule)}
-            </Text>
-          </View>
-
-          <View style={styles.detailRow}>
-            <View style={styles.detailLabel}>
-              <Ionicons name="fitness" size={20} color={AppColors.PRIMARY} />
-              <Text style={styles.detailLabelText}>
-                {LanguageService.translate("Dose")}
-              </Text>
-            </View>
-            <Text style={styles.detailValue}>
-              {medicineData.schedule.dose} {LanguageService.translate("mg")}
-            </Text>
-          </View>
-
-          {medicineData.schedule.endDate && (
-            <View style={styles.detailRow}>
-              <View style={styles.detailLabel}>
-                <Ionicons name="calendar" size={20} color={AppColors.PRIMARY} />
-                <Text style={styles.detailLabelText}>
-                  {LanguageService.translate("End Date")}
-                </Text>
-              </View>
-              <Text style={styles.detailValue}>
-                {ddmmyyyyFromDate(medicineData.schedule.endDate)}
-              </Text>
-            </View>
-          )}
-
-          {medicineData.notes && (
-            <View style={styles.detailRow}>
-              <View style={styles.detailLabel}>
-                <Ionicons
-                  name="document-text"
-                  size={20}
-                  color={AppColors.PRIMARY}
-                />
-                <Text style={styles.detailLabelText}>
-                  {LanguageService.translate("Notes")}
-                </Text>
-              </View>
-              <Text style={styles.detailValue}>{medicineData.notes}</Text>
-            </View>
-          )}
-        </View>
-
-        <View style={styles.actionsContainer}>
-          <Button
-            color={AppColors.PRIMARY}
-            onPress={handleEdit}
-            text={LanguageService.translate("Edit")}
-            style={styles.editButton}
-          />
-        </View>
-      </ScrollView>
-    </Screen>
+        </ScrollView>
+      </Screen>
+    )
   );
 };
 
@@ -175,9 +144,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
-    padding: Spacings.STANDART,
-  },
+  content: {},
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -200,37 +167,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: AppColors.GREY,
     fontSize: FontSizes.STANDART,
-  },
-  detailsContainer: {
-    backgroundColor: AppColors.SECONDARY,
-    borderRadius: 12,
-    padding: Spacings.STANDART,
-    marginBottom: Spacings.BIG,
-  },
-  detailRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: Spacings.SMALL,
-    borderBottomWidth: 1,
-    borderBottomColor: AppColors.GREY,
-  },
-  detailLabel: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  detailLabelText: {
-    color: AppColors.WHITE,
-    fontSize: FontSizes.STANDART,
-    fontWeight: "600",
-    marginLeft: Spacings.SMALL,
-  },
-  detailValue: {
-    color: AppColors.WHITE,
-    fontSize: FontSizes.STANDART,
-    flex: 1,
-    textAlign: "right",
   },
   actionsContainer: {
     marginTop: Spacings.BIG,

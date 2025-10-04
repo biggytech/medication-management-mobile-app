@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { APIService } from "@/services/APIService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
@@ -8,6 +8,7 @@ import { type MedicineData } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { MedicineWizard } from "@/components/entities/medicine/MedicineWizard/MedicineWizard";
+import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
@@ -33,12 +34,20 @@ const NewMedicineScreen: React.FC = () => {
     router.back();
   }, []);
 
+  const initialData = useMemo(
+    () => ({
+      schedule: MedicineScheduleService.getDefaultSchedule(),
+    }),
+    [],
+  );
+
   return (
     <Screen>
       <Wizard
         onCancel={handleGoBack}
         onSubmit={handleSubmit}
         screens={screens}
+        initialData={initialData}
       />
     </Screen>
   );
