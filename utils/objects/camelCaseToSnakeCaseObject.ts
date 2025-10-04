@@ -1,4 +1,4 @@
-import { camelCaseToSnakeCase } from "@/utils/other/camelCaseToSnakeCase";
+import { camelCaseToSnakeCase } from "@/utils/objects/camelCaseToSnakeCase";
 
 export function camelCaseToSnakeCaseObject(obj: any): any {
   if (Array.isArray(obj)) {
