@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "@/components/common/Screen";
 import { Text } from "@/components/common/typography/Text";
-import { Button } from "@/components/common/Button";
 import { APIService } from "@/services/APIService";
 import { LanguageService } from "@/services/language/LanguageService";
 import { AppScreens } from "@/constants/navigation";
@@ -21,6 +20,7 @@ import { Round } from "@/components/common/Round";
 import type { DetailsCardItem } from "@/components/common/DetailsCard/types";
 import { DetailsCard } from "@/components/common/DetailsCard";
 import { GradientHeader } from "@/components/common/GradientHeader";
+import { IconButton } from "@/components/common/buttons/IconButton";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
@@ -107,12 +107,21 @@ const MedicineScreen: React.FC = () => {
   return (
     medicine && (
       <Screen>
-        {/*TODO: add back button here or to header of the navigation*/}
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.content}
         >
-          <GradientHeader>
+          <GradientHeader
+            left={
+              <IconButton
+                onPress={() => router.back()}
+                iconName={"arrow-back"}
+              />
+            }
+            right={
+              <IconButton onPress={handleEdit} iconName={"create-outline"} />
+            }
+          >
             <Round>
               <Text style={[fontSizesStyles.huge]}>
                 {getMedicineEmoji(medicine)}
@@ -122,15 +131,6 @@ const MedicineScreen: React.FC = () => {
           </GradientHeader>
 
           <DetailsCard items={detailsItems} />
-
-          <View style={styles.actionsContainer}>
-            <Button
-              color={AppColors.PRIMARY}
-              onPress={handleEdit}
-              text={LanguageService.translate("Edit")}
-              style={styles.editButton}
-            />
-          </View>
         </ScrollView>
       </Screen>
     )
