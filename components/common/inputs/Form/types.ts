@@ -28,4 +28,5 @@ export interface FormProps<T extends DataForValidation = DataForValidation> {
   submitText?: string;
   isDisabled?: boolean;
   shouldShowLoader?: boolean;
+  initialData?: Partial<T>;
 }

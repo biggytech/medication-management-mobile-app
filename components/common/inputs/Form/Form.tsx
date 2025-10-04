@@ -27,8 +27,9 @@ const Form = <T extends DataForValidation = DataForValidation>({
   submitText,
   isDisabled = false,
   shouldShowLoader = true,
+  initialData,
 }: FormProps<T>) => {
-  const [data, setData] = useState<Partial<T>>({});
+  const [data, setData] = useState<Partial<T>>(initialData ?? {});
   const [touchedFields, setTouchedFields] = useState<
     Partial<{
       [key in keyof T]: boolean;
