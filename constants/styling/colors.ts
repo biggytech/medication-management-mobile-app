@@ -8,4 +8,5 @@ export enum AppColors {
   FONT = "#333333",
   WHITE = "#FFFFFF",
   GREY = "rgba(0, 0, 0, 0.1)",
+  DARKGREY = "rgba(0, 0, 0, 0.5)",
 }

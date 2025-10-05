@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import { Button } from "@/components/common/buttons/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
@@ -9,42 +9,39 @@ import { AppScreens } from "@/constants/navigation";
 import { Screen } from "@/components/common/markup/Screen";
 import { APIService } from "@/services/APIService";
 import type { MedicineFromApi } from "@/types/medicines";
-import { Text } from "@/components/common/typography/Text";
 import { LocalNotificationsDebugger } from "@/components/common/notifications/LocalNotificationsDebugger";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
+import { useQuery } from "@tanstack/react-query";
+import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
+import { MedicineListItem } from "@/components/entities/medicine/MedicineListItem";
 
 const MedicinesScreen: React.FC = () => {
-  // TODO: use query library
-  const [medicines, setMedicines] = useState<MedicineFromApi[]>([]);
+  const { data: medicines, isLoading } = useQuery({
+    queryKey: ["medicines"],
+    queryFn: () => APIService.medicines.list(),
+  });
 
-  console.log("list", medicines);
-
-  useEffect(() => {
-    APIService.medicines.list().then(setMedicines);
+  const handleAddNewMedicinePress = useCallback(() => {
+    router.push(AppScreens.MEDICINES_NEW);
   }, []);
 
-  const handleAddNewMedicinePress = () => {
-    router.push(AppScreens.MEDICINES_NEW);
-  };
-
-  const handleMedicinePress = useCallback(({ id }: MedicineFromApi) => {
+  const handleMedicinePress = useCallback((id: MedicineFromApi["id"]) => {
     router.push({
       pathname: AppScreens.MEDICINES_SINGLE,
       params: { medicineId: id },
     });
   }, []);
 
-  // TODO: stylize items
-  const renderItem = ({ item }: { item: MedicineFromApi }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => handleMedicinePress(item)}
-      activeOpacity={0.7}
-    >
-      <Text style={styles.title}>{item.title}</Text>
-      <Ionicons name="chevron-forward" size={20} color={AppColors.WHITE} />
-    </TouchableOpacity>
+  const renderItem = useCallback(
+    ({ item }: { item: MedicineFromApi }) => (
+      <MedicineListItem medicine={item} onPress={handleMedicinePress} />
+    ),
+    [handleMedicinePress],
   );
+
+  if (isLoading) {
+    return <BlockingLoader />;
+  }
 
   return (
     <Screen>
@@ -80,19 +77,6 @@ const styles = StyleSheet.create({
   },
   list: {
     padding: 10,
-  },
-  item: {
-    backgroundColor: AppColors.SECONDARY,
-    padding: 10,
-    marginVertical: 8,
-    borderRadius: 8,
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  title: {
-    color: AppColors.WHITE,
   },
 });
 

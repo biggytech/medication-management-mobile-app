@@ -2,6 +2,9 @@ import { StyleSheet } from "react-native";
 import { Spacings } from "@/constants/styling/spacings";
 
 export const marginStyles = StyleSheet.create({
+  none: {
+    margin: 0,
+  },
   small: {
     margin: Spacings.SMALL,
   },
@@ -29,6 +32,9 @@ export const marginStyles = StyleSheet.create({
 });
 
 export const paddingStyles = StyleSheet.create({
+  none: {
+    padding: 0,
+  },
   small: {
     padding: Spacings.SMALL,
   },

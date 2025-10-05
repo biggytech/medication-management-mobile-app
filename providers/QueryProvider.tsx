@@ -11,7 +11,7 @@ import { AppState, type AppStateStatus, Platform } from "react-native";
 
 type QueryProviderProps = PropsWithChildren;
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export const QueryProvider: React.FC<QueryProviderProps> = ({ children }) => {
   return (

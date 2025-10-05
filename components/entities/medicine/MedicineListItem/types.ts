@@ -1,0 +1,6 @@
+import type { MedicineFromApi } from "@/types/medicines";
+
+export interface MedicineListItemProps {
+  medicine: MedicineFromApi;
+  onPress: (id: MedicineFromApi["id"]) => void;
+}
