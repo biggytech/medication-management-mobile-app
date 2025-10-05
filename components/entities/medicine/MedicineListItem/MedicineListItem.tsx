@@ -10,6 +10,7 @@ import { LanguageService } from "@/services/language/LanguageService";
 import { ddmmyyyyFromDate } from "@/utils/date";
 import { Round } from "@/components/common/Round";
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
+import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
 
 const MedicineListItem: React.FC<MedicineListItemProps> = ({
   medicine,
@@ -29,8 +30,9 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
       <View>
         <Text style={styles.title}>{medicine.title}</Text>
         <Text style={styles.subTitle}>
-          {medicine.schedule.nextDoseDate &&
-            `${LanguageService.translate("Next dose")}: ${ddmmyyyyFromDate(new Date(medicine.schedule.nextDoseDate))}`}
+          {medicine.schedule.nextDoseDate
+            ? `${LanguageService.translate("Next dose")}: ${ddmmyyyyFromDate(new Date(medicine.schedule.nextDoseDate))} ${hhmmFromDate(new Date(medicine.schedule.nextDoseDate))}`
+            : LanguageService.translate("Only as needed")}
         </Text>
       </View>
       <View style={styles.right}>

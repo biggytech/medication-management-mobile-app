@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "@/components/common/markup/Screen";
 import { Wizard } from "@/components/common/Wizard";
@@ -9,42 +9,38 @@ import { NotificationSchedulingService } from "@/services/notifications/Notifica
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { MedicineWizard } from "@/components/entities/medicine/MedicineWizard/MedicineWizard";
 import { LanguageService } from "@/services/language/LanguageService";
-import { showSuccess } from "@/utils/ui/showSuccess";
 import { Text } from "@/components/common/typography/Text";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
+import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 const EditMedicineScreen: React.FC = () => {
-  const { medicineId } = useLocalSearchParams();
-  const [medicineData, setMedicineData] = useState<MedicineFromApi | null>(
-    null,
-  );
-  const [loading, setLoading] = useState(true);
+  const { medicineId } = useLocalSearchParams<{
+    medicineId: string;
+  }>();
 
-  useEffect(() => {
-    const fetchMedicine = async () => {
-      try {
-        if (medicineId && typeof medicineId === "string") {
-          const data = await APIService.medicines.get(parseInt(medicineId, 10));
-          setMedicineData(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch medicine:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMedicine();
-  }, [medicineId]);
+  const { data: medicine = null, isLoading } =
+    useQueryWithFocus<MedicineFromApi>({
+      queryKey: ["medicine", medicineId],
+      queryFn: () => APIService.medicines.get(parseInt(medicineId, 10)),
+    });
 
   const handleSubmit = useCallback(
     async (data: Record<string, unknown>) => {
-      if (!medicineData) return;
+      if (!medicine) return;
 
       try {
         // Update medicine in backend
         const medicineUpdateData = data as unknown as MedicineData;
-        await APIService.medicines.update(medicineData.id, medicineUpdateData);
+
+        if (FEATURE_FLAGS.USE_V2_NOTIFICATION_SYSTEM) {
+          medicineUpdateData.schedule.nextDoseDate =
+            MedicineScheduleService.getNextDoseDateForSchedule(
+              medicineUpdateData.schedule,
+            );
+        }
+
+        await APIService.medicines.update(medicine.id, medicineUpdateData);
 
         // Reschedule local push notifications for the medicine
         // Only schedule notifications for emulated devices as per requirements
@@ -55,33 +51,30 @@ const EditMedicineScreen: React.FC = () => {
           console.log("✅ Medication notifications rescheduled successfully");
         }
 
-        showSuccess(
-          LanguageService.translate("MedicineFromApi updated successfully"),
-        );
         router.replace({
           pathname: AppScreens.MEDICINES_SINGLE,
-          params: { medicineId: medicineData.id.toString() },
+          params: { medicineId: medicine.id.toString() },
         });
       } catch (error) {
         console.error("Failed to update medicine:", error);
       }
     },
-    [medicineData],
+    [medicine],
   );
 
   const handleGoBack = useCallback(() => {
-    if (medicineData) {
+    if (medicine) {
       router.back();
     }
-  }, [medicineData]);
+  }, [medicine]);
 
   const screens = MedicineWizard.getScreens();
 
-  if (loading) {
+  if (isLoading) {
     return <BlockingLoader />;
   }
 
-  if (!medicineData) {
+  if (!medicine) {
     return (
       <Screen>
         <Text>{LanguageService.translate("Medicine not found")}</Text>
@@ -91,18 +84,18 @@ const EditMedicineScreen: React.FC = () => {
 
   // Prepare initial data for the wizard
   const initialData: Partial<MedicineData> = {
-    title: medicineData.title,
-    form: medicineData.form,
+    title: medicine.title,
+    form: medicine.form,
     schedule: {
-      ...medicineData.schedule,
-      endDate: medicineData.schedule.endDate
-        ? new Date(medicineData.schedule.endDate)
+      ...medicine.schedule,
+      endDate: medicine.schedule.endDate
+        ? new Date(medicine.schedule.endDate)
         : null,
-      nextDoseDate: medicineData.schedule.nextDoseDate
-        ? new Date(medicineData.schedule.nextDoseDate)
+      nextDoseDate: medicine.schedule.nextDoseDate
+        ? new Date(medicine.schedule.nextDoseDate)
         : null,
     },
-    notes: medicineData.notes || "",
+    notes: medicine.notes || "",
   };
 
   return (

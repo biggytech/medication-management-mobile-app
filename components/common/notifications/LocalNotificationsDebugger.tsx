@@ -6,6 +6,8 @@ import { Title } from "@/components/common/typography/Title";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
+import { MedicineForms, MedicineScheduleTypes } from "@/constants/medicines";
+import { MILLISECONDS_IN_MINUTE } from "@/constants/dates";
 
 /**
  * Debug component for testing local push notifications.
@@ -34,16 +36,14 @@ export const LocalNotificationsDebugger: React.FC = () => {
       // Create a test medicine for notification testing
       const testMedicine = {
         title: "Test Medicine",
-        form: "tablet" as const,
+        form: MedicineForms.TABLET,
         schedule: {
           dose: 1,
-          schedule: {
-            type: "Every day" as const,
-            everyXDays: 1,
-            notificationTimes: ["08:00", "20:00"],
-            userTimeZone: "Europe/Berlin",
-            nextDoseDate: new Date(),
-          },
+          type: MedicineScheduleTypes.EVERY_DAY,
+          everyXDays: 1,
+          notificationTimes: ["08:00", "20:00"],
+          userTimeZone: "Europe/Berlin",
+          nextDoseDate: new Date(new Date().valueOf() + MILLISECONDS_IN_MINUTE), // 1 minute later,
         },
       };
 
@@ -74,7 +74,9 @@ export const LocalNotificationsDebugger: React.FC = () => {
 
       for (const notification of notifications) {
         await NotificationSchedulingService.cancelMedicineNotifications(
-          notification.content.data?.medicineId || 0,
+          typeof notification.content.data?.medicineId === "number"
+            ? notification.content.data.medicineId
+            : 0,
         );
       }
 

@@ -24,7 +24,7 @@ import {
   DEFAULT_MEDICINE_NOTIFICATION_TIME,
   MedicineScheduleTypes,
 } from "@/constants/medicines";
-import { type MedicationSchedule, type MedicineData } from "@/types/medicines";
+import { type MedicineData, type MedicineSchedule } from "@/types/medicines";
 import { Gap } from "@/components/common/markup/Gap";
 import type { WizardScreen } from "@/components/common/Wizard/types";
 import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
@@ -88,7 +88,7 @@ export class MedicineWizard {
         ),
         getValidationSchema: getNewMedicineScheduleSchema,
         node: ({ data, setValue, onScreenSubmit }) => {
-          const schedule: MedicationSchedule =
+          const schedule: MedicineSchedule =
             (data.schedule as any) ??
             MedicineScheduleService.getDefaultSchedule();
 
@@ -117,12 +117,12 @@ export class MedicineWizard {
         title: LanguageService.translate("⚙️ Schedule details"),
         getValidationSchema: getNewMedicineScheduleSchema,
         node: ({ data, setValue, errors, setTouched }) => {
-          const schedule: MedicationSchedule =
+          const schedule: MedicineSchedule =
             (data.schedule as any) ??
             MedicineScheduleService.getDefaultSchedule();
 
-          const setSchedule = (key: keyof MedicationSchedule, value: any) => {
-            const next = { ...schedule, [key]: value } as MedicationSchedule;
+          const setSchedule = (key: keyof MedicineSchedule, value: any) => {
+            const next = { ...schedule, [key]: value } as MedicineSchedule;
             setValue("schedule", next);
           };
 

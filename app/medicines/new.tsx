@@ -14,6 +14,13 @@ const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
     // Add medicine to backend
     const medicineData = data as unknown as MedicineData;
+
+    if (FEATURE_FLAGS.USE_V2_NOTIFICATION_SYSTEM) {
+      medicineData.schedule.nextDoseDate =
+        MedicineScheduleService.getNextDoseDateForSchedule(
+          medicineData.schedule,
+        );
+    }
     await APIService.medicines.add(medicineData);
 
     // Schedule local push notifications for the medicine

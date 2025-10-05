@@ -11,12 +11,12 @@ import { APIService } from "@/services/APIService";
 import type { MedicineFromApi } from "@/types/medicines";
 import { LocalNotificationsDebugger } from "@/components/common/notifications/LocalNotificationsDebugger";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
-import { useQuery } from "@tanstack/react-query";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 import { MedicineListItem } from "@/components/entities/medicine/MedicineListItem";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 const MedicinesScreen: React.FC = () => {
-  const { data: medicines, isLoading } = useQuery({
+  const { data: medicines, isLoading } = useQueryWithFocus<MedicineFromApi[]>({
     queryKey: ["medicines"],
     queryFn: () => APIService.medicines.list(),
   });
@@ -44,28 +44,30 @@ const MedicinesScreen: React.FC = () => {
   }
 
   return (
-    <Screen>
-      <FlatList
-        data={medicines}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-        ListHeaderComponent={
-          FEATURE_FLAGS.SHOW_LOCAL_NOTIFICATIONS_DEBUGGER ? (
-            <LocalNotificationsDebugger />
-          ) : null
-        }
-      />
+    medicines && (
+      <Screen>
+        <FlatList
+          data={medicines}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            FEATURE_FLAGS.SHOW_LOCAL_NOTIFICATIONS_DEBUGGER ? (
+              <LocalNotificationsDebugger />
+            ) : null
+          }
+        />
 
-      <Button
-        color={AppColors.POSITIVE}
-        style={styles.floatingButton}
-        onPress={handleAddNewMedicinePress}
-        text={<Ionicons size={FontSizes.HUGE} name="add" />}
-        rounded
-        elevated
-      />
-    </Screen>
+        <Button
+          color={AppColors.POSITIVE}
+          style={styles.floatingButton}
+          onPress={handleAddNewMedicinePress}
+          text={<Ionicons size={FontSizes.HUGE} name="add" />}
+          rounded
+          elevated
+        />
+      </Screen>
+    )
   );
 };
 

@@ -1,12 +1,14 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { schedulePushNotification } from "@/utils/notifications/schedulePushNotification";
-import type { MedicineData, MedicationSchedule } from "@/types/medicines";
+import type { MedicineData, MedicineSchedule } from "@/types/medicines";
 import { MedicineScheduleTypes } from "@/constants/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
 import { checkNotificationsPermissions } from "@/utils/notifications/checkNotificationsPermissions";
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
+import { getDateWithTime } from "@/utils/date/getDateWithTime";
+import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 /**
  * Service for scheduling local push notifications for medication reminders.
@@ -29,6 +31,8 @@ export class NotificationSchedulingService {
         shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
+        shouldShowBanner: false,
+        shouldShowList: false,
       }),
     });
 
@@ -64,7 +68,7 @@ export class NotificationSchedulingService {
       return;
     }
 
-    const { title, schedule, form } = medicine;
+    const { title, schedule } = medicine;
 
     // Get medication emoji based on form
     const emoji = getMedicineEmoji(medicine);
@@ -73,6 +77,16 @@ export class NotificationSchedulingService {
     const notificationContent = this.createNotificationContent(title, emoji);
 
     try {
+      if (FEATURE_FLAGS.USE_V2_NOTIFICATION_SYSTEM) {
+        if (medicine.schedule.nextDoseDate) {
+          await this.scheduleSpecificDateNotification(
+            medicine.schedule.nextDoseDate,
+            notificationContent,
+          );
+        }
+        return;
+      }
+
       switch (schedule.type) {
         case MedicineScheduleTypes.EVERY_DAY:
           await this.scheduleEveryDayNotifications(
@@ -161,7 +175,7 @@ export class NotificationSchedulingService {
    * Creates daily recurring notifications at specified times.
    */
   private static async scheduleEveryDayNotifications(
-    schedule: MedicationSchedule,
+    schedule: MedicineSchedule,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { notificationTimes } = schedule;
@@ -188,7 +202,7 @@ export class NotificationSchedulingService {
    * Creates notifications starting from the next dose date.
    */
   private static async scheduleEveryOtherDayNotifications(
-    schedule: MedicationSchedule,
+    schedule: MedicineSchedule,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { nextDoseDate, notificationTimes } = schedule;
@@ -199,11 +213,10 @@ export class NotificationSchedulingService {
       );
     }
 
-    const [hours, minutes] = notificationTimes[0].split(":").map(Number);
-
-    // Calculate the date and time for the first notification
-    const notificationDate = new Date(nextDoseDate);
-    notificationDate.setHours(hours, minutes, 0, 0);
+    const notificationDate = getDateWithTime(
+      new Date(nextDoseDate),
+      notificationTimes[0],
+    );
 
     // Schedule the first notification
     const firstTrigger: Notifications.DateTriggerInput = {
@@ -235,7 +248,7 @@ export class NotificationSchedulingService {
    * Creates notifications based on the specified interval.
    */
   private static async scheduleEveryXDaysNotifications(
-    schedule: MedicationSchedule,
+    schedule: MedicineSchedule,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { nextDoseDate, notificationTimes, everyXDays } = schedule;
@@ -282,7 +295,7 @@ export class NotificationSchedulingService {
    * Creates weekly recurring notifications on specified days.
    */
   private static async scheduleSpecificWeekDaysNotifications(
-    schedule: MedicationSchedule,
+    schedule: MedicineSchedule,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { daysOfWeek, notificationTimes } = schedule;
@@ -312,6 +325,18 @@ export class NotificationSchedulingService {
     }
 
     console.log(`Scheduled notifications for ${daysOfWeek.length} week days`);
+  }
+
+  private static async scheduleSpecificDateNotification(
+    date: Date,
+    content: Notifications.NotificationContentInput,
+  ) {
+    const firstTrigger: Notifications.DateTriggerInput = {
+      type: SchedulableTriggerInputTypes.DATE,
+      date,
+    };
+
+    await schedulePushNotification(content, firstTrigger);
   }
 
   /**

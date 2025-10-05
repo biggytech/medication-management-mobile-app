@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View, Platform } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { Platform, TouchableOpacity, View } from "react-native";
 import type { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { styles } from "./styles";
 import type { TimePickerProps } from "./types";
 import { Text } from "@/components/common/typography/Text";
@@ -12,6 +12,7 @@ import { Link } from "@/components/common/buttons/Link";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
+import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
 
 // Renders a native time picker using @react-native-community/datetimepicker with configurable minute intervals.
 const TimePicker: React.FC<TimePickerProps> = ({
@@ -37,13 +38,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
     return date;
   };
 
-  // Convert Date object to time string
-  const getTimeStringFromDate = (date: Date): string => {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-
   const displayText =
     value ?? placeholder ?? LanguageService.translate("Select time");
 
@@ -54,7 +48,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
     setShowPicker(Platform.OS === "ios");
 
     if (selectedDate) {
-      const timeString = getTimeStringFromDate(selectedDate);
+      const timeString = hhmmFromDate(selectedDate);
       onChange(timeString);
       onBlur?.();
     }

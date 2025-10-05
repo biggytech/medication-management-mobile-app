@@ -1,5 +1,6 @@
 export const FEATURE_FLAGS = {
   SCHEDULE_LOCAL_PUSH_NOTIFICATIONS: true,
+  USE_V2_NOTIFICATION_SYSTEM: true,
 
   /**
    * Notifications Debuggers

@@ -9,7 +9,6 @@ import { AppScreens } from "@/constants/navigation";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
 import { ddmmyyyyFromDate } from "@/utils/date/ddmmyyyyFromDate";
-import { useQuery } from "@tanstack/react-query";
 import { formatScheduleInfo } from "@/utils/formatters/medicine/formatScheduleInfo";
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
 import { getMedicineDoseText } from "@/utils/ui/getMedicineDoseText";
@@ -21,19 +20,22 @@ import { DetailsCard } from "@/components/common/DetailsCard";
 import { GradientHeader } from "@/components/common/GradientHeader";
 import { IconButton } from "@/components/common/buttons/IconButton";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
+import type { MedicineFromApi } from "@/types/medicines";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
     medicineId: string;
   }>();
 
-  const { data: medicine = null, isLoading: loading } = useQuery({
-    queryKey: ["medicine", medicineId],
-    queryFn: () => APIService.medicines.get(parseInt(medicineId, 10)),
-  });
+  const { data: medicine = null, isLoading: loading } =
+    useQueryWithFocus<MedicineFromApi>({
+      queryKey: ["medicine", medicineId],
+      queryFn: () => APIService.medicines.get(parseInt(medicineId, 10)),
+    });
 
   const handleEdit = () => {
-    router.push({
+    router.replace({
       pathname: AppScreens.MEDICINES_EDIT,
       params: { medicineId },
     });
