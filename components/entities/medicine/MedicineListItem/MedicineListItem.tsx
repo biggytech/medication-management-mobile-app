@@ -6,11 +6,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { AppColors } from "@/constants/styling/colors";
 
 import { styles } from "./styles";
-import { LanguageService } from "@/services/language/LanguageService";
-import { ddmmyyyyFromDate } from "@/utils/date";
 import { Round } from "@/components/common/Round";
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
-import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
+import { formatNextDoseDate } from "@/utils/formatters/medicine/formatNextDoseDate";
+import { isDoseOverdue } from "@/utils/formatters/medicine/isDoseOverdue";
 
 const MedicineListItem: React.FC<MedicineListItemProps> = ({
   medicine,
@@ -29,10 +28,13 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
       </View>
       <View>
         <Text style={styles.title}>{medicine.title}</Text>
-        <Text style={styles.subTitle}>
-          {medicine.schedule.nextDoseDate
-            ? `${LanguageService.translate("Next dose")}: ${ddmmyyyyFromDate(new Date(medicine.schedule.nextDoseDate))} ${hhmmFromDate(new Date(medicine.schedule.nextDoseDate))}`
-            : LanguageService.translate("Only as needed")}
+        <Text
+          style={[
+            styles.subTitle,
+            isDoseOverdue(medicine) ? styles.overdue : {},
+          ]}
+        >
+          {formatNextDoseDate(medicine)}
         </Text>
       </View>
       <View style={styles.right}>
