@@ -14,6 +14,7 @@ import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 import { MedicineListItem } from "@/components/entities/medicine/MedicineListItem";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
+import { paddingStyles } from "@/assets/styles/spacings";
 
 const MedicinesScreen: React.FC = () => {
   const { data: medicines, isLoading } = useQueryWithFocus<MedicineFromApi[]>({
@@ -50,7 +51,7 @@ const MedicinesScreen: React.FC = () => {
           data={medicines}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={paddingStyles.small}
           ListHeaderComponent={
             FEATURE_FLAGS.SHOW_LOCAL_NOTIFICATIONS_DEBUGGER ? (
               <LocalNotificationsDebugger />
@@ -76,9 +77,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     right: 30,
-  },
-  list: {
-    padding: 10,
   },
 });
 

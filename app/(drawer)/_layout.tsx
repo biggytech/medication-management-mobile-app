@@ -97,6 +97,10 @@ export default function DrawerLayout() {
               />
             ),
             drawerActiveTintColor: FOCUSED_COLOR,
+            headerStyle: {
+              backgroundColor: AppColors.PRIMARY,
+            },
+            headerTintColor: AppColors.WHITE,
           })}
         />
       </Drawer>

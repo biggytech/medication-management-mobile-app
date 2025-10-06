@@ -10,10 +10,12 @@ import { Round } from "@/components/common/Round";
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
 import { formatNextDoseDate } from "@/utils/formatters/medicine/formatNextDoseDate";
 import { isDoseOverdue } from "@/utils/formatters/medicine/isDoseOverdue";
+import { formatNextDoseDateShort } from "@/utils/formatters/medicine/formatNextDoseDateShort";
 
 const MedicineListItem: React.FC<MedicineListItemProps> = ({
   medicine,
   onPress,
+  shortDoseDate = false,
 }) => {
   return (
     <TouchableOpacity
@@ -34,7 +36,9 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
             isDoseOverdue(medicine) ? styles.overdue : {},
           ]}
         >
-          {formatNextDoseDate(medicine)}
+          {shortDoseDate
+            ? formatNextDoseDateShort(medicine)
+            : formatNextDoseDate(medicine)}
         </Text>
       </View>
       <View style={styles.right}>

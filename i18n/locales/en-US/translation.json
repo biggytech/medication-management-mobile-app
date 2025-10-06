@@ -109,5 +109,19 @@
   "drop(s)": "drop(s)",
   "zilch(s)": "zilch(s)",
   "spoon(s)":"spoon(s)",
-  "Overdue": "Overdue"
+  "Overdue": "Overdue",
+  "Yesterday": "Yesterday",
+  "Jan": "Jan",
+  "Feb": "Feb",
+  "Mar": "Mar",
+  "Apr": "Apr",
+  "May": "May",
+  "Jun": "Jun",
+  "Jul": "Jul",
+  "Aug": "Aug",
+  "Sep": "Sep",
+  "Oct": "Oct",
+  "Nov": "Nov",
+  "Dec": "Dec",
+  "No records": "No records"
 }

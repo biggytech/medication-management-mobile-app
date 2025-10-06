@@ -3,9 +3,10 @@ import { showError } from "@/utils/ui/showError";
 import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
-import type { MedicineFromApi, MedicineData } from "@/types/medicines";
+import type { MedicineData, MedicineFromApi } from "@/types/medicines";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
+import { UTCyyyymmddFromDate } from "@/utils/date/UTCyyyymmddFromDate";
 
 enum Methods {
   GET = "GET",
@@ -186,6 +187,16 @@ export class APIService {
       });
 
       return result;
+    },
+
+    async listByDate(date: Date) {
+      const formattedDateInUTC = UTCyyyymmddFromDate(date);
+
+      return await APIService.getInstance().makeRequest<MedicineFromApi[]>({
+        method: Methods.GET,
+        url: `${this.path}/list/by-date/${formattedDateInUTC}`,
+        requiresAuth: true,
+      });
     },
 
     async get(id: number) {
