@@ -21,13 +21,13 @@ const NewMedicineScreen: React.FC = () => {
           medicineData.schedule,
         );
     }
-    await APIService.medicines.add(medicineData);
+    const response = await APIService.medicines.add(medicineData);
 
     // Schedule local push notifications for the medicine
     // Only schedule notifications for emulated devices as per requirements
     if (FEATURE_FLAGS.SCHEDULE_LOCAL_PUSH_NOTIFICATIONS) {
       await NotificationSchedulingService.scheduleMedicineNotifications(
-        medicineData,
+        response,
       );
       console.log("✅ Medication notifications scheduled successfully");
     }

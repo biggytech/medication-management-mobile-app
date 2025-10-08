@@ -1,7 +1,7 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { schedulePushNotification } from "@/utils/notifications/schedulePushNotification";
-import type { MedicineData, MedicineSchedule } from "@/types/medicines";
+import type { MedicineFromApi, MedicineSchedule } from "@/types/medicines";
 import { MedicineScheduleTypes } from "@/constants/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
@@ -9,6 +9,7 @@ import { checkNotificationsPermissions } from "@/utils/notifications/checkNotifi
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
 import { getDateWithTime } from "@/utils/date/getDateWithTime";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
+import { NotificationTypes } from "@/constants/notifications";
 
 /**
  * Service for scheduling local push notifications for medication reminders.
@@ -57,8 +58,13 @@ export class NotificationSchedulingService {
    * notification triggers for each case.
    */
   public static async scheduleMedicineNotifications(
-    medicine: MedicineData,
+    medicine: MedicineFromApi,
   ): Promise<void> {
+    // unschedule previous notifications
+    await NotificationSchedulingService.cancelMedicineReminderNotifications(
+      medicine.id,
+    );
+
     if (!(await checkNotificationsPermissions())) {
       alert(
         LanguageService.translate(
@@ -74,13 +80,22 @@ export class NotificationSchedulingService {
     const emoji = getMedicineEmoji(medicine);
 
     // Create notification content
-    const notificationContent = this.createNotificationContent(title, emoji);
+    const notificationContent: Notifications.NotificationContentInput = {
+      title: LanguageService.translate("Medication Reminder"),
+      body: `${LanguageService.translate("Hey, you need to take")} ${title}! ${emoji}`,
+      data: {
+        type: NotificationTypes.MEDICINE_REMINDER,
+        medicineId: medicine.id,
+      },
+      sound: "default",
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+    };
 
     try {
       if (FEATURE_FLAGS.USE_V2_NOTIFICATION_SYSTEM) {
         if (medicine.schedule.nextDoseDate) {
           await this.scheduleSpecificDateNotification(
-            medicine.schedule.nextDoseDate,
+            new Date(medicine.schedule.nextDoseDate),
             notificationContent,
           );
         }
@@ -136,16 +151,18 @@ export class NotificationSchedulingService {
    * Cancel all notifications for a specific medicine.
    * This is useful when a medicine is deleted or its schedule is changed.
    */
-  public static async cancelMedicineNotifications(
+  public static async cancelMedicineReminderNotifications(
     medicineId: number,
   ): Promise<void> {
     try {
       const scheduledNotifications =
-        await Notifications.getAllScheduledNotificationsAsync();
+        await NotificationSchedulingService.getScheduledNotifications();
 
       // Find and cancel notifications for this specific medicine
       const medicineNotifications = scheduledNotifications.filter(
-        (notification) => notification.content.data?.medicineId === medicineId,
+        ({ content: { data } }) =>
+          data?.type === NotificationTypes.MEDICINE_REMINDER &&
+          data?.medicineId === medicineId,
       );
 
       for (const notification of medicineNotifications) {
@@ -175,7 +192,7 @@ export class NotificationSchedulingService {
    * Creates daily recurring notifications at specified times.
    */
   private static async scheduleEveryDayNotifications(
-    schedule: MedicineSchedule,
+    schedule: MedicineSchedule<string>,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { notificationTimes } = schedule;
@@ -202,7 +219,7 @@ export class NotificationSchedulingService {
    * Creates notifications starting from the next dose date.
    */
   private static async scheduleEveryOtherDayNotifications(
-    schedule: MedicineSchedule,
+    schedule: MedicineSchedule<string>,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { nextDoseDate, notificationTimes } = schedule;
@@ -248,7 +265,7 @@ export class NotificationSchedulingService {
    * Creates notifications based on the specified interval.
    */
   private static async scheduleEveryXDaysNotifications(
-    schedule: MedicineSchedule,
+    schedule: MedicineSchedule<string>,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { nextDoseDate, notificationTimes, everyXDays } = schedule;
@@ -295,7 +312,7 @@ export class NotificationSchedulingService {
    * Creates weekly recurring notifications on specified days.
    */
   private static async scheduleSpecificWeekDaysNotifications(
-    schedule: MedicineSchedule,
+    schedule: MedicineSchedule<string>,
     content: Notifications.NotificationContentInput,
   ): Promise<void> {
     const { daysOfWeek, notificationTimes } = schedule;
@@ -337,24 +354,5 @@ export class NotificationSchedulingService {
     };
 
     await schedulePushNotification(content, firstTrigger);
-  }
-
-  /**
-   * Create notification content with medication name and emoji.
-   */
-  private static createNotificationContent(
-    medicationName: string,
-    emoji: string,
-  ): Notifications.NotificationContentInput {
-    return {
-      title: LanguageService.translate("Medication Reminder"),
-      body: `Hey, you need to take ${medicationName}! ${emoji}`,
-      data: {
-        type: "medication_reminder",
-        medicationName,
-      },
-      sound: "default",
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    };
   }
 }

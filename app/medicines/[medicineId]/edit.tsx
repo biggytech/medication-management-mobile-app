@@ -40,13 +40,16 @@ const EditMedicineScreen: React.FC = () => {
             );
         }
 
-        await APIService.medicines.update(medicine.id, medicineUpdateData);
+        const response = await APIService.medicines.update(
+          medicine.id,
+          medicineUpdateData,
+        );
 
         // Reschedule local push notifications for the medicine
         // Only schedule notifications for emulated devices as per requirements
         if (FEATURE_FLAGS.SCHEDULE_LOCAL_PUSH_NOTIFICATIONS) {
           await NotificationSchedulingService.scheduleMedicineNotifications(
-            medicineUpdateData,
+            response,
           );
           console.log("✅ Medication notifications rescheduled successfully");
         }

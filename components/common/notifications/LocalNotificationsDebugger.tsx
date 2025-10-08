@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as Notifications from "expo-notifications";
 import { Alert, StyleSheet, View } from "react-native";
 import { Button } from "@/components/common/buttons/Button";
 import { Text } from "@/components/common/typography/Text";
@@ -37,13 +38,16 @@ export const LocalNotificationsDebugger: React.FC = () => {
       const testMedicine = {
         title: "Test Medicine",
         form: MedicineForms.TABLET,
+        id: Number.MAX_SAFE_INTEGER,
         schedule: {
           dose: 1,
           type: MedicineScheduleTypes.EVERY_DAY,
           everyXDays: 1,
           notificationTimes: ["08:00", "20:00"],
           userTimeZone: "Europe/Berlin",
-          nextDoseDate: new Date(new Date().valueOf() + MILLISECONDS_IN_MINUTE), // 1 minute later,
+          nextDoseDate: new Date(
+            new Date().valueOf() + MILLISECONDS_IN_MINUTE,
+          ).toISOString(), // 1 minute later,
         },
       };
 
@@ -73,10 +77,8 @@ export const LocalNotificationsDebugger: React.FC = () => {
         await NotificationSchedulingService.getScheduledNotifications();
 
       for (const notification of notifications) {
-        await NotificationSchedulingService.cancelMedicineNotifications(
-          typeof notification.content.data?.medicineId === "number"
-            ? notification.content.data.medicineId
-            : 0,
+        await Notifications.cancelScheduledNotificationAsync(
+          notification.identifier,
         );
       }
 
@@ -90,6 +92,23 @@ export const LocalNotificationsDebugger: React.FC = () => {
         "Failed to clear notifications. Check console for details.",
         [{ text: "OK" }],
       );
+    }
+  };
+
+  const logAllNotifications = async () => {
+    try {
+      const notifications =
+        await NotificationSchedulingService.getScheduledNotifications();
+
+      for (const notification of notifications) {
+        console.log(notification.content.data);
+        // @ts-expect-error - Poorly typed interface
+        notification.trigger?.value &&
+          // @ts-expect-error - Poorly typed interface
+          console.log(new Date(notification.trigger.value).toLocaleString());
+      }
+    } catch (error) {
+      console.error("Failed to log notifications:", error);
     }
   };
 
@@ -123,7 +142,11 @@ export const LocalNotificationsDebugger: React.FC = () => {
           onPress={loadScheduledNotifications}
           style={[styles.button, styles.secondaryButton]}
         />
-
+        <Button
+          text="Log All Notifications"
+          onPress={logAllNotifications}
+          style={[styles.button, styles.dangerButton]}
+        />
         <Button
           text="Clear All Notifications"
           onPress={handleClearAllNotifications}

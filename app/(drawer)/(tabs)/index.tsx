@@ -37,14 +37,11 @@ const HomeScreen: React.FC = () => {
     [handleMedicinePress],
   );
 
-  if (isLoading) {
-    return <BlockingLoader />;
-  }
-
   return (
-    medicines && (
-      <Screen>
-        <Last7Days activeDate={activeDate} onActiveDateChange={setActiveDate} />
+    <Screen>
+      <Last7Days activeDate={activeDate} onActiveDateChange={setActiveDate} />
+      {isLoading && <BlockingLoader />}
+      {medicines && !isLoading && (
         <FlatList
           data={medicines}
           keyExtractor={(item) => item.id.toString()}
@@ -61,8 +58,8 @@ const HomeScreen: React.FC = () => {
             </View>
           }
         />
-      </Screen>
-    )
+      )}
+    </Screen>
   );
 };
 

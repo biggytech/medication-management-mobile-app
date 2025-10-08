@@ -167,12 +167,13 @@ export class APIService {
     path: "/medicines",
 
     async add(data: MedicineData) {
-      const result = await APIService.getInstance().makeRequest<{}>({
-        method: Methods.POST,
-        url: `${this.path}/add`,
-        requiresAuth: true,
-        body: data,
-      });
+      const result =
+        await APIService.getInstance().makeRequest<MedicineFromApi>({
+          method: Methods.POST,
+          url: `${this.path}/add`,
+          requiresAuth: true,
+          body: data,
+        });
 
       return result;
     },
@@ -211,12 +212,13 @@ export class APIService {
     },
 
     async update(id: number, data: MedicineData) {
-      const result = await APIService.getInstance().makeRequest<{}>({
-        method: Methods.PUT,
-        url: `${this.path}/${id}`,
-        requiresAuth: true,
-        body: data,
-      });
+      const result =
+        await APIService.getInstance().makeRequest<MedicineFromApi>({
+          method: Methods.PUT,
+          url: `${this.path}/${id}`,
+          requiresAuth: true,
+          body: data,
+        });
 
       return result;
     },
