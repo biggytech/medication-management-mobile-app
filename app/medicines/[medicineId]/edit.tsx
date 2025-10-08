@@ -40,6 +40,7 @@ const EditMedicineScreen: React.FC = () => {
             );
         }
 
+        // TODO: do not save if dose date is bigger than ending date
         const response = await APIService.medicines.update(
           medicine.id,
           medicineUpdateData,

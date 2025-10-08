@@ -6,7 +6,7 @@ import { AuthService } from "@/services/auth/AuthService";
 import type { MedicineData, MedicineFromApi } from "@/types/medicines";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
-import { UTCyyyymmddFromDate } from "@/utils/date/UTCyyyymmddFromDate";
+import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
 
 enum Methods {
   GET = "GET",
@@ -191,11 +191,12 @@ export class APIService {
     },
 
     async listByDate(date: Date) {
-      const formattedDateInUTC = UTCyyyymmddFromDate(date);
+      const formattedDate = yyyymmddFromDate(date);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       return await APIService.getInstance().makeRequest<MedicineFromApi[]>({
         method: Methods.GET,
-        url: `${this.path}/list/by-date/${formattedDateInUTC}`,
+        url: `${this.path}/list/by-date/${formattedDate}?timezone=${timeZone}`,
         requiresAuth: true,
       });
     },

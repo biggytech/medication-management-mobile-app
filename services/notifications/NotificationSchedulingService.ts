@@ -60,6 +60,8 @@ export class NotificationSchedulingService {
   public static async scheduleMedicineNotifications(
     medicine: MedicineFromApi,
   ): Promise<void> {
+    // TODO: do not schedule if dose date is bigger than ending date
+
     // unschedule previous notifications
     await NotificationSchedulingService.cancelMedicineReminderNotifications(
       medicine.id,

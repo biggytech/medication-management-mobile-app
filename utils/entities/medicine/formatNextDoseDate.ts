@@ -2,7 +2,7 @@ import type { MedicineFromApi } from "@/types/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { ddmmyyyyFromDate } from "@/utils/date";
 import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
-import { isDoseOverdue } from "@/utils/formatters/medicine/isDoseOverdue";
+import { isOverdue } from "@/utils/entities/medicine/isOverdue";
 
 export const formatNextDoseDate = (medicine: MedicineFromApi) => {
   const {
@@ -15,8 +15,8 @@ export const formatNextDoseDate = (medicine: MedicineFromApi) => {
 
   const nextDoseDateAsDate = new Date(nextDoseDate);
 
-  if (isDoseOverdue(medicine)) {
-    return LanguageService.translate("Overdue");
+  if (isOverdue(medicine)) {
+    return `${LanguageService.translate("Overdue")}: ${ddmmyyyyFromDate(nextDoseDateAsDate)} ${hhmmFromDate(nextDoseDateAsDate)}`;
   }
 
   return `${LanguageService.translate("Next dose")}: ${ddmmyyyyFromDate(nextDoseDateAsDate)} ${hhmmFromDate(nextDoseDateAsDate)}`;

@@ -8,9 +8,12 @@ import { AppColors } from "@/constants/styling/colors";
 import { styles } from "./styles";
 import { Round } from "@/components/common/Round";
 import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
-import { formatNextDoseDate } from "@/utils/formatters/medicine/formatNextDoseDate";
-import { isDoseOverdue } from "@/utils/formatters/medicine/isDoseOverdue";
-import { formatNextDoseDateShort } from "@/utils/formatters/medicine/formatNextDoseDateShort";
+import { formatNextDoseDate } from "@/utils/entities/medicine/formatNextDoseDate";
+import { isOverdue } from "@/utils/entities/medicine/isOverdue";
+import { formatNextDoseDateShort } from "@/utils/entities/medicine/formatNextDoseDateShort";
+import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
+import { isEndingToday } from "@/utils/entities/medicine/isEndingToday";
+import { LanguageService } from "@/services/language/LanguageService";
 
 const MedicineListItem: React.FC<MedicineListItemProps> = ({
   medicine,
@@ -30,16 +33,20 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
       </View>
       <View>
         <Text style={styles.title}>{medicine.title}</Text>
-        <Text
-          style={[
-            styles.subTitle,
-            isDoseOverdue(medicine) ? styles.overdue : {},
-          ]}
-        >
-          {shortDoseDate
-            ? formatNextDoseDateShort(medicine)
-            : formatNextDoseDate(medicine)}
-        </Text>
+        {isDueOrOverdueToday(medicine) && (
+          <Text
+            style={[styles.subTitle, isOverdue(medicine) ? styles.overdue : {}]}
+          >
+            {shortDoseDate
+              ? formatNextDoseDateShort(medicine)
+              : formatNextDoseDate(medicine)}
+          </Text>
+        )}
+        {isEndingToday(medicine) && (
+          <Text style={[styles.subTitle]}>
+            {LanguageService.translate("Ending today")}
+          </Text>
+        )}
       </View>
       <View style={styles.right}>
         <Ionicons name="chevron-forward" size={20} color={AppColors.DARKGREY} />

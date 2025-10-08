@@ -21,6 +21,8 @@ const NewMedicineScreen: React.FC = () => {
           medicineData.schedule,
         );
     }
+
+    // TODO: do not save if dose date is bigger than ending date
     const response = await APIService.medicines.add(medicineData);
 
     // Schedule local push notifications for the medicine

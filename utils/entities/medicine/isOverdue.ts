@@ -1,6 +1,6 @@
 import type { MedicineFromApi } from "@/types/medicines";
 
-export const isDoseOverdue = (medicine: MedicineFromApi) => {
+export const isOverdue = (medicine: MedicineFromApi) => {
   const {
     schedule: { nextDoseDate },
   } = medicine;
