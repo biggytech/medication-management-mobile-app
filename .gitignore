@@ -47,3 +47,6 @@ yarn-error.*
 # Private keys
 keys/
 google-services.json
+
+#iOS
+ios/
