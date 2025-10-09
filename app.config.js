@@ -4,7 +4,7 @@ export default {
     slug: "medica",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/icon.png", // TODO: change app icon
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
@@ -25,6 +25,10 @@ export default {
       output: "static",
       favicon: "./assets/images/favicon.png",
     },
+    notification: {
+      icon: "./assets/images/logo/pushNotifications/pill_reminder.png",
+      color: "#80d6af",
+    },
     plugins: [
       "expo-router",
       [
@@ -37,6 +41,19 @@ export default {
         },
       ],
       "expo-localization",
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/images/logo/pushNotifications/pill_reminder.png",
+          color: "#80d6af",
+          defaultChannel: "default",
+          // "sounds": [
+          //   "./local/assets/notification_sound.wav",
+          //   "./local/assets/notification_sound_other.wav"
+          // ],
+          enableBackgroundRemoteNotifications: false,
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
