@@ -5,6 +5,8 @@
   "scripts": {
     "start": "expo start",
     "android": "npx expo run:android",
+    "android:no-cache": "npx expo run:android --no-build-cache",
+    "prebuild": "npx expo prebuild",
     "ios": "npx expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",

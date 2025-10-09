@@ -10,6 +10,7 @@ export default {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
+      bundleIdentifier: "com.neli.medica",
     },
     android: {
       adaptiveIcon: {
