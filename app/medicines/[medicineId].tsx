@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import React, { useMemo, useState } from "react";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../components/common/markup/Screen";
 import { Text } from "@/components/common/typography/Text";
@@ -22,11 +22,15 @@ import { IconButton } from "@/components/common/buttons/IconButton";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 import type { MedicineFromApi } from "@/types/medicines";
+import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
+import { useToaster } from "@/hooks/ui/useToaster";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
     medicineId: string;
   }>();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { showSuccess, showError } = useToaster();
 
   const { data: medicine = null, isLoading: loading } =
     useQueryWithFocus<MedicineFromApi>({
@@ -39,6 +43,67 @@ const MedicineScreen: React.FC = () => {
       pathname: AppScreens.MEDICINES_EDIT,
       params: { medicineId },
     });
+  };
+
+  /**
+   * Handles the deletion of a medicine with confirmation dialog.
+   * This function shows a confirmation alert, and if confirmed,
+   * cancels all pending notifications and deletes the medicine from the API.
+   */
+  const handleDelete = () => {
+    Alert.alert(
+      LanguageService.translate("Delete Medicine"),
+      LanguageService.translate(
+        "Are you sure you want to delete this medicine?",
+      ) +
+        "\n\n" +
+        LanguageService.translate(
+          "This action cannot be undone and all scheduled notifications will be cancelled.",
+        ),
+      [
+        {
+          text: LanguageService.translate("Cancel"),
+          style: "cancel",
+        },
+        {
+          text: LanguageService.translate("Yes, delete"),
+          style: "destructive",
+          onPress: confirmDelete,
+        },
+      ],
+      { cancelable: true },
+    );
+  };
+
+  /**
+   * Confirms and executes the medicine deletion.
+   * This function handles the actual deletion process including
+   * cancelling notifications and calling the API.
+   */
+  const confirmDelete = async () => {
+    if (!medicine) return;
+
+    setIsDeleting(true);
+    try {
+      // Cancel all pending notifications for this medicine
+      await NotificationSchedulingService.cancelMedicineReminderNotifications(
+        medicine.id,
+      );
+
+      // Delete the medicine from the API
+      await APIService.medicines.delete(medicine.id);
+
+      // Show success message
+      showSuccess(LanguageService.translate("Medicine deleted successfully"));
+
+      // Navigate back to medicines list
+      router.replace(AppScreens.MEDICINES);
+    } catch (error) {
+      console.error("Failed to delete medicine:", error);
+      showError(LanguageService.translate("Something went wrong"));
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const detailsItems: DetailsCardItem[] = useMemo(() => {
@@ -86,7 +151,7 @@ const MedicineScreen: React.FC = () => {
     return items;
   }, [medicine]);
 
-  if (loading) {
+  if (loading || isDeleting) {
     return <BlockingLoader />;
   }
 
@@ -127,6 +192,15 @@ const MedicineScreen: React.FC = () => {
           </GradientHeader>
 
           <DetailsCard items={detailsItems} />
+
+          <View style={styles.bottomActions}>
+            <IconButton
+              onPress={handleDelete}
+              iconName={"trash"}
+              color={AppColors.NEGATIVE}
+              size={Spacings.STANDART}
+            />
+          </View>
         </ScrollView>
       </Screen>
     )
@@ -137,7 +211,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {},
+  content: {
+    flexGrow: 1,
+  },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
@@ -147,6 +223,20 @@ const styles = StyleSheet.create({
     color: AppColors.WHITE,
     textAlign: "center",
     marginBottom: Spacings.SMALL,
+  },
+  bottomActions: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: Spacings.BIG,
+    paddingHorizontal: Spacings.STANDART,
+    marginTop: "auto",
+    marginLeft: "auto",
+  },
+  deleteButton: {
+    padding: Spacings.SMALL,
+    borderRadius: Spacings.SMALL,
+    backgroundColor: AppColors.GREY,
   },
 });
 

@@ -124,5 +124,11 @@
   "Nov": "Nov",
   "Dec": "Dec",
   "No records": "No records",
-  "Ending today": "Ending today"
+  "Ending today": "Ending today",
+  "Delete": "Delete",
+  "Delete Medicine": "Delete Medicine",
+  "Are you sure you want to delete this medicine?": "Are you sure you want to delete this medicine?",
+  "This action cannot be undone and all scheduled notifications will be cancelled.": "This action cannot be undone and all scheduled notifications will be cancelled.",
+  "Yes, delete": "Yes, delete",
+  "Medicine deleted successfully": "Medicine deleted successfully"
 }

@@ -12,6 +12,7 @@ enum Methods {
   GET = "GET",
   POST = "POST",
   PUT = "PUT",
+  DELETE = "DELETE",
 }
 
 export class APIService {
@@ -220,6 +221,16 @@ export class APIService {
           requiresAuth: true,
           body: data,
         });
+
+      return result;
+    },
+
+    async delete(id: number) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.DELETE,
+        url: `${this.path}/${id}`,
+        requiresAuth: true,
+      });
 
       return result;
     },
