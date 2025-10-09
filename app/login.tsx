@@ -1,6 +1,6 @@
 import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
 import { LanguagePicker } from "@/components/common/inputs/LanguagePicker";
 import { Input } from "@/components/common/inputs/Input";
@@ -36,73 +36,78 @@ export default function LoginScreen(): ReactNode {
 
   return (
     <Screen style={styles.screen}>
-      <View style={styles.languagePickerContainer}>
-        <LanguagePicker />
-      </View>
-      <Form
-        getSchema={getSignInDefaultSchema}
-        style={styles.form}
-        submitText={LanguageService.translate("Login")}
-        onSubmit={onLoginPress}
-        isDisabled={isLoading}
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={"height"}
       >
-        {({ data, setValue, setTouched, errors }) => (
-          <>
-            <Image
-              alt={"Медика"}
-              source={require("../assets/images/logo/logo.png")}
-              style={styles.logo}
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker />
+        </View>
+        <Form
+          getSchema={getSignInDefaultSchema}
+          style={styles.form}
+          submitText={LanguageService.translate("Login")}
+          onSubmit={onLoginPress}
+          isDisabled={isLoading}
+        >
+          {({ data, setValue, setTouched, errors }) => (
+            <>
+              <Image
+                alt={"Медика"}
+                source={require("../assets/images/logo/logo.png")}
+                style={styles.logo}
+              />
+              <Input
+                autoFocus
+                placeholder={LanguageService.translate("Email")}
+                value={data["email"]}
+                onChangeText={(text) => setValue("email", text.trim())}
+                onBlur={() => setTouched("email")}
+                error={errors["email"]}
+                autoComplete="email"
+              />
+              <Input
+                placeholder={LanguageService.translate("Password")}
+                enterKeyHint={"done"}
+                returnKeyType={"done"}
+                secureTextEntry
+                value={data["password"]}
+                onChangeText={(text) => setValue("password", text)}
+                onBlur={() => setTouched("password")}
+                error={errors["password"]}
+                autoComplete="password"
+              />
+            </>
+          )}
+        </Form>
+        <Link
+          text={LanguageService.translate("I don't have account")}
+          onPress={() => {
+            router.push(AppScreens.SIGN_UP);
+          }}
+          style={styles.registerLink}
+          textStyle={styles.registerLinkText}
+          disabled={isLoading}
+        />
+        <View style={styles.bottom}>
+          <View style={styles.withoutLoginButtonContainer}>
+            <Button
+              text={LanguageService.translate("Continue without login")}
+              onPress={onWithoutLoginClick}
+              color={AppColors.ACCENT}
+              disabled={isLoading}
             />
-            <Input
-              autoFocus
-              placeholder={LanguageService.translate("Email")}
-              value={data["email"]}
-              onChangeText={(text) => setValue("email", text.trim())}
-              onBlur={() => setTouched("email")}
-              error={errors["email"]}
-              autoComplete="email"
-            />
-            <Input
-              placeholder={LanguageService.translate("Password")}
-              enterKeyHint={"done"}
-              returnKeyType={"done"}
-              secureTextEntry
-              value={data["password"]}
-              onChangeText={(text) => setValue("password", text)}
-              onBlur={() => setTouched("password")}
-              error={errors["password"]}
-              autoComplete="password"
-            />
-          </>
-        )}
-      </Form>
-      <Link
-        text={LanguageService.translate("I don't have account")}
-        onPress={() => {
-          router.push(AppScreens.SIGN_UP);
-        }}
-        style={styles.registerLink}
-        textStyle={styles.registerLinkText}
-        disabled={isLoading}
-      />
-      <View style={styles.bottom}>
-        <View style={styles.withoutLoginButtonContainer}>
-          <Button
-            text={LanguageService.translate("Continue without login")}
-            onPress={onWithoutLoginClick}
-            color={AppColors.ACCENT}
+          </View>
+          <Link
+            text={LanguageService.translate("I forgot my password")}
+            onPress={() => {
+              // TODO: open forgot password screen
+            }}
+            textStyle={styles.forgotPasswordLinkText}
             disabled={isLoading}
           />
         </View>
-        <Link
-          text={LanguageService.translate("I forgot my password")}
-          onPress={() => {
-            // TODO: open forgot password screen
-          }}
-          textStyle={styles.forgotPasswordLinkText}
-          disabled={isLoading}
-        />
-      </View>
+      </KeyboardAvoidingView>
     </Screen>
   );
 }
@@ -110,9 +115,15 @@ export default function LoginScreen(): ReactNode {
 const styles = StyleSheet.create({
   screen: {
     padding: Spacings.STANDART,
+    flex: 1,
   },
   languagePickerContainer: {
     marginLeft: "auto",
+    elevation: 1,
+    zIndex: 1,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   logo: {
     width: 200,
@@ -121,7 +132,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacings.SMALL,
   },
   form: {
-    marginTop: "auto",
+    flex: 1,
+    justifyContent: "center",
   },
   registerLink: {
     marginTop: "auto",

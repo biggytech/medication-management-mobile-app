@@ -30,11 +30,11 @@ export class NotificationSchedulingService {
     // Configure notification behavior
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
-        shouldShowAlert: true,
         shouldPlaySound: true,
-        shouldSetBadge: false,
-        shouldShowBanner: false,
-        shouldShowList: false,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldShowAlert: true,
       }),
     });
 
@@ -98,7 +98,7 @@ export class NotificationSchedulingService {
     // Create notification content
     const notificationContent: Notifications.NotificationContentInput = {
       title: LanguageService.translate("Medication Reminder"),
-      body: `${LanguageService.translate("Hey, you need to take")} ${title}! ${emoji}`,
+      body: `${LanguageService.translate("It's time to take")} ${title}! ${emoji}`,
       data: {
         type: NotificationTypes.MEDICINE_REMINDER,
         medicineId: medicine.id,

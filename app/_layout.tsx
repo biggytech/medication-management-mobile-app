@@ -14,20 +14,14 @@ import {
   useQueryRefetchOnAppFocus,
 } from "@/providers/QueryProvider";
 import { TOAST_MANAGER_OPTIONS } from "@/constants/toaster";
-import * as Notifications from "expo-notifications";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
+NotificationSchedulingService.initialize().catch((error) => {
+  console.error("Failed to initialize notification service:", error);
 });
 
 setupQueryRefetch();
