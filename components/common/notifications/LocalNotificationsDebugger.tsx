@@ -100,6 +100,11 @@ export const LocalNotificationsDebugger: React.FC = () => {
       const notifications =
         await NotificationSchedulingService.getScheduledNotifications();
 
+      if (!notifications.length) {
+        console.log("No notifications");
+        return;
+      }
+
       for (const notification of notifications) {
         console.log(notification.content.data);
         // @ts-expect-error - Poorly typed interface

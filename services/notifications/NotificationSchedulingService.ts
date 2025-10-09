@@ -10,6 +10,7 @@ import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
 import { getDateWithTime } from "@/utils/date/getDateWithTime";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { NotificationTypes } from "@/constants/notifications";
+import { endOfDay } from "@/utils/date/endOfDay";
 
 /**
  * Service for scheduling local push notifications for medication reminders.
@@ -60,12 +61,25 @@ export class NotificationSchedulingService {
   public static async scheduleMedicineNotifications(
     medicine: MedicineFromApi,
   ): Promise<void> {
-    // TODO: do not schedule if dose date is bigger than ending date
-
     // unschedule previous notifications
     await NotificationSchedulingService.cancelMedicineReminderNotifications(
       medicine.id,
     );
+
+    if (medicine.schedule.endDate && medicine.schedule.nextDoseDate) {
+      if (
+        endOfDay(new Date(medicine.schedule.endDate)) <
+        new Date(medicine.schedule.nextDoseDate)
+      ) {
+        console.log("Skipping schedule due to ending date", {
+          endDate: endOfDay(new Date(medicine.schedule.endDate)),
+          nextDoseDate: new Date(medicine.schedule.nextDoseDate),
+        });
+
+        // do not schedule if dose date is bigger than ending date
+        return;
+      }
+    }
 
     if (!(await checkNotificationsPermissions())) {
       alert(
