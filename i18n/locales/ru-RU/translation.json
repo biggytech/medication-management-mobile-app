@@ -171,5 +171,8 @@
   "Time": "Время",
   "When did you take this medicine?": "Когда вы приняли это лекарство?",
   "Why did you miss taking your medication?": "Почему вы пропустили прием лекарства?",
-  "for reason": "по причине"
+  "for reason": "по причине",
+  "What time should reschedule to?": "На какое время перенести?",
+  "In 5 minutes": "Через 5 минут",
+  "In 15 minutes": "Через 15 минут"
 }

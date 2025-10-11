@@ -50,3 +50,16 @@ export const getSkipDoseReasonOptions =
       title: LanguageService.translate(MedicationLogSkipReasons.OTHER),
     },
   ];
+
+export type RescheduleOptionMinutes = number;
+export const getRescheduleOptions =
+  (): SelectableActionListOption<RescheduleOptionMinutes>[] => [
+    {
+      id: 5,
+      title: LanguageService.translate("In 5 minutes"),
+    },
+    {
+      id: 15,
+      title: LanguageService.translate("In 15 minutes"),
+    },
+  ];

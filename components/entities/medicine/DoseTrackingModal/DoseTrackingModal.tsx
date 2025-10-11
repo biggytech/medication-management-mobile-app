@@ -17,8 +17,10 @@ import { truncate } from "@/utils/ui/truncate";
 import type { SelectableActionListInterface } from "@/components/common/inputs/SelectableActionList/types";
 import { SelectableActionList } from "@/components/common/inputs/SelectableActionList";
 import {
+  getRescheduleOptions,
   getSkipDoseReasonOptions,
   getTakeDoseTimeSelectableOptions,
+  type RescheduleOptionMinutes,
   TakeDoseTimeOptions,
 } from "@/components/entities/medicine/DoseTrackingModal/constants";
 import { useMutation } from "@tanstack/react-query";
@@ -34,6 +36,9 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import type { RequiredField } from "@/utils/types/RequiredField";
+import type { MedicineData } from "@/types/medicines";
+import { addMinutes } from "@/utils/date/addMinutes";
+import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
 
 export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
   medicine,
@@ -76,12 +81,31 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
       },
     });
 
+  const {
+    mutateAsync: updateMedicine,
+    isPending: isUpdateMedicineRequestPending,
+  } = useMutation({
+    mutationFn: async (data: MedicineData) => {
+      await APIService.medicines.update(medicine.id, data);
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.MEDICINES.BY_DATE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.MEDICATION_LOGS.BY_DATE],
+        }),
+      ]);
+    },
+  });
+
   const takeDoseDateListRef = useRef<SelectableActionListInterface | null>(
     null,
   );
   const skipDoseReasonsListRef = useRef<SelectableActionListInterface | null>(
     null,
   );
+  const rescheduleListRef = useRef<SelectableActionListInterface | null>(null);
 
   const handleTakeDose = useCallback(() => {
     takeDoseDateListRef.current?.show();
@@ -91,7 +115,9 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     skipDoseReasonsListRef.current?.show();
   }, []);
 
-  const handleRescheduleDose = useCallback(() => {}, []);
+  const handleRescheduleDose = useCallback(() => {
+    rescheduleListRef.current?.show();
+  }, []);
 
   const detailsItems: DetailsCardItem[] = useMemo(() => {
     return [
@@ -130,6 +156,8 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
 
   const skipDoseReasonOptions = useMemo(() => getSkipDoseReasonOptions(), []);
 
+  const rescheduleOptions = useMemo(() => getRescheduleOptions(), []);
+
   const handleTimeOptionSelected = useCallback(
     async (id: TakeDoseTimeOptions) => {
       if (id === TakeDoseTimeOptions.now) {
@@ -156,6 +184,23 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     [onClose, skipMedicine],
   );
 
+  const handleRescheduleOptionSelected = useCallback(
+    async (id: RescheduleOptionMinutes) => {
+      const updatedMedicine = prepareMedicineDataForEditing(medicine);
+      if (updatedMedicine.schedule.nextDoseDate) {
+        updatedMedicine.schedule.nextDoseDate = addMinutes(
+          updatedMedicine.schedule.nextDoseDate,
+          id,
+        );
+
+        await updateMedicine(updatedMedicine);
+      }
+
+      onClose();
+    },
+    [medicine, onClose, updateMedicine],
+  );
+
   const handleTakeDoseTimeChange = useCallback(
     async (event: DateTimePickerEvent, selectedDate?: Date) => {
       setShowTakeDoseTimePicker(false);
@@ -171,7 +216,10 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     [onClose, takeMedicine],
   );
 
-  const isLoading = isTakingDoseRequestPending || isSkippingDoseRequestPending;
+  const isLoading =
+    isTakingDoseRequestPending ||
+    isSkippingDoseRequestPending ||
+    isUpdateMedicineRequestPending;
 
   return (
     <>
@@ -220,6 +268,13 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
             options={skipDoseReasonOptions}
             ref={skipDoseReasonsListRef}
             onSelect={handleSkipReasonOptionSelected}
+          />
+
+          <SelectableActionList
+            title={LanguageService.translate("What time should reschedule to?")}
+            options={rescheduleOptions}
+            ref={rescheduleListRef}
+            onSelect={handleRescheduleOptionSelected}
           />
         </View>
 

@@ -5,12 +5,12 @@ export interface SelectableActionListInterface<> {
   close: () => void;
 }
 
-export interface SelectableActionListOption<OptionId extends string = string> {
+export interface SelectableActionListOption<OptionId = string> {
   title: string;
   id: OptionId;
 }
 
-export interface SelectableActionListProps<OptionId extends string = string> {
+export interface SelectableActionListProps<OptionId = string> {
   title: string;
   ref?: RefObject<SelectableActionListInterface | null>;
   options: SelectableActionListOption<OptionId>[];

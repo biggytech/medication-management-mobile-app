@@ -14,7 +14,7 @@ import { Text } from "@/components/common/typography/Text";
 import { styles } from "./styles";
 import { ReactMemoWithGeneric } from "@/utils/types/ReactMemoWithGeneric";
 
-const SelectableActionList = <OptionId extends string = string>({
+const SelectableActionList = <OptionId = string,>({
   title,
   ref,
   options,
@@ -55,7 +55,7 @@ const SelectableActionList = <OptionId extends string = string>({
   );
 
   const keyExtractor = useCallback(
-    ({ id }: SelectableActionListOption) => id,
+    ({ id }: SelectableActionListOption<OptionId>) => String(id),
     [],
   );
 

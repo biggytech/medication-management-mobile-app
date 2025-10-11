@@ -171,5 +171,8 @@
   "Time": "Time",
   "When did you take this medicine?": "When did you take this medicine?",
   "Why did you miss taking your medication?": "Why did you miss taking your medication?",
-  "for reason": "for reason"
+  "for reason": "for reason",
+  "What time should reschedule to?": "What time should reschedule to?",
+  "In 5 minutes": "In 5 minutes",
+  "In 15 minutes": "In 15 minutes"
 }

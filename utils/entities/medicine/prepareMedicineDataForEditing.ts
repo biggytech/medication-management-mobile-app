@@ -4,8 +4,7 @@ export const prepareMedicineDataForEditing = (
   medicine: MedicineFromApi,
 ): MedicineData => {
   return {
-    title: medicine.title,
-    form: medicine.form,
+    ...medicine,
     schedule: {
       ...medicine.schedule,
       endDate: medicine.schedule.endDate
