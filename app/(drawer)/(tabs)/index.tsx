@@ -13,29 +13,81 @@ import { Last7Days } from "@/components/common/Last7Days";
 import { Text } from "@/components/common/typography/Text";
 import { LanguageService } from "@/services/language/LanguageService";
 import { positioningStyles } from "@/assets/styles/positioning";
+import { DoseTrackingModal } from "@/components/entities/medicine/DoseTrackingModal";
 
 const HomeScreen: React.FC = () => {
   const [activeDate, setActiveDate] = useState<Date>(new Date());
+  const [activeMedicine, setActiveMedicine] = useState<MedicineFromApi | null>(
+    null,
+  );
 
   const { data: medicines, isLoading } = useQueryWithFocus<MedicineFromApi[]>({
     queryKey: ["medicines-by-date", activeDate],
     queryFn: () => APIService.medicines.listByDate(activeDate),
   });
 
-  const handleMedicinePress = useCallback((id: MedicineFromApi["id"]) => {
-    // TODO:
-  }, []);
-
   const renderItem = useCallback(
     ({ item }: { item: MedicineFromApi }) => (
       <MedicineListItem
         medicine={item}
-        onPress={handleMedicinePress}
+        onPress={(pressedId) =>
+          setActiveMedicine(
+            medicines?.find(({ id }) => id === pressedId) ?? null,
+          )
+        }
         shortDoseDate
       />
     ),
-    [handleMedicinePress],
+    [medicines],
   );
+
+  /**
+   * Handles dose actions (take, skip, reschedule)
+   */
+  const handleDoseAction = async (
+    action: "take" | "skip" | "reschedule",
+    data?: any,
+  ) => {
+    // if (!medicine) return;
+    //
+    // try {
+    //   switch (action) {
+    //     case "take":
+    //       await APIService.medicationLogs.takeDose({
+    //         medicineId: medicine.id,
+    //         takenAt: data?.takenAt?.toISOString(),
+    //         notes: data?.notes,
+    //       });
+    //       showSuccess(LanguageService.translate("Dose taken successfully"));
+    //       break;
+    //     case "skip":
+    //       await APIService.medicationLogs.skipDose({
+    //         medicineId: medicine.id,
+    //         reason: data?.reason,
+    //         notes: data?.notes,
+    //       });
+    //       showSuccess(LanguageService.translate("Dose skipped successfully"));
+    //       break;
+    //     case "reschedule":
+    //       await APIService.medicationLogs.rescheduleDose({
+    //         medicineId: medicine.id,
+    //         rescheduledTo: data?.rescheduledTo.toISOString(),
+    //         notes: data?.notes,
+    //       });
+    //       showSuccess(
+    //         LanguageService.translate("Dose rescheduled successfully"),
+    //       );
+    //       break;
+    //   }
+    //
+    //   // Refresh tracking data
+    //   setTrackingData(null);
+    //   setShowDoseTracking(false);
+    // } catch (error) {
+    //   console.error("Error performing dose action:", error);
+    //   showError(LanguageService.translate("Something went wrong"));
+    // }
+  };
 
   return (
     <Screen>
@@ -57,6 +109,13 @@ const HomeScreen: React.FC = () => {
               <Text>{LanguageService.translate("No records")}</Text>
             </View>
           }
+        />
+      )}
+      {activeMedicine && (
+        <DoseTrackingModal
+          medicine={activeMedicine}
+          onClose={() => setActiveMedicine(null)}
+          onDoseAction={handleDoseAction}
         />
       )}
     </Screen>

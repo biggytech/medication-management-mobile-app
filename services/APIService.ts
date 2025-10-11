@@ -4,6 +4,13 @@ import { getApiErrorText } from "@/utils/api/getApiErrorText";
 import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
 import type { MedicineData, MedicineFromApi } from "@/types/medicines";
+import type {
+  CancelDoseRequest,
+  DoseRecord,
+  RescheduleDoseRequest,
+  SkipDoseRequest,
+  TakeDoseRequest,
+} from "@/types/doseTracking";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
@@ -229,6 +236,53 @@ export class APIService {
       const result = await APIService.getInstance().makeRequest<{}>({
         method: Methods.DELETE,
         url: `${this.path}/${id}`,
+        requiresAuth: true,
+      });
+
+      return result;
+    },
+  };
+
+  public static medicationLogs = {
+    path: "/medication-logs",
+
+    async takeDose(data: TakeDoseRequest) {
+      const result = await APIService.getInstance().makeRequest<DoseRecord>({
+        method: Methods.POST,
+        url: `${this.path}/take`,
+        requiresAuth: true,
+        body: data,
+      });
+
+      return result;
+    },
+
+    async skipDose(data: SkipDoseRequest) {
+      const result = await APIService.getInstance().makeRequest<DoseRecord>({
+        method: Methods.POST,
+        url: `${this.path}/skip`,
+        requiresAuth: true,
+        body: data,
+      });
+
+      return result;
+    },
+
+    async rescheduleDose(data: RescheduleDoseRequest) {
+      const result = await APIService.getInstance().makeRequest<DoseRecord>({
+        method: Methods.POST,
+        url: `${this.path}/reschedule`,
+        requiresAuth: true,
+        body: data,
+      });
+
+      return result;
+    },
+
+    async cancelDose(data: CancelDoseRequest) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.DELETE,
+        url: `${this.path}/${data.doseId}`,
         requiresAuth: true,
       });
 

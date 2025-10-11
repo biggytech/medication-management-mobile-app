@@ -24,12 +24,16 @@ import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 import type { MedicineFromApi } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { useToaster } from "@/hooks/ui/useToaster";
+import type { DoseTrackingData } from "@/types/doseTracking";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
     medicineId: string;
   }>();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [trackingData, setTrackingData] = useState<DoseTrackingData | null>(
+    null,
+  );
   const { showSuccess, showError } = useToaster();
 
   const { data: medicine = null, isLoading: loading } =
@@ -166,7 +170,7 @@ const MedicineScreen: React.FC = () => {
   }
 
   return (
-    medicine && (
+    <>
       <Screen>
         <ScrollView
           style={styles.container}
@@ -203,7 +207,7 @@ const MedicineScreen: React.FC = () => {
           </View>
         </ScrollView>
       </Screen>
-    )
+    </>
   );
 };
 
@@ -237,6 +241,15 @@ const styles = StyleSheet.create({
     padding: Spacings.SMALL,
     borderRadius: Spacings.SMALL,
     backgroundColor: AppColors.GREY,
+  },
+  doseTrackingSection: {
+    paddingHorizontal: Spacings.STANDART,
+    paddingVertical: Spacings.STANDART,
+  },
+  doseTrackingButton: {
+    backgroundColor: AppColors.PRIMARY,
+    borderRadius: Spacings.SMALL,
+    paddingVertical: Spacings.STANDART,
   },
 });
 
