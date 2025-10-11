@@ -15,7 +15,6 @@ import { LanguageService } from "@/services/language/LanguageService";
 import { positioningStyles } from "@/assets/styles/positioning";
 import { DoseTrackingModal } from "@/components/entities/medicine/DoseTrackingModal";
 import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
-import { noop } from "@/utils/noop";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 
 const HomeScreen: React.FC = () => {
@@ -30,20 +29,22 @@ const HomeScreen: React.FC = () => {
   });
 
   const renderItem = useCallback(
-    ({ item }: { item: MedicineFromApi }) => (
-      <MedicineListItem
-        medicine={item}
-        onPress={
-          isDueOrOverdueToday(item)
-            ? (pressedId) =>
-                setActiveMedicine(
-                  medicines?.find(({ id }) => id === pressedId) ?? null,
-                )
-            : noop
-        }
-        shortDoseDate
-      />
-    ),
+    ({ item }: { item: MedicineFromApi }) => {
+      const isPressable = isDueOrOverdueToday(item);
+
+      return (
+        <MedicineListItem
+          medicine={item}
+          isPressable={isPressable}
+          onPress={(pressedId) =>
+            setActiveMedicine(
+              medicines?.find(({ id }) => id === pressedId) ?? null,
+            )
+          }
+          shortDoseDate
+        />
+      );
+    },
     [medicines],
   );
 

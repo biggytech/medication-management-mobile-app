@@ -5,4 +5,5 @@ export interface MedicineListItemProps {
   onPress: (id: MedicineFromApi["id"]) => void;
   shortDoseDate?: boolean;
   alwaysShowDates?: boolean;
+  isPressable?: boolean;
 }

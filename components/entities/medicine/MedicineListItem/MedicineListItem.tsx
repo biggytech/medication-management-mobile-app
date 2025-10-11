@@ -20,12 +20,13 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
   onPress,
   shortDoseDate = false,
   alwaysShowDates = false,
+  isPressable = true,
 }) => {
   return (
     <TouchableOpacity
       style={styles.item}
-      onPress={() => onPress(medicine.id)}
-      activeOpacity={0.7}
+      onPress={isPressable ? () => onPress(medicine.id) : undefined}
+      activeOpacity={isPressable ? 0.7 : 1}
     >
       <View style={styles.left}>
         <Round shadow small>
@@ -50,7 +51,13 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
         )}
       </View>
       <View style={styles.right}>
-        <Ionicons name="chevron-forward" size={20} color={AppColors.DARKGREY} />
+        {isPressable && (
+          <Ionicons
+            name="chevron-forward"
+            size={20}
+            color={AppColors.DARKGREY}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
