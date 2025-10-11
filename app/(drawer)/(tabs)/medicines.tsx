@@ -35,7 +35,11 @@ const MedicinesScreen: React.FC = () => {
 
   const renderItem = useCallback(
     ({ item }: { item: MedicineFromApi }) => (
-      <MedicineListItem medicine={item} onPress={handleMedicinePress} />
+      <MedicineListItem
+        alwaysShowDates
+        medicine={item}
+        onPress={handleMedicinePress}
+      />
     ),
     [handleMedicinePress],
   );

@@ -12,14 +12,14 @@ import { type ListRenderItemInfo, TouchableOpacity, View } from "react-native";
 import { Text } from "@/components/common/typography/Text";
 
 import { styles } from "./styles";
-import type { SelectableListOption } from "@/components/common/inputs/SelectableList/types";
+import { ReactMemoWithGeneric } from "@/utils/types/ReactMemoWithGeneric";
 
-const SelectableActionList: React.FC<SelectableActionListProps> = ({
+const SelectableActionList = <OptionId extends string = string>({
   title,
   ref,
   options,
   onSelect,
-}) => {
+}: SelectableActionListProps<OptionId>) => {
   const actionSheetRef = useRef<ActionSheetRef>(null);
 
   useImperativeHandle(ref, () => {
@@ -31,7 +31,7 @@ const SelectableActionList: React.FC<SelectableActionListProps> = ({
   }, []);
 
   const handleSelect = useCallback(
-    (id: string) => {
+    (id: OptionId) => {
       onSelect(id);
       actionSheetRef.current?.hide();
     },
@@ -39,7 +39,9 @@ const SelectableActionList: React.FC<SelectableActionListProps> = ({
   );
 
   const renderItem = useCallback(
-    ({ item: { id, title } }: ListRenderItemInfo<SelectableListOption>) => {
+    ({
+      item: { id, title },
+    }: ListRenderItemInfo<SelectableActionListOption<OptionId>>) => {
       return (
         <TouchableOpacity style={styles.item} onPress={() => handleSelect(id)}>
           <Text style={styles.itemText}>{title}</Text>
@@ -70,4 +72,4 @@ const SelectableActionList: React.FC<SelectableActionListProps> = ({
   );
 };
 
-export default React.memo(SelectableActionList);
+export default ReactMemoWithGeneric(SelectableActionList);

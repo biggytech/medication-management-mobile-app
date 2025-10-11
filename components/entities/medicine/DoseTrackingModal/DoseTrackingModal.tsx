@@ -1,13 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { View } from "react-native";
 import { AppColors } from "@/constants/styling/colors";
 import { LanguageService } from "@/services/language/LanguageService";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
 import { styles } from "./styles";
 import type { DoseTrackingModalProps } from "./types";
-import { TakeDoseModal } from "./TakeDoseModal";
-import { SkipDoseModal } from "./SkipDoseModal";
-import { RescheduleDoseModal } from "./RescheduleDoseModal";
 import { ModalWithBackDrop } from "@/components/common/ModalWithBackDrop";
 import type { DetailsCardItem } from "@/components/common/DetailsCard/types";
 import { DetailsCard } from "@/components/common/DetailsCard";
@@ -17,49 +14,44 @@ import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueTod
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
 import { IconButton } from "@/components/common/buttons/IconButton";
 import { truncate } from "@/utils/ui/truncate";
+import type { SelectableActionListInterface } from "@/components/common/inputs/SelectableActionList/types";
+import { SelectableActionList } from "@/components/common/inputs/SelectableActionList";
+import {
+  getTakeDoseTimeSelectableOptions,
+  TakeDoseTimeOptions,
+} from "@/components/entities/medicine/DoseTrackingModal/constants";
+import { useMutation } from "@tanstack/react-query";
+import type { MedicationLogData } from "@/types/medicationLogs";
+import { APIService } from "@/services/APIService";
+import { queryClient } from "@/providers/QueryProvider";
+import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 
-/**
- * Modal component for tracking medication doses
- * Shows medicine information, dose history, and action buttons
- */
 export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
   medicine,
   onClose,
-  onDoseAction,
 }) => {
-  const [showTakeModal, setShowTakeModal] = useState(false);
-  const [showSkipModal, setShowSkipModal] = useState(false);
-  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const { mutateAsync: takeMedicine, isPending: isTakingDoseRequestPending } =
+    useMutation({
+      mutationFn: async (data: Pick<MedicationLogData, "date">) => {
+        await APIService.medicationLogs.take(medicine, data);
 
-  const handleTakeDose = () => {
-    setShowTakeModal(true);
-  };
+        await queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.MEDICINES.BY_DATE],
+        });
+      },
+    });
 
-  const handleSkipDose = () => {
-    setShowSkipModal(true);
-  };
+  const takeDoseDateListRef = useRef<SelectableActionListInterface | null>(
+    null,
+  );
 
-  const handleRescheduleDose = () => {
-    setShowRescheduleModal(true);
-  };
+  const handleTakeDose = useCallback(() => {
+    takeDoseDateListRef.current?.show();
+  }, []);
 
-  const handleTakeDoseSubmit = async (takenAt?: Date, notes?: string) => {
-    setShowTakeModal(false);
-    await onDoseAction("take", { takenAt, notes });
-  };
+  const handleSkipDose = useCallback(() => {}, []);
 
-  const handleSkipDoseSubmit = async (reason: any, notes?: string) => {
-    setShowSkipModal(false);
-    await onDoseAction("skip", { reason, notes });
-  };
-
-  const handleRescheduleDoseSubmit = async (
-    rescheduledTo: Date,
-    notes?: string,
-  ) => {
-    setShowRescheduleModal(false);
-    await onDoseAction("reschedule", { rescheduledTo, notes });
-  };
+  const handleRescheduleDose = useCallback(() => {}, []);
 
   const detailsItems: DetailsCardItem[] = useMemo(() => {
     return [
@@ -84,27 +76,51 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
             key: "notes",
             iconName: "clipboard-outline",
             label: truncate(medicine.notes!, 100),
+            value: "",
           }
         : null,
       // TODO: add last medication log item
     ].filter(isNotNullish);
   }, [medicine]);
 
+  const timeSelectableOptions = useMemo(
+    () => getTakeDoseTimeSelectableOptions(),
+    [],
+  );
+
+  const handleTimeOptionSelected = useCallback(
+    async (id: TakeDoseTimeOptions) => {
+      if (id === TakeDoseTimeOptions.now) {
+        await takeMedicine({
+          date: new Date(),
+        });
+        onClose();
+      } else if (id === TakeDoseTimeOptions.time) {
+      }
+    },
+    [onClose, takeMedicine],
+  );
+
+  const isLoading = isTakingDoseRequestPending;
+
   return (
     <>
       <ModalWithBackDrop
         onClose={onClose}
         title={`${getMedicineEmoji(medicine)} ${medicine.title}`}
+        isLoading={isLoading}
       >
         <DetailsCard items={detailsItems} noValues noPadding />
 
         <View style={styles.actionButtons}>
+          {/*TODO: undo skipping*/}
           <IconButton
             iconName={"close"}
             text={LanguageService.translate("Skip")}
             onPress={handleSkipDose}
             color={AppColors.NEGATIVE}
           />
+          {/*TODO: undo taking*/}
           <IconButton
             iconName={"checkmark"}
             text={LanguageService.translate("Take")}
@@ -117,36 +133,17 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
             onPress={handleRescheduleDose}
             color={AppColors.ACCENT}
           />
+
+          <SelectableActionList
+            title={LanguageService.translate(
+              "When did you take this medicine?",
+            )}
+            options={timeSelectableOptions}
+            ref={takeDoseDateListRef}
+            onSelect={handleTimeOptionSelected}
+          />
         </View>
       </ModalWithBackDrop>
-
-      {/* Sub-modals */}
-      {showTakeModal && (
-        <TakeDoseModal
-          medicine={medicine}
-          isVisible={showTakeModal}
-          onClose={() => setShowTakeModal(false)}
-          onTakeDose={handleTakeDoseSubmit}
-        />
-      )}
-
-      {showSkipModal && (
-        <SkipDoseModal
-          medicine={medicine}
-          isVisible={showSkipModal}
-          onClose={() => setShowSkipModal(false)}
-          onSkipDose={handleSkipDoseSubmit}
-        />
-      )}
-
-      {showRescheduleModal && (
-        <RescheduleDoseModal
-          medicine={medicine}
-          isVisible={showRescheduleModal}
-          onClose={() => setShowRescheduleModal(false)}
-          onRescheduleDose={handleRescheduleDoseSubmit}
-        />
-      )}
     </>
   );
 };

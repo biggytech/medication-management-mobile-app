@@ -114,6 +114,7 @@ export class NotificationSchedulingService {
             new Date(medicine.schedule.nextDoseDate),
             notificationContent,
           );
+          console.log("✅ Medication notifications rescheduled successfully");
         }
         return;
       }

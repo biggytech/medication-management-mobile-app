@@ -5,6 +5,6 @@ export interface SelectableListOption {
 
 export interface SelectableListProps {
   options: SelectableListOption[];
-  selectedId: SelectableListOption["id"];
+  selectedId: SelectableListOption["id"] | null;
   onSelect: (id: SelectableListOption["id"]) => void;
 }

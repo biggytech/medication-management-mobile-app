@@ -4,11 +4,13 @@ import { Modal, ScrollView, TouchableOpacity, View } from "react-native";
 import { Text } from "@/components/common/typography/Text";
 
 import { styles } from "./styles";
+import { OverlayLoader } from "@/components/common/loaders/OverlayLoader";
 
 const ModalWithBackDrop: React.FC<ModalWithBackDropProps> = ({
   title,
   onClose,
   children,
+  isLoading = false,
 }) => {
   return (
     <Modal
@@ -25,6 +27,7 @@ const ModalWithBackDrop: React.FC<ModalWithBackDropProps> = ({
           </View>
 
           <ScrollView style={styles.modalContent}>{children}</ScrollView>
+          {isLoading && <OverlayLoader style={styles.loader} />}
         </View>
       </TouchableOpacity>
     </Modal>

@@ -17,6 +17,17 @@ export enum MissedDoseReason {
   OTHER = "other",
 }
 
+export interface MedicationLogData<DateType = Date> {
+  date: DateType;
+}
+
+export interface MedicationLogDataWithId<DateType = Date>
+  extends MedicationLogData<DateType> {
+  id: number;
+}
+
+export type MedicationLogFromApi = MedicationLogDataWithId<string>;
+
 // TODO: rename to MedicationLog
 export interface DoseRecord {
   id: number;
@@ -37,12 +48,6 @@ export interface DoseTrackingData {
   nextDose?: DoseRecord;
   todayDoses: DoseRecord[];
   overdueDoses: DoseRecord[];
-}
-
-export interface TakeDoseRequest {
-  medicineId: number;
-  takenAt?: string; // ISO string - if not provided, uses current time
-  notes?: string;
 }
 
 export interface SkipDoseRequest {

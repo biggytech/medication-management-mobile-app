@@ -3,6 +3,8 @@ import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
 import { FontSizes } from "@/constants/styling/fonts";
 
+const borderRadius = Spacings.STANDART;
+
 export const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
@@ -12,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   modalContainer: {
     backgroundColor: AppColors.WHITE,
-    borderRadius: Spacings.STANDART,
+    borderRadius,
     margin: Spacings.STANDART,
     maxHeight: "80%",
     width: "90%",
@@ -41,4 +43,5 @@ export const styles = StyleSheet.create({
   modalContent: {
     padding: Spacings.STANDART,
   },
+  loader: { borderRadius },
 });

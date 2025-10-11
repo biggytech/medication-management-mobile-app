@@ -24,7 +24,7 @@ import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 import type { MedicineFromApi } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { useToaster } from "@/hooks/ui/useToaster";
-import type { DoseTrackingData } from "@/types/doseTracking";
+import type { DoseTrackingData } from "@/types/medicationLogs";
 import { truncate } from "@/utils/ui/truncate";
 
 const MedicineScreen: React.FC = () => {

@@ -4,8 +4,10 @@ import {
   MedicineScheduleTypes,
 } from "@/constants/medicines";
 import { getDateWithTime } from "@/utils/date/getDateWithTime";
-import { isNotNullish } from "@/utils/types/isNotNullish";
 import { DAYS_IN_WEEK, MILLISECONDS_IN_DAY } from "@/constants/dates";
+import { addDays } from "@/utils/date/addDays";
+import { startOfDay } from "@/utils/date/startOfDay";
+import { getClosestTodayDoseDate } from "@/utils/entities/medicine/getClosestTodayDoseDate";
 
 export class MedicineScheduleService {
   static getDefaultNextDoseDate() {
@@ -23,10 +25,15 @@ export class MedicineScheduleService {
     };
   }
 
-  static getNextDoseDateForSchedule(schedule: MedicineSchedule): Date | null {
+  static getNextDoseDateForSchedule(
+    schedule: MedicineSchedule,
+    takenDate?: Date,
+  ): Date | null {
     switch (schedule.type) {
       case MedicineScheduleTypes.EVERY_DAY: {
-        const { notificationTimes } = schedule;
+        const { notificationTimes, nextDoseDate } = schedule;
+
+        const fromDate = takenDate ? (nextDoseDate ?? takenDate) : new Date();
 
         if (notificationTimes.length === 0) {
           throw new Error(
@@ -35,26 +42,23 @@ export class MedicineScheduleService {
         }
 
         const notificationTimesSorted = [...notificationTimes].sort();
-        const todayDosesEpochs = notificationTimesSorted
-          .map((time) => getDateWithTime(new Date(), time))
-          .filter(isNotNullish)
-          .map((date) => date.valueOf());
 
-        const closestDoseDateEpoch = todayDosesEpochs.find(
-          (epoch) => epoch > new Date().valueOf(),
+        const closestTodayDoseDate = getClosestTodayDoseDate(
+          schedule,
+          fromDate,
         );
 
-        if (closestDoseDateEpoch) {
-          return new Date(closestDoseDateEpoch);
+        if (closestTodayDoseDate) {
+          return closestTodayDoseDate;
         }
 
-        const tomorrow = new Date(new Date().valueOf() + MILLISECONDS_IN_DAY);
-        return getDateWithTime(tomorrow, notificationTimesSorted[0]);
+        const dayAfter = addDays(new Date(), 1);
+        return getDateWithTime(dayAfter, notificationTimesSorted[0]);
       }
       case MedicineScheduleTypes.EVERY_OTHER_DAY: {
-        const { nextDoseDate, notificationTimes } = schedule;
+        const { notificationTimes } = schedule;
 
-        if (!nextDoseDate || notificationTimes.length === 0) {
+        if (!schedule.nextDoseDate || notificationTimes.length === 0) {
           throw new Error(
             "Next dose date and notification time are required for every other day schedule",
           );
@@ -66,12 +70,20 @@ export class MedicineScheduleService {
           );
         }
 
+        const nextDoseDate = takenDate
+          ? startOfDay(addDays(takenDate, 2))
+          : schedule.nextDoseDate;
+
         return getDateWithTime(new Date(nextDoseDate), notificationTimes[0]);
       }
       case MedicineScheduleTypes.EVERY_X_DAYS: {
-        const { nextDoseDate, notificationTimes, everyXDays } = schedule;
+        const { notificationTimes, everyXDays } = schedule;
 
-        if (!nextDoseDate || notificationTimes.length === 0 || !everyXDays) {
+        if (
+          !schedule.nextDoseDate ||
+          notificationTimes.length === 0 ||
+          !everyXDays
+        ) {
           throw new Error(
             "Next dose date, notification time, and interval are required for every X days schedule",
           );
@@ -82,6 +94,10 @@ export class MedicineScheduleService {
             "Only one notification time is allowed for every X days schedule",
           );
         }
+
+        const nextDoseDate = takenDate
+          ? startOfDay(addDays(takenDate, everyXDays))
+          : schedule.nextDoseDate;
 
         return getDateWithTime(new Date(nextDoseDate), notificationTimes[0]);
       }
@@ -104,38 +120,41 @@ export class MedicineScheduleService {
           );
         }
 
-        const today = new Date();
+        const startFromDate = takenDate
+          ? getDateWithTime(takenDate, notificationTimes[0])
+          : new Date();
         const daysOfWeekSorted = daysOfWeek.sort();
 
-        const currentWeekDay = today.getDay();
+        const startFromDateWeekDay = startFromDate.getDay();
 
         const closestDoseWeekDay = daysOfWeekSorted.find(
-          (weekDay) => weekDay >= currentWeekDay,
+          (weekDay) => weekDay >= startFromDateWeekDay,
         );
         if (typeof closestDoseWeekDay !== "undefined") {
-          const daysDiff = closestDoseWeekDay - currentWeekDay;
+          const daysDiff = closestDoseWeekDay - startFromDateWeekDay;
           const closestDoseDate = getDateWithTime(
-            new Date(today.valueOf() + MILLISECONDS_IN_DAY * daysDiff),
+            new Date(startFromDate.valueOf() + MILLISECONDS_IN_DAY * daysDiff),
             notificationTimes[0],
           );
-          if (closestDoseDate > today) return closestDoseDate;
+          if (closestDoseDate > startFromDate) return closestDoseDate;
         }
 
         const nextClosestDoseWeekDay = daysOfWeekSorted.find(
-          (weekDay) => weekDay > currentWeekDay,
+          (weekDay) => weekDay > startFromDateWeekDay,
         );
         if (typeof nextClosestDoseWeekDay !== "undefined") {
-          const daysDiff = nextClosestDoseWeekDay - currentWeekDay;
+          const daysDiff = nextClosestDoseWeekDay - startFromDateWeekDay;
           const closestDoseDate = getDateWithTime(
-            new Date(today.valueOf() + MILLISECONDS_IN_DAY * daysDiff),
+            new Date(startFromDate.valueOf() + MILLISECONDS_IN_DAY * daysDiff),
             notificationTimes[0],
           );
-          if (closestDoseDate > today) return closestDoseDate;
+          if (closestDoseDate > startFromDate) return closestDoseDate;
         }
 
-        const daysDiff = daysOfWeekSorted[0] + DAYS_IN_WEEK - currentWeekDay;
+        const daysDiff =
+          daysOfWeekSorted[0] + DAYS_IN_WEEK - startFromDateWeekDay;
         return getDateWithTime(
-          new Date(today.valueOf() + MILLISECONDS_IN_DAY * daysDiff),
+          new Date(startFromDate.valueOf() + MILLISECONDS_IN_DAY * daysDiff),
           notificationTimes[0],
         );
       }

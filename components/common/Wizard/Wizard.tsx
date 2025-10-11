@@ -21,7 +21,7 @@ import {
   type DataForValidation,
   validateObject,
 } from "@/utils/validation/validateObject";
-import { ReactMemoWithGeneric } from "@/utils/types/reactMemoWithGeneric";
+import { ReactMemoWithGeneric } from "@/utils/types/ReactMemoWithGeneric";
 import type { AnyObject } from "yup";
 import type { FormInterface } from "@/components/common/inputs/Form/types";
 import { IconButton } from "@/components/common/buttons/IconButton";

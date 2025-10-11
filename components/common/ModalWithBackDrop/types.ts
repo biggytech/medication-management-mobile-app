@@ -4,4 +4,5 @@ export interface ModalWithBackDropProps {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  isLoading?: boolean;
 }

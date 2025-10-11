@@ -5,14 +5,13 @@ import { Wizard } from "@/components/common/Wizard";
 import { APIService } from "@/services/APIService";
 import { AppScreens } from "@/constants/navigation";
 import { type MedicineData, type MedicineFromApi } from "@/types/medicines";
-import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
-import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { MedicineWizard } from "@/components/entities/medicine/MedicineWizard/MedicineWizard";
 import { LanguageService } from "@/services/language/LanguageService";
 import { Text } from "@/components/common/typography/Text";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
-import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
+import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
+import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
 
 const EditMedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
@@ -33,27 +32,12 @@ const EditMedicineScreen: React.FC = () => {
         // Update medicine in backend
         const medicineUpdateData = data as unknown as MedicineData;
 
-        if (FEATURE_FLAGS.USE_V2_NOTIFICATION_SYSTEM) {
-          medicineUpdateData.schedule.nextDoseDate =
-            MedicineScheduleService.getNextDoseDateForSchedule(
-              medicineUpdateData.schedule,
-            );
-        }
-
-        // TODO: do not save if dose date is bigger than ending date
-        const response = await APIService.medicines.update(
-          medicine.id,
-          medicineUpdateData,
-        );
-
-        // Reschedule local push notifications for the medicine
-        // Only schedule notifications for emulated devices as per requirements
-        if (FEATURE_FLAGS.SCHEDULE_LOCAL_PUSH_NOTIFICATIONS) {
-          await NotificationSchedulingService.scheduleMedicineNotifications(
-            response,
+        medicineUpdateData.schedule.nextDoseDate =
+          MedicineScheduleService.getNextDoseDateForSchedule(
+            medicineUpdateData.schedule,
           );
-          console.log("✅ Medication notifications rescheduled successfully");
-        }
+
+        await APIService.medicines.update(medicine.id, medicineUpdateData);
 
         router.replace({
           pathname: AppScreens.MEDICINES_SINGLE,
@@ -87,20 +71,7 @@ const EditMedicineScreen: React.FC = () => {
   }
 
   // Prepare initial data for the wizard
-  const initialData: Partial<MedicineData> = {
-    title: medicine.title,
-    form: medicine.form,
-    schedule: {
-      ...medicine.schedule,
-      endDate: medicine.schedule.endDate
-        ? new Date(medicine.schedule.endDate)
-        : null,
-      nextDoseDate: medicine.schedule.nextDoseDate
-        ? new Date(medicine.schedule.nextDoseDate)
-        : null,
-    },
-    notes: medicine.notes || "",
-  };
+  const initialData = prepareMedicineDataForEditing(medicine);
 
   return (
     <Screen>

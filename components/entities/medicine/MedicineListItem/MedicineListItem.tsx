@@ -19,6 +19,7 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
   medicine,
   onPress,
   shortDoseDate = false,
+  alwaysShowDates = false,
 }) => {
   return (
     <TouchableOpacity
@@ -33,7 +34,7 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
       </View>
       <View>
         <Text style={styles.title}>{medicine.title}</Text>
-        {isDueOrOverdueToday(medicine) && (
+        {(alwaysShowDates || isDueOrOverdueToday(medicine)) && (
           <Text
             style={[styles.subTitle, isOverdue(medicine) ? styles.overdue : {}]}
           >

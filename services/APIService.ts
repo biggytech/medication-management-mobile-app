@@ -5,15 +5,15 @@ import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
 import type { MedicineData, MedicineFromApi } from "@/types/medicines";
 import type {
-  CancelDoseRequest,
-  DoseRecord,
-  RescheduleDoseRequest,
-  SkipDoseRequest,
-  TakeDoseRequest,
-} from "@/types/doseTracking";
+  MedicationLogData,
+  MedicationLogFromApi,
+} from "@/types/medicationLogs";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
+import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
+import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
+import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
 
 enum Methods {
   GET = "GET",
@@ -175,6 +175,9 @@ export class APIService {
     path: "/medicines",
 
     async add(data: MedicineData) {
+      data.schedule.nextDoseDate =
+        MedicineScheduleService.getNextDoseDateForSchedule(data.schedule);
+
       const result =
         await APIService.getInstance().makeRequest<MedicineFromApi>({
           method: Methods.POST,
@@ -182,6 +185,8 @@ export class APIService {
           requiresAuth: true,
           body: data,
         });
+
+      await NotificationSchedulingService.scheduleMedicineNotifications(result);
 
       return result;
     },
@@ -229,6 +234,8 @@ export class APIService {
           body: data,
         });
 
+      await NotificationSchedulingService.scheduleMedicineNotifications(result);
+
       return result;
     },
 
@@ -246,47 +253,62 @@ export class APIService {
   public static medicationLogs = {
     path: "/medication-logs",
 
-    async takeDose(data: TakeDoseRequest) {
-      const result = await APIService.getInstance().makeRequest<DoseRecord>({
-        method: Methods.POST,
-        url: `${this.path}/take`,
-        requiresAuth: true,
-        body: data,
-      });
+    async take(
+      medicine: MedicineFromApi,
+      data: Pick<MedicationLogData, "date">,
+    ) {
+      const result =
+        await APIService.getInstance().makeRequest<MedicationLogFromApi>({
+          method: Methods.POST,
+          url: `${this.path}/${medicine.id}/take`,
+          requiresAuth: true,
+          body: data,
+        });
+
+      // reschedule medicine
+      const medicineDataForUpdate = prepareMedicineDataForEditing(medicine);
+
+      medicineDataForUpdate.schedule.nextDoseDate =
+        MedicineScheduleService.getNextDoseDateForSchedule(
+          medicineDataForUpdate.schedule,
+          data.date,
+        );
+
+      await APIService.medicines.update(medicine.id, medicineDataForUpdate);
 
       return result;
     },
 
-    async skipDose(data: SkipDoseRequest) {
-      const result = await APIService.getInstance().makeRequest<DoseRecord>({
-        method: Methods.POST,
-        url: `${this.path}/skip`,
-        requiresAuth: true,
-        body: data,
-      });
-
-      return result;
-    },
-
-    async rescheduleDose(data: RescheduleDoseRequest) {
-      const result = await APIService.getInstance().makeRequest<DoseRecord>({
-        method: Methods.POST,
-        url: `${this.path}/reschedule`,
-        requiresAuth: true,
-        body: data,
-      });
-
-      return result;
-    },
-
-    async cancelDose(data: CancelDoseRequest) {
-      const result = await APIService.getInstance().makeRequest<{}>({
-        method: Methods.DELETE,
-        url: `${this.path}/${data.doseId}`,
-        requiresAuth: true,
-      });
-
-      return result;
-    },
+    // async skipDose(data: SkipDoseRequest) {
+    //   const result = await APIService.getInstance().makeRequest<DoseRecord>({
+    //     method: Methods.POST,
+    //     url: `${this.path}/skip`,
+    //     requiresAuth: true,
+    //     body: data,
+    //   });
+    //
+    //   return result;
+    // },
+    //
+    // async rescheduleDose(data: RescheduleDoseRequest) {
+    //   const result = await APIService.getInstance().makeRequest<DoseRecord>({
+    //     method: Methods.POST,
+    //     url: `${this.path}/reschedule`,
+    //     requiresAuth: true,
+    //     body: data,
+    //   });
+    //
+    //   return result;
+    // },
+    //
+    // async cancelDose(data: CancelDoseRequest) {
+    //   const result = await APIService.getInstance().makeRequest<{}>({
+    //     method: Methods.DELETE,
+    //     url: `${this.path}/${data.doseId}`,
+    //     requiresAuth: true,
+    //   });
+    //
+    //   return result;
+    // },
   };
 }

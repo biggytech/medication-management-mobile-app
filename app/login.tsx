@@ -98,14 +98,14 @@ export default function LoginScreen(): ReactNode {
               disabled={isLoading}
             />
           </View>
-          <Link
-            text={LanguageService.translate("I forgot my password")}
-            onPress={() => {
-              // TODO: open forgot password screen
-            }}
-            textStyle={styles.forgotPasswordLinkText}
-            disabled={isLoading}
-          />
+          {/*<Link*/}
+          {/*  text={LanguageService.translate("I forgot my password")}*/}
+          {/*  onPress={() => {*/}
+          {/*    // TODO: open forgot password screen*/}
+          {/*  }}*/}
+          {/*  textStyle={styles.forgotPasswordLinkText}*/}
+          {/*  disabled={isLoading}*/}
+          {/*/>*/}
         </View>
       </KeyboardAvoidingView>
     </Screen>
