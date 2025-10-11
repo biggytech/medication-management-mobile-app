@@ -25,6 +25,7 @@ import type { MedicineFromApi } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { useToaster } from "@/hooks/ui/useToaster";
 import type { DoseTrackingData } from "@/types/doseTracking";
+import { truncate } from "@/utils/ui/truncate";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
@@ -148,7 +149,7 @@ const MedicineScreen: React.FC = () => {
         key: "notes",
         iconName: "document-text",
         label: LanguageService.translate("Notes"),
-        value: medicine.notes,
+        value: truncate(medicine.notes, 100),
       });
     }
 

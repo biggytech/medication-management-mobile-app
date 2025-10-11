@@ -1,17 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
-import { Text } from "@/components/common/typography/Text";
-import { Button } from "@/components/common/buttons/Button";
 import { AppColors } from "@/constants/styling/colors";
 import { LanguageService } from "@/services/language/LanguageService";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
-import {
-  formatDoseDate,
-  formatDoseTime,
-  getDoseStatusText,
-  isDoseOverdue,
-} from "./utils";
-import { DOSE_STATUS_COLORS } from "./constants";
 import { styles } from "./styles";
 import type { DoseTrackingModalProps } from "./types";
 import { TakeDoseModal } from "./TakeDoseModal";
@@ -24,6 +15,8 @@ import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
 import { isNotNullish } from "@/utils/types/isNotNullish";
 import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
+import { IconButton } from "@/components/common/buttons/IconButton";
+import { truncate } from "@/utils/ui/truncate";
 
 /**
  * Modal component for tracking medication doses
@@ -68,42 +61,31 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     await onDoseAction("reschedule", { rescheduledTo, notes });
   };
 
-  const renderDoseItem = (dose: any, index: number) => {
-    const isOverdue = isDoseOverdue(dose);
-    const statusColor =
-      DOSE_STATUS_COLORS[dose.status] || DOSE_STATUS_COLORS.pending;
-    const statusText = getDoseStatusText(dose.status);
-
-    return (
-      <View key={index} style={styles.doseItem}>
-        <Text style={styles.doseTime}>{formatDoseTime(dose)}</Text>
-        <Text style={[styles.doseTime, { flex: 1, marginLeft: 8 }]}>
-          {formatDoseDate(dose)}
-        </Text>
-        <View style={styles.doseStatus}>
-          <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
-            <Text style={styles.statusText}>{statusText}</Text>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
   const detailsItems: DetailsCardItem[] = useMemo(() => {
     return [
-      isDueOrOverdueToday(medicine) &&
-        medicine.schedule.nextDoseDate && {
-          key: "planned",
-          iconName: "calendar-outline",
-          label: `${LanguageService.translate("Planned to")} ${hhmmFromDate(new Date(medicine.schedule.nextDoseDate))}`,
-          value: "",
-        },
-      isDueOrOverdueToday(medicine) && {
-        key: "dose",
-        iconName: "information-circle-outline",
-        label: `${LanguageService.translate("Take Dose")} ${medicine.schedule.dose} ${getMedicineDoseText(medicine)}`,
-        value: "",
-      },
+      isDueOrOverdueToday(medicine) && medicine.schedule.nextDoseDate
+        ? {
+            key: "planned",
+            iconName: "calendar-outline",
+            label: `${LanguageService.translate("Planned to")} ${hhmmFromDate(new Date(medicine.schedule.nextDoseDate))}`,
+            value: "",
+          }
+        : null,
+      isDueOrOverdueToday(medicine)
+        ? {
+            key: "dose",
+            iconName: "information-circle-outline",
+            label: `${LanguageService.translate("Take Dose")} ${medicine.schedule.dose} ${getMedicineDoseText(medicine)}`,
+            value: "",
+          }
+        : null,
+      Boolean(medicine.notes)
+        ? {
+            key: "notes",
+            iconName: "clipboard-outline",
+            label: truncate(medicine.notes!, 100),
+          }
+        : null,
       // TODO: add last medication log item
     ].filter(isNotNullish);
   }, [medicine]);
@@ -117,23 +99,23 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
         <DetailsCard items={detailsItems} noValues noPadding />
 
         <View style={styles.actionButtons}>
-          <Button
-            text={LanguageService.translate("Take Dose")}
-            onPress={handleTakeDose}
-            color={AppColors.POSITIVE}
-            style={styles.actionButton}
-          />
-          <Button
-            text={LanguageService.translate("Skip Dose")}
+          <IconButton
+            iconName={"close"}
+            text={LanguageService.translate("Skip")}
             onPress={handleSkipDose}
             color={AppColors.NEGATIVE}
-            style={styles.actionButton}
           />
-          <Button
-            text={LanguageService.translate("Reschedule Dose")}
+          <IconButton
+            iconName={"checkmark"}
+            text={LanguageService.translate("Take")}
+            onPress={handleTakeDose}
+            color={AppColors.POSITIVE}
+          />
+          <IconButton
+            iconName={"alarm-outline"}
+            text={LanguageService.translate("Reschedule")}
             onPress={handleRescheduleDose}
             color={AppColors.ACCENT}
-            style={styles.actionButton}
           />
         </View>
       </ModalWithBackDrop>

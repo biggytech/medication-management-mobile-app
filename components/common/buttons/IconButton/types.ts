@@ -6,4 +6,5 @@ export interface IconButtonProps {
   onPress: () => void;
   color?: AppColors;
   size?: Spacings;
+  text?: string;
 }
