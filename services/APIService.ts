@@ -14,6 +14,7 @@ import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
 import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
+import type { RequiredField } from "@/utils/types/RequiredField";
 
 enum Methods {
   GET = "GET",
@@ -276,6 +277,32 @@ export class APIService {
       return result;
     },
 
+    async skip(
+      medicine: MedicineFromApi,
+      data: RequiredField<MedicationLogDataForInsert, "skipReason">,
+    ) {
+      const result =
+        await APIService.getInstance().makeRequest<MedicationLogFromApi>({
+          method: Methods.POST,
+          url: `${this.path}/${medicine.id}/skip`,
+          requiresAuth: true,
+          body: data,
+        });
+
+      // reschedule medicine
+      const medicineDataForUpdate = prepareMedicineDataForEditing(medicine);
+
+      medicineDataForUpdate.schedule.nextDoseDate =
+        MedicineScheduleService.getNextDoseDateForSchedule(
+          medicineDataForUpdate.schedule,
+          data.date,
+        );
+
+      await APIService.medicines.update(medicine.id, medicineDataForUpdate);
+
+      return result;
+    },
+
     async listByDate(date: Date) {
       const formattedDate = yyyymmddFromDate(date);
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -288,17 +315,6 @@ export class APIService {
         },
       );
     },
-
-    // async skipDose(data: SkipDoseRequest) {
-    //   const result = await APIService.getInstance().makeRequest<DoseRecord>({
-    //     method: Methods.POST,
-    //     url: `${this.path}/skip`,
-    //     requiresAuth: true,
-    //     body: data,
-    //   });
-    //
-    //   return result;
-    // },
     //
     // async rescheduleDose(data: RescheduleDoseRequest) {
     //   const result = await APIService.getInstance().makeRequest<DoseRecord>({

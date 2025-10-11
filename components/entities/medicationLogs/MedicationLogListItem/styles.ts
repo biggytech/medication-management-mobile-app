@@ -12,11 +12,18 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   taken: {},
+  skipped: {},
   title: {},
   subTitle: {
     color: AppColors.DARKGREY,
   },
   takenText: {
+    color: AppColors.POSITIVE,
+  },
+  skippedText: {
+    color: AppColors.NEGATIVE,
+  },
+  Text: {
     color: AppColors.POSITIVE,
   },
   left: {

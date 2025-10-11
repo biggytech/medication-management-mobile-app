@@ -141,12 +141,12 @@
   "Take Later": "Take Later",
   "Select Time": "Select Time",
   "Reason for Missing": "Reason for Missing",
-  "I forgot": "I forgot",
-  "Ran out of medication": "Ran out of medication",
-  "No need to take it": "No need to take it",
-  "Side effects": "Side effects",
-  "Cost concerns": "Cost concerns",
-  "Medication not available": "Medication not available",
+  "forgot": "I forgot",
+  "ran_out": "Ran out of medication",
+  "no_need": "No need to take it",
+  "side_effects": "Side effects",
+  "cost_concerns": "Cost concerns",
+  "not_available": "Medication not available",
   "Other": "Other",
   "Reschedule to": "Reschedule to",
   "Select Date & Time": "Select Date & Time",
@@ -169,5 +169,7 @@
   "Reschedule": "Reschedule",
   "Now": "Now",
   "Time": "Time",
-  "When did you take this medicine?": "When did you take this medicine?"
+  "When did you take this medicine?": "When did you take this medicine?",
+  "Why did you miss taking your medication?": "Why did you miss taking your medication?",
+  "for reason": "for reason"
 }

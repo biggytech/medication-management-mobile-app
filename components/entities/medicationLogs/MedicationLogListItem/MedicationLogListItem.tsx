@@ -16,11 +16,18 @@ const MedicationLogListItem: React.FC<MedicationLogListItemProps> = ({
   const { medicine } = medicationLog;
 
   const isTaken = medicationLog.type === MedicationLogTypes.TAKEN;
+  const isSkipped = medicationLog.type === MedicationLogTypes.SKIPPED;
 
   return (
-    <View style={[styles.item, isTaken ? styles.taken : {}]}>
+    <View
+      style={[
+        styles.item,
+        isTaken ? styles.taken : {},
+        isSkipped ? styles.skipped : {},
+      ]}
+    >
       <View style={styles.left}>
-        <Round shadow small approved={isTaken}>
+        <Round shadow small approved={isTaken} rejected={isSkipped}>
           <Text>{getMedicineEmoji(medicine)}</Text>
         </Round>
       </View>
@@ -30,6 +37,14 @@ const MedicationLogListItem: React.FC<MedicationLogListItemProps> = ({
           <Text style={[styles.subTitle, styles.takenText]}>
             {LanguageService.translate("Taken")}:{" "}
             {hhmmFromDate(new Date(medicationLog.date))}
+          </Text>
+        )}
+        {isSkipped && (
+          <Text style={[styles.subTitle, styles.skippedText]}>
+            {LanguageService.translate("Missed")}{" "}
+            {hhmmFromDate(new Date(medicationLog.date))}
+            {medicationLog.skipReason &&
+              ` - ${LanguageService.translate(medicationLog.skipReason)}`}
           </Text>
         )}
       </View>

@@ -1,13 +1,11 @@
 import type { MedicineFromApi } from "@/types/medicines";
 
-export enum DoseStatus {
+export enum MedicationLogTypes {
   TAKEN = "taken",
-  MISSED = "missed",
-  RESCHEDULED = "rescheduled",
-  PENDING = "pending",
+  SKIPPED = "skipped",
 }
 
-export enum MissedDoseReason {
+export enum MedicationLogSkipReasons {
   FORGOT = "forgot",
   RAN_OUT = "ran_out",
   NO_NEED = "no_need",
@@ -17,14 +15,10 @@ export enum MissedDoseReason {
   OTHER = "other",
 }
 
-export enum MedicationLogTypes {
-  TAKEN = "taken",
-  SKIPPED = "skipped",
-}
-
 export interface MedicationLogData<DateType = Date> {
   date: DateType;
   type: MedicationLogTypes;
+  skipReason?: MedicationLogSkipReasons | null;
 }
 
 export interface MedicationLogDataWithId<DateType = Date>
@@ -32,44 +26,7 @@ export interface MedicationLogDataWithId<DateType = Date>
   id: number;
 }
 
-export type MedicationLogDataForInsert = Pick<MedicationLogData, "date">;
+export type MedicationLogDataForInsert = Omit<MedicationLogData, "type">;
 export interface MedicationLogFromApi extends MedicationLogDataWithId<string> {
   medicine: MedicineFromApi;
-}
-
-export interface DoseRecord {
-  id: number;
-  medicineId: MedicineFromApi["id"];
-  scheduledDateTime: string; // ISO string
-  actualDateTime?: string; // ISO string - when actually taken
-  status: DoseStatus;
-  missedReason?: MissedDoseReason;
-  rescheduledTo?: string; // ISO string - when rescheduled to
-  notes?: string;
-  createdAt: string; // ISO string
-  updatedAt: string; // ISO string
-}
-
-export interface DoseTrackingData {
-  medicineId: number;
-  lastDose?: DoseRecord;
-  nextDose?: DoseRecord;
-  todayDoses: DoseRecord[];
-  overdueDoses: DoseRecord[];
-}
-
-export interface SkipDoseRequest {
-  medicineId: number;
-  reason: MissedDoseReason;
-  notes?: string;
-}
-
-export interface RescheduleDoseRequest {
-  medicineId: number;
-  rescheduledTo: string; // ISO string
-  notes?: string;
-}
-
-export interface CancelDoseRequest {
-  doseId: number;
 }

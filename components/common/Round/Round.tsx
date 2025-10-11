@@ -16,6 +16,7 @@ const Round: React.FC<RoundProps> = ({
   small = false,
   shadow = false,
   approved = false,
+  rejected = false,
 }) => {
   return (
     <View
@@ -35,6 +36,15 @@ const Round: React.FC<RoundProps> = ({
           <Ionicons
             name={"checkmark-circle"}
             color={AppColors.POSITIVE}
+            size={Spacings.STANDART - Spacings.SMALL}
+          />
+        </View>
+      )}
+      {rejected && (
+        <View style={styles.status}>
+          <Ionicons
+            name={"close-circle"}
+            color={AppColors.NEGATIVE}
             size={Spacings.STANDART - Spacings.SMALL}
           />
         </View>

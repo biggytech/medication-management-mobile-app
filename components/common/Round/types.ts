@@ -5,4 +5,5 @@ export interface RoundProps {
   small?: boolean;
   shadow?: boolean;
   approved?: boolean;
+  rejected?: boolean;
 }

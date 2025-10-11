@@ -17,11 +17,15 @@ import { truncate } from "@/utils/ui/truncate";
 import type { SelectableActionListInterface } from "@/components/common/inputs/SelectableActionList/types";
 import { SelectableActionList } from "@/components/common/inputs/SelectableActionList";
 import {
+  getSkipDoseReasonOptions,
   getTakeDoseTimeSelectableOptions,
   TakeDoseTimeOptions,
 } from "@/components/entities/medicine/DoseTrackingModal/constants";
 import { useMutation } from "@tanstack/react-query";
-import type { MedicationLogDataForInsert } from "@/types/medicationLogs";
+import {
+  type MedicationLogDataForInsert,
+  MedicationLogSkipReasons,
+} from "@/types/medicationLogs";
 import { APIService } from "@/services/APIService";
 import { queryClient } from "@/providers/QueryProvider";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
@@ -29,6 +33,7 @@ import DateTimePicker, {
   type DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
+import type { RequiredField } from "@/utils/types/RequiredField";
 
 export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
   medicine,
@@ -53,7 +58,28 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
       },
     });
 
+  const { mutateAsync: skipMedicine, isPending: isSkippingDoseRequestPending } =
+    useMutation({
+      mutationFn: async (
+        data: RequiredField<MedicationLogDataForInsert, "skipReason">,
+      ) => {
+        await APIService.medicationLogs.skip(medicine, data);
+
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.MEDICINES.BY_DATE],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.MEDICATION_LOGS.BY_DATE],
+          }),
+        ]);
+      },
+    });
+
   const takeDoseDateListRef = useRef<SelectableActionListInterface | null>(
+    null,
+  );
+  const skipDoseReasonsListRef = useRef<SelectableActionListInterface | null>(
     null,
   );
 
@@ -61,7 +87,9 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     takeDoseDateListRef.current?.show();
   }, []);
 
-  const handleSkipDose = useCallback(() => {}, []);
+  const handleSkipDose = useCallback(() => {
+    skipDoseReasonsListRef.current?.show();
+  }, []);
 
   const handleRescheduleDose = useCallback(() => {}, []);
 
@@ -100,6 +128,8 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     [],
   );
 
+  const skipDoseReasonOptions = useMemo(() => getSkipDoseReasonOptions(), []);
+
   const handleTimeOptionSelected = useCallback(
     async (id: TakeDoseTimeOptions) => {
       if (id === TakeDoseTimeOptions.now) {
@@ -113,6 +143,17 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
       }
     },
     [onClose, takeMedicine],
+  );
+
+  const handleSkipReasonOptionSelected = useCallback(
+    async (id: MedicationLogSkipReasons) => {
+      await skipMedicine({
+        date: new Date(),
+        skipReason: id,
+      });
+      onClose();
+    },
+    [onClose, skipMedicine],
   );
 
   const handleTakeDoseTimeChange = useCallback(
@@ -130,7 +171,7 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     [onClose, takeMedicine],
   );
 
-  const isLoading = isTakingDoseRequestPending;
+  const isLoading = isTakingDoseRequestPending || isSkippingDoseRequestPending;
 
   return (
     <>
@@ -170,6 +211,15 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
             options={timeSelectableOptions}
             ref={takeDoseDateListRef}
             onSelect={handleTimeOptionSelected}
+          />
+
+          <SelectableActionList
+            title={LanguageService.translate(
+              "Why did you miss taking your medication?",
+            )}
+            options={skipDoseReasonOptions}
+            ref={skipDoseReasonsListRef}
+            onSelect={handleSkipReasonOptionSelected}
           />
         </View>
 

@@ -141,12 +141,12 @@
   "Take Later": "Принять позже",
   "Select Time": "Выберите время",
   "Reason for Missing": "Причина пропуска",
-  "I forgot": "Забыл",
-  "Ran out of medication": "Лекарство закончилось",
-  "No need to take it": "Нет необходимости принимать",
-  "Side effects": "Побочные эффекты",
-  "Cost concerns": "Проблемы с ценой",
-  "Medication not available": "Лекарство недоступно",
+  "forgot": "Забыл",
+  "ran_out": "Лекарство закончилось",
+  "no_need": "Нет необходимости принимать",
+  "side_effects": "Побочные эффекты",
+  "cost_concerns": "Беспокоит цена",
+  "not_available": "Нет с собой",
   "Other": "Другое",
   "Reschedule to": "Перенести на",
   "Select Date & Time": "Выберите дату и время",
@@ -169,5 +169,7 @@
   "Reschedule": "Перенести",
   "Now": "Сейчас",
   "Time": "Время",
-  "When did you take this medicine?": "Когда вы приняли это лекарство?"
+  "When did you take this medicine?": "Когда вы приняли это лекарство?",
+  "Why did you miss taking your medication?": "Почему вы пропустили прием лекарства?",
+  "for reason": "по причине"
 }

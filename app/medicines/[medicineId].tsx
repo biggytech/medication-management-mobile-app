@@ -24,7 +24,6 @@ import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 import type { MedicineFromApi } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { useToaster } from "@/hooks/ui/useToaster";
-import type { DoseTrackingData } from "@/types/medicationLogs";
 import { truncate } from "@/utils/ui/truncate";
 
 const MedicineScreen: React.FC = () => {
@@ -32,9 +31,6 @@ const MedicineScreen: React.FC = () => {
     medicineId: string;
   }>();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [trackingData, setTrackingData] = useState<DoseTrackingData | null>(
-    null,
-  );
   const { showSuccess, showError } = useToaster();
 
   const { data: medicine = null, isLoading: loading } =
