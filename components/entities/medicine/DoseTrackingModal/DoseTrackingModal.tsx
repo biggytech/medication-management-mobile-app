@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useRef } from "react";
-import { View } from "react-native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { Platform, View } from "react-native";
 import { AppColors } from "@/constants/styling/colors";
 import { LanguageService } from "@/services/language/LanguageService";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
@@ -25,19 +25,31 @@ import type { MedicationLogDataForInsert } from "@/types/medicationLogs";
 import { APIService } from "@/services/APIService";
 import { queryClient } from "@/providers/QueryProvider";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
+import DateTimePicker, {
+  type DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { FEATURE_FLAGS } from "@/constants/featureFlags";
 
 export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
   medicine,
   onClose,
 }) => {
+  const [showTakeDoseTimePicker, setShowTakeDoseTimePicker] =
+    useState<boolean>(false);
+
   const { mutateAsync: takeMedicine, isPending: isTakingDoseRequestPending } =
     useMutation({
       mutationFn: async (data: MedicationLogDataForInsert) => {
         await APIService.medicationLogs.take(medicine, data);
 
-        await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.MEDICINES.BY_DATE],
-        });
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.MEDICINES.BY_DATE],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.MEDICATION_LOGS.BY_DATE],
+          }),
+        ]);
       },
     });
 
@@ -96,7 +108,24 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
         });
         onClose();
       } else if (id === TakeDoseTimeOptions.time) {
+        setShowTakeDoseTimePicker(true);
+        takeDoseDateListRef.current?.close();
       }
+    },
+    [onClose, takeMedicine],
+  );
+
+  const handleTakeDoseTimeChange = useCallback(
+    async (event: DateTimePickerEvent, selectedDate?: Date) => {
+      setShowTakeDoseTimePicker(false);
+
+      if (selectedDate) {
+        await takeMedicine({
+          date: selectedDate,
+        });
+      }
+
+      onClose();
     },
     [onClose, takeMedicine],
   );
@@ -143,6 +172,19 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
             onSelect={handleTimeOptionSelected}
           />
         </View>
+
+        {showTakeDoseTimePicker && (
+          <DateTimePicker
+            {...({
+              value: new Date(),
+              mode: "time",
+              is24Hour: true,
+              display: Platform.OS === "ios" ? "spinner" : "spinner",
+              onChange: handleTakeDoseTimeChange,
+              minuteInterval: FEATURE_FLAGS.TIME_PICKER_INTERVAL,
+            } as any)}
+          />
+        )}
       </ModalWithBackDrop>
     </>
   );

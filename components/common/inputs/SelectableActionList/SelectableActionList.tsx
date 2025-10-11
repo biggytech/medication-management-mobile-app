@@ -27,6 +27,9 @@ const SelectableActionList = <OptionId extends string = string>({
       show() {
         actionSheetRef.current?.show();
       },
+      close() {
+        actionSheetRef.current?.hide();
+      },
     };
   }, []);
 
