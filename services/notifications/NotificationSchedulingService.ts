@@ -6,7 +6,7 @@ import { MedicineScheduleTypes } from "@/constants/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
 import { checkNotificationsPermissions } from "@/utils/notifications/checkNotificationsPermissions";
-import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
+import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
 import { getDateWithTime } from "@/utils/date/getDateWithTime";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { NotificationTypes } from "@/constants/notifications";

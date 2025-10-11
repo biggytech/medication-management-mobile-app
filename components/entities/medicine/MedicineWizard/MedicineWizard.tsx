@@ -28,7 +28,7 @@ import { type MedicineData, type MedicineSchedule } from "@/types/medicines";
 import { Gap } from "@/components/common/markup/Gap";
 import type { WizardScreen } from "@/components/common/Wizard/types";
 import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
-import { getMedicineDoseText } from "@/utils/ui/getMedicineDoseText";
+import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
 
 /**
  * Shared medicine wizard screens configuration

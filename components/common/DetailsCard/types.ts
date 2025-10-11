@@ -7,4 +7,6 @@ export interface DetailsCardItem {
 
 export interface DetailsCardProps {
   items: DetailsCardItem[];
+  noValues?: boolean;
+  noPadding?: boolean;
 }

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 import { Text } from "@/components/common/typography/Text";
 import { Button } from "@/components/common/buttons/Button";
 import { AppColors } from "@/constants/styling/colors";
 import { LanguageService } from "@/services/language/LanguageService";
-import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
-import { getMedicineDoseText } from "@/utils/ui/getMedicineDoseText";
+import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
 import {
   formatDoseDate,
   formatDoseTime,
@@ -19,6 +18,12 @@ import { TakeDoseModal } from "./TakeDoseModal";
 import { SkipDoseModal } from "./SkipDoseModal";
 import { RescheduleDoseModal } from "./RescheduleDoseModal";
 import { ModalWithBackDrop } from "@/components/common/ModalWithBackDrop";
+import type { DetailsCardItem } from "@/components/common/DetailsCard/types";
+import { DetailsCard } from "@/components/common/DetailsCard";
+import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
+import { isNotNullish } from "@/utils/types/isNotNullish";
+import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
+import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
 
 /**
  * Modal component for tracking medication doses
@@ -84,74 +89,33 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
     );
   };
 
+  const detailsItems: DetailsCardItem[] = useMemo(() => {
+    return [
+      isDueOrOverdueToday(medicine) &&
+        medicine.schedule.nextDoseDate && {
+          key: "planned",
+          iconName: "calendar-outline",
+          label: `${LanguageService.translate("Planned to")} ${hhmmFromDate(new Date(medicine.schedule.nextDoseDate))}`,
+          value: "",
+        },
+      isDueOrOverdueToday(medicine) && {
+        key: "dose",
+        iconName: "information-circle-outline",
+        label: `${LanguageService.translate("Take Dose")} ${medicine.schedule.dose} ${getMedicineDoseText(medicine)}`,
+        value: "",
+      },
+      // TODO: add last medication log item
+    ].filter(isNotNullish);
+  }, [medicine]);
+
   return (
     <>
       <ModalWithBackDrop
         onClose={onClose}
-        title={LanguageService.translate("Dose Tracking")}
+        title={`${getMedicineEmoji(medicine)} ${medicine.title}`}
       >
-        {/* Medicine Information */}
-        <View style={styles.medicineInfo}>
-          <Text style={styles.medicineEmoji}>{getMedicineEmoji(medicine)}</Text>
-          <View style={styles.medicineDetails}>
-            <Text style={styles.medicineTitle}>{medicine.title}</Text>
-            <Text style={styles.medicineDose}>
-              {medicine.schedule.dose} {getMedicineDoseText(medicine)}
-            </Text>
-          </View>
-        </View>
+        <DetailsCard items={detailsItems} noValues noPadding />
 
-        {/* Last Dose Information */}
-        {/*{trackingData.lastDose && (*/}
-        {/*  <View style={styles.doseInfo}>*/}
-        {/*    <Text style={styles.doseInfoTitle}>*/}
-        {/*      {LanguageService.translate("Last Dose")}*/}
-        {/*    </Text>*/}
-        {/*    <Text style={styles.doseInfoText}>*/}
-        {/*      {formatDoseDate(trackingData.lastDose)} at{" "}*/}
-        {/*      {formatDoseTime(trackingData.lastDose)}*/}
-        {/*    </Text>*/}
-        {/*  </View>*/}
-        {/*)}*/}
-
-        {/* Next Dose Information */}
-        {/*{trackingData.nextDose && (*/}
-        {/*  <View style={styles.doseInfo}>*/}
-        {/*    <Text style={styles.doseInfoTitle}>*/}
-        {/*      {LanguageService.translate("Next Dose")}*/}
-        {/*    </Text>*/}
-        {/*    <Text style={styles.doseInfoText}>*/}
-        {/*      {formatDoseDate(trackingData.nextDose)} at {formatDoseTime(trackingData.nextDose)}*/}
-        {/*    </Text>*/}
-        {/*  </View>*/}
-        {/*)}*/}
-
-        {/*/!* Overdue Doses *!/*/}
-        {/*{trackingData.overdueDoses.length > 0 && (*/}
-        {/*  <View style={styles.doseList}>*/}
-        {/*    <Text style={styles.doseInfoTitle}>*/}
-        {/*      {LanguageService.translate("Overdue doses")}*/}
-        {/*    </Text>*/}
-        {/*    {trackingData.overdueDoses.map(renderDoseItem)}*/}
-        {/*  </View>*/}
-        {/*)}*/}
-
-        {/*/!* Today's Doses *!/*/}
-        {/*{trackingData.todayDoses.length > 0 && (*/}
-        {/*  <View style={styles.doseList}>*/}
-        {/*    <Text style={styles.doseInfoTitle}>*/}
-        {/*      {LanguageService.translate("Today's doses")}*/}
-        {/*    </Text>*/}
-        {/*    {trackingData.todayDoses.map(renderDoseItem)}*/}
-        {/*  </View>*/}
-        {/*)}*/}
-
-        {/*/!* Empty State *!/*/}
-        {/*{trackingData.overdueDoses.length === 0 && trackingData.todayDoses.length === 0 && (*/}
-        {/*  renderEmptyState(LanguageService.translate("No doses today"))*/}
-        {/*)}*/}
-
-        {/* Action Buttons */}
         <View style={styles.actionButtons}>
           <Button
             text={LanguageService.translate("Take Dose")}

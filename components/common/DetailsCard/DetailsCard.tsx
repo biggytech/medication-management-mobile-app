@@ -7,9 +7,18 @@ import React from "react";
 
 import { styles } from "./styles";
 
-const DetailsCard: React.FC<DetailsCardProps> = ({ items }) => {
+const DetailsCard: React.FC<DetailsCardProps> = ({
+  items,
+  noValues = false,
+  noPadding = false,
+}) => {
   return (
-    <View style={styles.detailsContainer}>
+    <View
+      style={[
+        styles.detailsContainer,
+        noPadding ? styles.containerNoPadding : {},
+      ]}
+    >
       {items.map(({ key, iconName, label, value }) => (
         <View style={styles.detailRow} key={key}>
           <View style={styles.detailLabel}>
@@ -17,7 +26,7 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ items }) => {
             <Ionicons name={iconName} size={20} color={AppColors.PRIMARY} />
             <Text style={styles.detailLabelText}>{label}</Text>
           </View>
-          <Text style={styles.detailValue}>{value}</Text>
+          {!noValues && <Text style={styles.detailValue}>{value}</Text>}
         </View>
       ))}
     </View>

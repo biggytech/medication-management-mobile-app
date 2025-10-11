@@ -4,44 +4,6 @@ import { Spacings } from "@/constants/styling/spacings";
 import { FontSizes } from "@/constants/styling/fonts";
 
 export const styles = StyleSheet.create({
-  medicineInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: Spacings.STANDART,
-  },
-  medicineEmoji: {
-    fontSize: FontSizes.HUGE,
-    marginRight: Spacings.STANDART,
-  },
-  medicineDetails: {
-    flex: 1,
-  },
-  medicineTitle: {
-    fontSize: FontSizes.BIG,
-    fontWeight: "bold",
-    color: AppColors.FONT,
-    marginBottom: Spacings.SMALL,
-  },
-  medicineDose: {
-    fontSize: FontSizes.STANDART,
-    color: AppColors.DARKGREY,
-  },
-  doseInfo: {
-    backgroundColor: AppColors.GREY,
-    borderRadius: Spacings.SMALL,
-    padding: Spacings.STANDART,
-    marginBottom: Spacings.STANDART,
-  },
-  doseInfoTitle: {
-    fontSize: FontSizes.STANDART,
-    fontWeight: "bold",
-    color: AppColors.FONT,
-    marginBottom: Spacings.SMALL,
-  },
-  doseInfoText: {
-    fontSize: FontSizes.STANDART,
-    color: AppColors.DARKGREY,
-  },
   actionButtons: {
     flexDirection: "row",
     justifyContent: "space-around",

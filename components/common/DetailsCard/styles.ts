@@ -9,6 +9,9 @@ export const styles = StyleSheet.create({
     padding: Spacings.STANDART,
     marginBottom: Spacings.BIG,
   },
+  containerNoPadding: {
+    padding: 0,
+  },
   detailRow: {
     flexDirection: "row",
     justifyContent: "space-between",

@@ -7,7 +7,7 @@ import { AppColors } from "@/constants/styling/colors";
 
 import { styles } from "./styles";
 import { Round } from "@/components/common/Round";
-import { getMedicineEmoji } from "@/utils/ui/getMedicineEmoji";
+import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
 import { formatNextDoseDate } from "@/utils/entities/medicine/formatNextDoseDate";
 import { isOverdue } from "@/utils/entities/medicine/isOverdue";
 import { formatNextDoseDateShort } from "@/utils/entities/medicine/formatNextDoseDateShort";
