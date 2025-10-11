@@ -6,9 +6,9 @@ import type {
 } from "@/components/common/inputs/SelectableList/types";
 import {
   FlatList,
-  View,
   type ListRenderItemInfo,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { Text } from "@/components/common/typography/Text";
 import { styles } from "@/components/common/inputs/SelectableList/styles";
