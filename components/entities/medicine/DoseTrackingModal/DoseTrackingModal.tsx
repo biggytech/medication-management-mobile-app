@@ -21,7 +21,7 @@ import {
   TakeDoseTimeOptions,
 } from "@/components/entities/medicine/DoseTrackingModal/constants";
 import { useMutation } from "@tanstack/react-query";
-import type { MedicationLogData } from "@/types/medicationLogs";
+import type { MedicationLogDataForInsert } from "@/types/medicationLogs";
 import { APIService } from "@/services/APIService";
 import { queryClient } from "@/providers/QueryProvider";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
@@ -32,7 +32,7 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
 }) => {
   const { mutateAsync: takeMedicine, isPending: isTakingDoseRequestPending } =
     useMutation({
-      mutationFn: async (data: Pick<MedicationLogData, "date">) => {
+      mutationFn: async (data: MedicationLogDataForInsert) => {
         await APIService.medicationLogs.take(medicine, data);
 
         await queryClient.invalidateQueries({

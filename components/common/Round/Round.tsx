@@ -5,11 +5,17 @@ import { marginStyles, paddingStyles } from "@/assets/styles/spacings";
 import { borderRadiusStyles } from "@/assets/styles/borders";
 import React from "react";
 import { boxShadowStyles } from "@/assets/styles/shadows";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { AppColors } from "@/constants/styling/colors";
+import { Spacings } from "@/constants/styling/spacings";
+
+import { styles } from "./styles";
 
 const Round: React.FC<RoundProps> = ({
   children,
   small = false,
   shadow = false,
+  approved = false,
 }) => {
   return (
     <View
@@ -24,6 +30,15 @@ const Round: React.FC<RoundProps> = ({
         shadow ? boxShadowStyles.standart : {},
       ]}
     >
+      {approved && (
+        <View style={styles.status}>
+          <Ionicons
+            name={"checkmark-circle"}
+            color={AppColors.POSITIVE}
+            size={Spacings.STANDART - Spacings.SMALL}
+          />
+        </View>
+      )}
       {children}
     </View>
   );

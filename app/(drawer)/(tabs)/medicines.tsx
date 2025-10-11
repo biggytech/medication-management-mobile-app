@@ -9,15 +9,13 @@ import { AppScreens } from "@/constants/navigation";
 import { Screen } from "@/components/common/markup/Screen";
 import { APIService } from "@/services/APIService";
 import type { MedicineFromApi } from "@/types/medicines";
-import { LocalNotificationsDebugger } from "@/components/common/notifications/LocalNotificationsDebugger";
-import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 import { MedicineListItem } from "@/components/entities/medicine/MedicineListItem";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 import { paddingStyles } from "@/assets/styles/spacings";
 
 const MedicinesScreen: React.FC = () => {
-  const { data: medicines, isLoading } = useQueryWithFocus<MedicineFromApi[]>({
+  const { data: medicines, isFetching } = useQueryWithFocus<MedicineFromApi[]>({
     queryKey: ["medicines"],
     queryFn: () => APIService.medicines.list(),
   });
@@ -33,7 +31,7 @@ const MedicinesScreen: React.FC = () => {
     });
   }, []);
 
-  const renderItem = useCallback(
+  const renderMedicineItem = useCallback(
     ({ item }: { item: MedicineFromApi }) => (
       <MedicineListItem
         alwaysShowDates
@@ -44,7 +42,7 @@ const MedicinesScreen: React.FC = () => {
     [handleMedicinePress],
   );
 
-  if (isLoading) {
+  if (isFetching) {
     return <BlockingLoader />;
   }
 
@@ -54,13 +52,8 @@ const MedicinesScreen: React.FC = () => {
         <FlatList
           data={medicines}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
+          renderItem={renderMedicineItem}
           contentContainerStyle={paddingStyles.small}
-          ListHeaderComponent={
-            FEATURE_FLAGS.SHOW_LOCAL_NOTIFICATIONS_DEBUGGER ? (
-              <LocalNotificationsDebugger />
-            ) : null
-          }
         />
 
         <Button

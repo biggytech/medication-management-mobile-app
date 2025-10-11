@@ -17,8 +17,14 @@ export enum MissedDoseReason {
   OTHER = "other",
 }
 
+export enum MedicationLogTypes {
+  TAKEN = "taken",
+  SKIPPED = "skipped",
+}
+
 export interface MedicationLogData<DateType = Date> {
   date: DateType;
+  type: MedicationLogTypes;
 }
 
 export interface MedicationLogDataWithId<DateType = Date>
@@ -26,9 +32,11 @@ export interface MedicationLogDataWithId<DateType = Date>
   id: number;
 }
 
-export type MedicationLogFromApi = MedicationLogDataWithId<string>;
+export type MedicationLogDataForInsert = Pick<MedicationLogData, "date">;
+export interface MedicationLogFromApi extends MedicationLogDataWithId<string> {
+  medicine: MedicineFromApi;
+}
 
-// TODO: rename to MedicationLog
 export interface DoseRecord {
   id: number;
   medicineId: MedicineFromApi["id"];

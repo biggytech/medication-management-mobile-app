@@ -5,7 +5,7 @@ import { getErrorMessage } from "@/utils/api/getErrorMessage";
 import { AuthService } from "@/services/auth/AuthService";
 import type { MedicineData, MedicineFromApi } from "@/types/medicines";
 import type {
-  MedicationLogData,
+  MedicationLogDataForInsert,
   MedicationLogFromApi,
 } from "@/types/medicationLogs";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
@@ -253,10 +253,7 @@ export class APIService {
   public static medicationLogs = {
     path: "/medication-logs",
 
-    async take(
-      medicine: MedicineFromApi,
-      data: Pick<MedicationLogData, "date">,
-    ) {
+    async take(medicine: MedicineFromApi, data: MedicationLogDataForInsert) {
       const result =
         await APIService.getInstance().makeRequest<MedicationLogFromApi>({
           method: Methods.POST,
@@ -277,6 +274,19 @@ export class APIService {
       await APIService.medicines.update(medicine.id, medicineDataForUpdate);
 
       return result;
+    },
+
+    async listByDate(date: Date) {
+      const formattedDate = yyyymmddFromDate(date);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      return await APIService.getInstance().makeRequest<MedicationLogFromApi[]>(
+        {
+          method: Methods.GET,
+          url: `${this.path}/list/by-date/${formattedDate}?timezone=${timeZone}`,
+          requiresAuth: true,
+        },
+      );
     },
 
     // async skipDose(data: SkipDoseRequest) {
