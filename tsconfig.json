@@ -7,7 +7,7 @@
         "./*"
       ]
     },
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "allowJs": false
   },
   "include": [

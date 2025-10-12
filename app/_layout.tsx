@@ -6,7 +6,6 @@ import "react-native-reanimated";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "@/i18n"; // localization
-import ToastManager from "toastify-react-native";
 import { Fonts } from "@/constants/styling/fonts";
 import {
   QueryProvider,
@@ -16,6 +15,8 @@ import {
 import { TOAST_MANAGER_OPTIONS } from "@/constants/toaster";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
+
+const ToastManager = require("toastify-react-native").default;
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

@@ -12,6 +12,9 @@ module.exports = defineConfig([
     ignores: ["dist/*"],
     rules: {
       "prettier/prettier": "error",
+
+      // disable for toastify-react-native lib type errors
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
 ]);

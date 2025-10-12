@@ -1,9 +1,9 @@
-import { Toast } from "toastify-react-native";
 import { AppColors } from "@/constants/styling/colors";
+
+const { Toast } = require("toastify-react-native");
 
 export const showSuccess = (message: string, details?: string) => {
   Toast.show({
-    // @ts-expect-error - Toast doesn't recognize custom type
     type: "custom",
     text1: message,
     text2: details,
