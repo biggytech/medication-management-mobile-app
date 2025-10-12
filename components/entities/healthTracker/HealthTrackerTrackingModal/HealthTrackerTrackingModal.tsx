@@ -49,10 +49,10 @@ export const HealthTrackerTrackingModal: React.FC<
         // Invalidate relevant queries to refresh the UI
         await Promise.all([
           queryClient.invalidateQueries({
-            queryKey: [QUERY_KEYS.HEALTH_TRACKERS.BY_DATE],
+            queryKey: [QUERY_KEYS.HEALTH_TRACKERS.LIST],
           }),
           queryClient.invalidateQueries({
-            queryKey: [QUERY_KEYS.HEALTH_TRACKING_LOGS.BY_DATE],
+            queryKey: [QUERY_KEYS.HEALTH_TRACKER_LOGS.BY_DATE],
           }),
         ]);
       },

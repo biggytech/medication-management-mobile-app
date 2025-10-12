@@ -1,4 +1,5 @@
 import { IdableEntity } from "@/types/common/ids";
+import type { HealthTrackerFromApi } from "@/types/healthTrackers";
 
 /**
  * Health tracking log data for inserting new records
@@ -24,4 +25,5 @@ export type HealthTrackingLogWithId = HealthTrackingLogData & IdableEntity;
  */
 export type HealthTrackingLogFromApi = HealthTrackingLogWithId & {
   date: string;
+  healthTracker: HealthTrackerFromApi;
 };

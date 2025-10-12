@@ -22,6 +22,9 @@ import { isMedicationLog } from "@/utils/entities/medicationLogs/isMedicationLog
 import type { HealthTrackerFromApi } from "@/types/healthTrackers";
 import { HealthTrackerListItem } from "@/components/entities/healthTracker/HealthTrackerListItem";
 import { isHealthTracker } from "@/utils/entities/healthTrackers/isHealthTracker";
+import type { HealthTrackingLogFromApi } from "@/types/healthTrackingLogs";
+import { HealthTrackingLogListItem } from "@/components/entities/healthTracker/HealthTrackingLogListItem";
+import { isHealthTrackingLog } from "@/utils/entities/healthTrackers/isHealthTrackingLog";
 
 const HomeScreen: React.FC = () => {
   const [activeDate, setActiveDate] = useState<Date>(new Date());
@@ -49,13 +52,21 @@ const HomeScreen: React.FC = () => {
       queryFn: () => APIService.healthTrackers.listByDate(activeDate),
     });
 
-  console.log("healthTrackers", healthTrackers);
+  const { data: healthTrackingLogs, isFetching: isHealthTrackingLogsFetching } =
+    useQueryWithFocus<HealthTrackingLogFromApi[]>({
+      queryKey: [QUERY_KEYS.HEALTH_TRACKER_LOGS.BY_DATE, activeDate],
+      queryFn: () => APIService.healthTrackingLogs.listByDate(activeDate),
+    });
 
   const renderItem = useCallback(
     ({
       item,
     }: {
-      item: MedicineFromApi | MedicationLogFromApi | HealthTrackerFromApi;
+      item:
+        | MedicineFromApi
+        | MedicationLogFromApi
+        | HealthTrackerFromApi
+        | HealthTrackingLogFromApi;
     }) => {
       if (isMedicine(item)) {
         const isPressable = isDueOrOverdueToday(item);
@@ -74,6 +85,8 @@ const HomeScreen: React.FC = () => {
         );
       } else if (isMedicationLog(item)) {
         return <MedicationLogListItem medicationLog={item} />;
+      } else if (isHealthTrackingLog(item)) {
+        return <HealthTrackingLogListItem healthTrackingLog={item} />;
       } else if (isHealthTracker(item)) {
         const isPressable = isDueOrOverdueToday(item);
 
@@ -101,21 +114,31 @@ const HomeScreen: React.FC = () => {
     | MedicineFromApi
     | MedicationLogFromApi
     | HealthTrackerFromApi
+    | HealthTrackingLogFromApi
   )[] = useMemo(
     () => [
       ...(medicines ?? []),
       ...(medicationLogs ?? []),
       ...(healthTrackers ?? []),
+      ...(healthTrackingLogs ?? []),
     ],
-    [medicines, medicationLogs, healthTrackers],
+    [medicines, medicationLogs, healthTrackers, healthTrackingLogs],
   );
 
   const keyExtractor = useCallback(
-    (item: MedicineFromApi | MedicationLogFromApi | HealthTrackerFromApi) => {
+    (
+      item:
+        | MedicineFromApi
+        | MedicationLogFromApi
+        | HealthTrackerFromApi
+        | HealthTrackingLogFromApi,
+    ) => {
       if (isMedicine(item)) {
         return `medicine-${item.id}`;
       } else if (isMedicationLog(item)) {
         return `medication-log-${item.id}`;
+      } else if (isHealthTrackingLog(item)) {
+        return `health-tracking-log-${item.id}`;
       } else if (isHealthTracker(item)) {
         return `health-tracker-${item.id}`;
       } else {
@@ -126,7 +149,10 @@ const HomeScreen: React.FC = () => {
   );
 
   const isFetching =
-    isMedicinesFetching || isMedicationLogsFetching || isHealthTrackersFetching;
+    isMedicinesFetching ||
+    isMedicationLogsFetching ||
+    isHealthTrackersFetching ||
+    isHealthTrackingLogsFetching;
 
   return (
     <Screen>

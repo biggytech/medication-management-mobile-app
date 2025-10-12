@@ -10,7 +10,7 @@ export const QUERY_KEYS = {
     SINGLE: "health-tracker-single",
     BY_DATE: "health-trackers-by-date",
   },
-  HEALTH_TRACKING_LOGS: {
-    BY_DATE: "health-tracking-logs-by-date",
+  HEALTH_TRACKER_LOGS: {
+    BY_DATE: "health-tracker-logs-by-date",
   },
 };
