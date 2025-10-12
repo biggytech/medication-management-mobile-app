@@ -19,8 +19,11 @@ export const validateHealthTrackerInput = (
 ): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
 
-  // Validate value1 (always required)
-  if (!value1.trim()) {
+  // Validate value1 (always required except for menstrual cycle)
+  if (type === HealthTrackerTypes.MENSTRUAL_CYCLE) {
+    // For menstrual cycle, we don't validate the string input since we use a toggle
+    // The toggle value is handled separately in the component
+  } else if (!value1.trim()) {
     errors.push(LanguageService.translate("Primary value is required"));
   } else {
     // Check if the string contains only valid numeric characters (digits, decimal point, optional minus)
@@ -68,15 +71,6 @@ export const validateHealthTrackerInput = (
               errors.push(
                 LanguageService.translate(
                   "Temperature should be between 30-45°C",
-                ),
-              );
-            }
-            break;
-          case HealthTrackerTypes.MENSTRUAL_CYCLE:
-            if (numValue1 < 0 || numValue1 > 1) {
-              errors.push(
-                LanguageService.translate(
-                  "Cycle day should be 0 (no) or 1 (yes)",
                 ),
               );
             }

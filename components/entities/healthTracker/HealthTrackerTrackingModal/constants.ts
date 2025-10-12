@@ -41,12 +41,12 @@ export const HEALTH_TRACKER_FIELD_CONFIGS = {
     unit2Key: null,
   },
   [HealthTrackerTypes.MENSTRUAL_CYCLE]: {
-    label1Key: "Cycle Day",
+    label1Key: "Today cycle was",
     label2Key: null,
     placeholder1: "1",
     placeholder2: null,
     hasSecondField: false,
-    unit1Key: "day",
+    unit1Key: null,
     unit2Key: null,
   },
 } as const;

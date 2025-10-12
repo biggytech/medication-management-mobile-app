@@ -213,6 +213,7 @@
   "Diastolic": "Диастолическое",
   "Temperature": "Температура",
   "Cycle Day": "День цикла",
+  "Today cycle was": "Сегодня цикл был",
   "mmHg": "мм рт. ст.",
   "BPM": "уд/мин",
   "kg": "кг",
@@ -225,6 +226,7 @@
   "Weight should be between 10-500 kg": "Вес должен быть от 10-500 кг",
   "Temperature should be between 30-45°C": "Температура должна быть от 30-45°C",
   "Cycle day should be 0 (no) or 1 (yes)": "День цикла должен быть 0 (нет) или 1 (да)",
+  "Please enter 1 for yes or 0 for no": "Пожалуйста, введите 1 для да или 0 для нет",
   "Diastolic pressure is required for blood pressure": "Диастолическое давление обязательно для артериального давления",
   "Diastolic pressure must be a number": "Диастолическое давление должно быть числом",
   "Diastolic pressure should be between 30-200 mmHg": "Диастолическое давление должно быть от 30-200 мм рт. ст.",
@@ -234,5 +236,8 @@
   "Record Weight": "Записать вес",
   "Record Temperature": "Записать температуру",
   "Record Menstrual Cycle": "Записать менструальный цикл",
+  "Did you have cycle today?": "Был ли у вас цикл сегодня?",
+  "Yes": "Да",
+  "No": "Нет",
   "Recorded": "Записано"
 }

@@ -213,6 +213,7 @@
   "Diastolic": "Diastolic",
   "Temperature": "Temperature",
   "Cycle Day": "Cycle Day",
+  "Today cycle was": "Today cycle was",
   "mmHg": "mmHg",
   "BPM": "BPM",
   "kg": "kg",
@@ -225,6 +226,7 @@
   "Weight should be between 10-500 kg": "Weight should be between 10-500 kg",
   "Temperature should be between 30-45°C": "Temperature should be between 30-45°C",
   "Cycle day should be 0 (no) or 1 (yes)": "Cycle day should be 0 (no) or 1 (yes)",
+  "Please enter 1 for yes or 0 for no": "Please enter 1 for yes or 0 for no",
   "Diastolic pressure is required for blood pressure": "Diastolic pressure is required for blood pressure",
   "Diastolic pressure must be a number": "Diastolic pressure must be a number",
   "Diastolic pressure should be between 30-200 mmHg": "Diastolic pressure should be between 30-200 mmHg",
@@ -234,5 +236,8 @@
   "Record Weight": "Record Weight",
   "Record Temperature": "Record Temperature",
   "Record Menstrual Cycle": "Record Menstrual Cycle",
+  "Did you have cycle today?": "Did you have cycle today?",
+  "Yes": "Yes",
+  "No": "No",
   "Recorded": "Recorded"
 }

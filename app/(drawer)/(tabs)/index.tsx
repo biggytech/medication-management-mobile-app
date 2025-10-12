@@ -118,8 +118,8 @@ const HomeScreen: React.FC = () => {
   )[] = useMemo(
     () => [
       ...(medicines ?? []),
-      ...(medicationLogs ?? []),
       ...(healthTrackers ?? []),
+      ...(medicationLogs ?? []),
       ...(healthTrackingLogs ?? []),
     ],
     [medicines, medicationLogs, healthTrackers, healthTrackingLogs],

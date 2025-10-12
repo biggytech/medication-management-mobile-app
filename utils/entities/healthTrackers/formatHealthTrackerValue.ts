@@ -1,5 +1,6 @@
 import { HealthTrackerTypes } from "@/types/healthTrackers";
 import { getHealthTrackerUnit } from "./getHealthTrackerUnit";
+import { LanguageService } from "@/services/language/LanguageService";
 
 /**
  * Format health tracker values with appropriate units
@@ -13,6 +14,13 @@ export const formatHealthTrackerValue = (
   value1: number,
   value2: number | null,
 ): string => {
+  // For menstrual cycle, show translated "Yes" or "No" instead of numeric values
+  if (type === HealthTrackerTypes.MENSTRUAL_CYCLE) {
+    return value1 === 1
+      ? LanguageService.translate("Yes")
+      : LanguageService.translate("No");
+  }
+
   const unit = getHealthTrackerUnit(type);
 
   // For blood pressure, show both values with unit
