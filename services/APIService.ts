@@ -11,7 +11,7 @@ import type {
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
-import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
+import { ScheduleService } from "@/services/schedules/ScheduleService";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
 import type { RequiredField } from "@/utils/types/RequiredField";
@@ -176,8 +176,9 @@ export class APIService {
     path: "/medicines",
 
     async add(data: MedicineData) {
-      data.schedule.nextDoseDate =
-        MedicineScheduleService.getNextDoseDateForSchedule(data.schedule);
+      data.schedule.nextDoseDate = ScheduleService.getNextDoseDateForSchedule(
+        data.schedule,
+      );
 
       const result =
         await APIService.getInstance().makeRequest<MedicineFromApi>({
@@ -267,7 +268,7 @@ export class APIService {
       const medicineDataForUpdate = prepareMedicineDataForEditing(medicine);
 
       medicineDataForUpdate.schedule.nextDoseDate =
-        MedicineScheduleService.getNextDoseDateForSchedule(
+        ScheduleService.getNextDoseDateForSchedule(
           medicineDataForUpdate.schedule,
           data.date,
         );
@@ -293,7 +294,7 @@ export class APIService {
       const medicineDataForUpdate = prepareMedicineDataForEditing(medicine);
 
       medicineDataForUpdate.schedule.nextDoseDate =
-        MedicineScheduleService.getNextDoseDateForSchedule(
+        ScheduleService.getNextDoseDateForSchedule(
           medicineDataForUpdate.schedule,
           data.date,
         );

@@ -11,7 +11,7 @@ import { Text } from "@/components/common/typography/Text";
 import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
-import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
+import { ScheduleService } from "@/services/schedules/ScheduleService";
 
 const EditMedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
@@ -33,7 +33,7 @@ const EditMedicineScreen: React.FC = () => {
         const medicineUpdateData = data as unknown as MedicineData;
 
         medicineUpdateData.schedule.nextDoseDate =
-          MedicineScheduleService.getNextDoseDateForSchedule(
+          ScheduleService.getNextDoseDateForSchedule(
             medicineUpdateData.schedule,
           );
 

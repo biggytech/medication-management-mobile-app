@@ -1,4 +1,3 @@
-import type { MedicineSchedule } from "@/types/medicines";
 import { getDateWithTime } from "@/utils/date/getDateWithTime";
 import { DAYS_IN_WEEK, MILLISECONDS_IN_DAY } from "@/constants/dates";
 import { addDays } from "@/utils/date/addDays";
@@ -8,8 +7,9 @@ import {
   DEFAULT_SCHEDULE_NOTIFICATION_TIME,
   ScheduleTypes,
 } from "@/constants/schedules";
+import type { Schedule } from "@/types/common/schedules";
 
-export class MedicineScheduleService {
+export class ScheduleService {
   static getDefaultNextDoseDate() {
     return getDateWithTime(new Date(), DEFAULT_SCHEDULE_NOTIFICATION_TIME);
   }
@@ -20,13 +20,13 @@ export class MedicineScheduleService {
       everyXDays: 1,
       notificationTimes: [DEFAULT_SCHEDULE_NOTIFICATION_TIME],
       userTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      nextDoseDate: MedicineScheduleService.getDefaultNextDoseDate(),
+      nextDoseDate: ScheduleService.getDefaultNextDoseDate(),
       daysOfWeek: [],
     };
   }
 
   static getNextDoseDateForSchedule(
-    schedule: MedicineSchedule,
+    schedule: Schedule,
     takenDate?: Date,
   ): Date | null {
     switch (schedule.type) {
@@ -164,14 +164,14 @@ export class MedicineScheduleService {
     }
   }
 
-  static getScheduleForType(schedule: MedicineSchedule, type: ScheduleTypes) {
-    const base: MedicineSchedule = { ...schedule, type };
+  static getScheduleForType(schedule: Schedule, type: ScheduleTypes) {
+    const base: Schedule = { ...schedule, type };
     if (type === ScheduleTypes.EVERY_DAY) {
       base.notificationTimes = schedule.notificationTimes.length
         ? schedule.notificationTimes
         : [DEFAULT_SCHEDULE_NOTIFICATION_TIME];
       base.nextDoseDate =
-        base.nextDoseDate ?? MedicineScheduleService.getDefaultNextDoseDate();
+        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
       base.everyXDays = 1;
       base.daysOfWeek = [];
     } else if (type === ScheduleTypes.EVERY_OTHER_DAY) {
@@ -179,7 +179,7 @@ export class MedicineScheduleService {
         schedule.notificationTimes[0] || DEFAULT_SCHEDULE_NOTIFICATION_TIME,
       ];
       base.nextDoseDate =
-        base.nextDoseDate ?? MedicineScheduleService.getDefaultNextDoseDate();
+        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
       base.everyXDays = 2;
       base.daysOfWeek = [];
     } else if (type === ScheduleTypes.EVERY_X_DAYS) {
@@ -187,7 +187,7 @@ export class MedicineScheduleService {
         schedule.notificationTimes[0] || DEFAULT_SCHEDULE_NOTIFICATION_TIME,
       ];
       base.nextDoseDate =
-        base.nextDoseDate ?? MedicineScheduleService.getDefaultNextDoseDate();
+        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
       base.everyXDays = Math.min(Math.max(schedule.everyXDays || 1, 1), 365);
       base.daysOfWeek = [];
     } else if (type === ScheduleTypes.SPECIFIC_WEEK_DAYS) {
@@ -195,7 +195,7 @@ export class MedicineScheduleService {
         schedule.notificationTimes[0] || DEFAULT_SCHEDULE_NOTIFICATION_TIME,
       ];
       base.nextDoseDate =
-        base.nextDoseDate ?? MedicineScheduleService.getDefaultNextDoseDate();
+        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
       base.everyXDays = 1;
       base.daysOfWeek = schedule.daysOfWeek?.length ? schedule.daysOfWeek : [1];
     } else if (type === ScheduleTypes.ONLY_AS_NEEDED) {

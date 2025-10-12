@@ -6,7 +6,7 @@ import { Wizard } from "@/components/common/Wizard";
 import { Screen } from "@/components/common/markup/Screen";
 import { type MedicineData } from "@/types/medicines";
 import { MedicineWizard } from "@/components/entities/medicine/MedicineWizard/MedicineWizard";
-import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
+import { ScheduleService } from "@/services/schedules/ScheduleService";
 
 const NewMedicineScreen: React.FC = () => {
   const handleSubmit = useCallback(async (data: Record<string, unknown>) => {
@@ -26,7 +26,7 @@ const NewMedicineScreen: React.FC = () => {
 
   const initialData = useMemo(
     () => ({
-      schedule: MedicineScheduleService.getDefaultSchedule(),
+      schedule: ScheduleService.getDefaultSchedule(),
     }),
     [],
   );

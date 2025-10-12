@@ -18,7 +18,7 @@ import { DaysOfWeekPicker } from "@/components/common/inputs/DaysOfWeekPicker";
 import { NumberInput } from "@/components/common/inputs/NumberInput";
 import { Text } from "@/components/common/typography/Text";
 import { TextArea } from "@/components/common/inputs/TextArea";
-import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
+import { ScheduleService } from "@/services/schedules/ScheduleService";
 import { getFormOptions } from "./utils";
 import { type MedicineData, type MedicineSchedule } from "@/types/medicines";
 import { Gap } from "@/components/common/markup/Gap";
@@ -90,11 +90,10 @@ export class MedicineWizard {
         getValidationSchema: getNewMedicineScheduleSchema,
         node: ({ data, setValue, onScreenSubmit }) => {
           const schedule: MedicineSchedule =
-            (data.schedule as any) ??
-            MedicineScheduleService.getDefaultSchedule();
+            (data.schedule as any) ?? ScheduleService.getDefaultSchedule();
 
           const setType = (type: ScheduleTypes) => {
-            const updatedSchedule = MedicineScheduleService.getScheduleForType(
+            const updatedSchedule = ScheduleService.getScheduleForType(
               schedule,
               type,
             );
@@ -119,8 +118,7 @@ export class MedicineWizard {
         getValidationSchema: getNewMedicineScheduleSchema,
         node: ({ data, setValue, errors, setTouched }) => {
           const schedule: MedicineSchedule =
-            (data.schedule as any) ??
-            MedicineScheduleService.getDefaultSchedule();
+            (data.schedule as any) ?? ScheduleService.getDefaultSchedule();
 
           const setSchedule = (key: keyof MedicineSchedule, value: any) => {
             const next = { ...schedule, [key]: value } as MedicineSchedule;
