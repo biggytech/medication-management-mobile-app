@@ -30,6 +30,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="health-trackers"
+        options={{
+          title: LanguageService.translate("Health Trackers"),
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={FontSizes.HUGE} name="heart" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

@@ -8,6 +8,10 @@ import type {
   MedicationLogDataForInsert,
   MedicationLogFromApi,
 } from "@/types/medicationLogs";
+import type {
+  HealthTrackerData,
+  HealthTrackerFromApi,
+} from "@/types/healthTrackers";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
@@ -337,5 +341,78 @@ export class APIService {
     //
     //   return result;
     // },
+  };
+
+  public static healthTrackers = {
+    path: "/health-trackers",
+
+    async create(data: HealthTrackerData) {
+      data.schedule.nextTakeDate = ScheduleService.getNextTakeDateForSchedule(
+        data.schedule,
+      );
+
+      const result =
+        await APIService.getInstance().makeRequest<HealthTrackerFromApi>({
+          method: Methods.POST,
+          url: `${this.path}/add`,
+          requiresAuth: true,
+          body: data,
+        });
+
+      await NotificationSchedulingService.scheduleHealthTrackerNotifications(
+        result,
+      );
+
+      return result;
+    },
+
+    async list() {
+      const result = await APIService.getInstance().makeRequest<
+        HealthTrackerFromApi[]
+      >({
+        method: Methods.GET,
+        url: `${this.path}/list`,
+        requiresAuth: true,
+      });
+
+      return result;
+    },
+
+    async getById(id: string) {
+      const result =
+        await APIService.getInstance().makeRequest<HealthTrackerFromApi>({
+          method: Methods.GET,
+          url: `${this.path}/${id}`,
+          requiresAuth: true,
+        });
+
+      return result;
+    },
+
+    async update(id: string, data: HealthTrackerData) {
+      const result =
+        await APIService.getInstance().makeRequest<HealthTrackerFromApi>({
+          method: Methods.PUT,
+          url: `${this.path}/${id}`,
+          requiresAuth: true,
+          body: data,
+        });
+
+      await NotificationSchedulingService.scheduleHealthTrackerNotifications(
+        result,
+      );
+
+      return result;
+    },
+
+    async delete(id: string) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.DELETE,
+        url: `${this.path}/${id}`,
+        requiresAuth: true,
+      });
+
+      return result;
+    },
   };
 }
