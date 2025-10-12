@@ -414,5 +414,18 @@ export class APIService {
 
       return result;
     },
+
+    async listByDate(date: Date) {
+      const formattedDate = yyyymmddFromDate(date);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      return await APIService.getInstance().makeRequest<HealthTrackerFromApi[]>(
+        {
+          method: Methods.GET,
+          url: `${this.path}/list/by-date/${formattedDate}?timezone=${timeZone}`,
+          requiresAuth: true,
+        },
+      );
+    },
   };
 }

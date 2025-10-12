@@ -18,6 +18,9 @@ import type { MedicationLogFromApi } from "@/types/medicationLogs";
 import { MedicationLogListItem } from "@/components/entities/medicationLogs/MedicationLogListItem";
 import { isMedicine } from "@/utils/entities/medicine/isMedicine";
 import { isMedicationLog } from "@/utils/entities/medicationLogs/isMedicationLog";
+import type { HealthTrackerFromApi } from "@/types/healthTrackers";
+import { HealthTrackerListItem } from "@/components/entities/healthTracker/HealthTrackerListItem";
+import { isHealthTracker } from "@/utils/entities/healthTrackers/isHealthTracker";
 
 const HomeScreen: React.FC = () => {
   const [activeDate, setActiveDate] = useState<Date>(new Date());
@@ -37,8 +40,20 @@ const HomeScreen: React.FC = () => {
       queryFn: () => APIService.medicationLogs.listByDate(activeDate),
     });
 
+  const { data: healthTrackers, isFetching: isHealthTrackersFetching } =
+    useQueryWithFocus<HealthTrackerFromApi[]>({
+      queryKey: [QUERY_KEYS.HEALTH_TRACKERS.BY_DATE, activeDate],
+      queryFn: () => APIService.healthTrackers.listByDate(activeDate),
+    });
+
+  console.log("healthTrackers", healthTrackers);
+
   const renderItem = useCallback(
-    ({ item }: { item: MedicineFromApi | MedicationLogFromApi }) => {
+    ({
+      item,
+    }: {
+      item: MedicineFromApi | MedicationLogFromApi | HealthTrackerFromApi;
+    }) => {
       if (isMedicine(item)) {
         const isPressable = isDueOrOverdueToday(item);
 
@@ -56,6 +71,20 @@ const HomeScreen: React.FC = () => {
         );
       } else if (isMedicationLog(item)) {
         return <MedicationLogListItem medicationLog={item} />;
+      } else if (isHealthTracker(item)) {
+        const isPressable = isDueOrOverdueToday(item);
+
+        return (
+          <HealthTrackerListItem
+            healthTracker={item}
+            isPressable={isPressable}
+            onPress={() => {
+              // TODO: Navigate to health tracker details
+              console.log("Health tracker pressed:", item.id);
+            }}
+            shortDate
+          />
+        );
       }
 
       return <View></View>;
@@ -63,23 +92,36 @@ const HomeScreen: React.FC = () => {
     [medicines],
   );
 
-  const dataCombined: (MedicineFromApi | MedicationLogFromApi)[] = useMemo(
-    () => [...(medicines ?? []), ...(medicationLogs ?? [])],
-    [medicines, medicationLogs],
+  const dataCombined: (
+    | MedicineFromApi
+    | MedicationLogFromApi
+    | HealthTrackerFromApi
+  )[] = useMemo(
+    () => [
+      ...(medicines ?? []),
+      ...(medicationLogs ?? []),
+      ...(healthTrackers ?? []),
+    ],
+    [medicines, medicationLogs, healthTrackers],
   );
 
   const keyExtractor = useCallback(
-    (item: MedicineFromApi | MedicationLogFromApi) => {
+    (item: MedicineFromApi | MedicationLogFromApi | HealthTrackerFromApi) => {
       if (isMedicine(item)) {
         return `medicine-${item.id}`;
-      } else {
+      } else if (isMedicationLog(item)) {
         return `medication-log-${item.id}`;
+      } else if (isHealthTracker(item)) {
+        return `health-tracker-${item.id}`;
+      } else {
+        return "";
       }
     },
     [],
   );
 
-  const isFetching = isMedicinesFetching || isMedicationLogsFetching;
+  const isFetching =
+    isMedicinesFetching || isMedicationLogsFetching || isHealthTrackersFetching;
 
   return (
     <Screen>
