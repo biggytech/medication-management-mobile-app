@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Screen } from "@/components/common/markup/Screen";
 import { Wizard } from "@/components/common/Wizard";
 import { HealthTrackerWizard } from "@/components/entities/healthTracker/HealthTrackerWizard";
@@ -7,6 +7,7 @@ import { router } from "expo-router";
 import { useToaster } from "@/hooks/ui/useToaster";
 import { LanguageService } from "@/services/language/LanguageService";
 import type { HealthTrackerData } from "@/types/healthTrackers";
+import { ScheduleService } from "@/services/schedules/ScheduleService";
 
 const NewHealthTrackerScreen: React.FC = () => {
   const { showSuccess, showError } = useToaster();
@@ -27,12 +28,20 @@ const NewHealthTrackerScreen: React.FC = () => {
     router.back();
   };
 
+  const initialData = useMemo(
+    () => ({
+      schedule: ScheduleService.getDefaultSchedule(),
+    }),
+    [],
+  );
+
   return (
     <Screen>
       <Wizard
         screens={HealthTrackerWizard.getScreens()}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
+        initialData={initialData}
       />
     </Screen>
   );

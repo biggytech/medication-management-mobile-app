@@ -14,7 +14,6 @@ import { type MedicineData } from "@/types/medicines";
 import type { WizardScreen } from "@/components/common/Wizard/types";
 import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
-import { getScheduleTypeOptions } from "@/utils/schedules/getScheduleTypeOptions";
 import { ScheduleWizard } from "@/components/schedules/ScheduleWizard";
 import { NotesWizard } from "@/components/notes/NotesWizard";
 
@@ -28,7 +27,6 @@ export class MedicineWizard {
    */
   static getScreens(): WizardScreen[] {
     const formOptions = getFormOptions();
-    const scheduleTypeOptions = getScheduleTypeOptions();
 
     return [
       {
