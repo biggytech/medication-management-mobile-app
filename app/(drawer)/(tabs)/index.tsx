@@ -83,6 +83,7 @@ const HomeScreen: React.FC = () => {
               console.log("Health tracker pressed:", item.id);
             }}
             shortDate
+            squared
           />
         );
       }

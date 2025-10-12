@@ -22,10 +22,11 @@ const HealthTrackerListItem: React.FC<HealthTrackerListItemProps> = ({
   shortDate = false,
   alwaysShowDates = false,
   isPressable = true,
+  squared = false,
 }) => {
   return (
     <TouchableOpacity
-      style={styles.item}
+      style={[styles.item, squared ? styles.itemSquared : {}]}
       onPress={
         isPressable ? () => onPress(healthTracker.id.toString()) : undefined
       }

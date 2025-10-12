@@ -6,4 +6,5 @@ export interface HealthTrackerListItemProps {
   shortDate?: boolean;
   alwaysShowDates?: boolean;
   isPressable?: boolean;
+  squared?: boolean;
 }

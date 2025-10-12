@@ -9,6 +9,7 @@ import { BlockingLoader } from "@/components/common/loaders/BlockingLoader";
 import { useToaster } from "@/hooks/ui/useToaster";
 import { LanguageService } from "@/services/language/LanguageService";
 import type { HealthTrackerData } from "@/types/healthTrackers";
+import { ScheduleService } from "@/services/schedules/ScheduleService";
 
 const EditHealthTrackerScreen: React.FC = () => {
   const { healthTrackerId } = useLocalSearchParams<{
@@ -25,6 +26,10 @@ const EditHealthTrackerScreen: React.FC = () => {
   const handleSubmit = useCallback(
     async (data: any) => {
       try {
+        data.schedule.nextTakeDate = ScheduleService.getNextTakeDateForSchedule(
+          data.schedule,
+        );
+
         await APIService.healthTrackers.update(
           healthTrackerId!,
           data as HealthTrackerData,

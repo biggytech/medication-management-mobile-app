@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: Spacings.SMALL,
     shadowColor: AppColors.DARKGREY,
+    width: "100%",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -20,6 +21,14 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  itemSquared: {
+    borderRadius: 0,
+    margin: 0,
+    marginBottom: 0,
+    elevation: 0,
+    borderBottomColor: AppColors.GREY,
+    borderBottomWidth: 1,
   },
   left: {
     marginRight: Spacings.STANDART,
