@@ -1,4 +1,5 @@
 import type { MedicineFromApi } from "@/types/medicines";
+import { IdableEntity } from "@/types/common/ids";
 
 export enum MedicationLogTypes {
   TAKEN = "taken",
@@ -21,10 +22,8 @@ export interface MedicationLogData<DateType = Date> {
   skipReason?: MedicationLogSkipReasons | null;
 }
 
-export interface MedicationLogDataWithId<DateType = Date>
-  extends MedicationLogData<DateType> {
-  id: number;
-}
+export type MedicationLogDataWithId<DateType = Date> =
+  MedicationLogData<DateType> & IdableEntity;
 
 export type MedicationLogDataForInsert = Omit<MedicationLogData, "type">;
 export interface MedicationLogFromApi extends MedicationLogDataWithId<string> {

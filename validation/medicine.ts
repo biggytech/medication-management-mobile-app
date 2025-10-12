@@ -25,15 +25,6 @@ export const getDoseSchema = () =>
     .min(1, LanguageService.translate("Dose should be between 1 and 100"))
     .max(100, LanguageService.translate("Dose should be between 1 and 100"));
 
-export const getNotesSchema = () =>
-  yup
-    .string()
-    .nullable()
-    .max(
-      255,
-      LanguageService.translate("Notes cannot be long than 255 characters"),
-    );
-
 export const getNewMedicineTitleSchema = () =>
   yup.object().shape({
     title: getTitleSchema(),
@@ -49,9 +40,4 @@ export const getNewMedicineDoseSchema = () =>
     schedule: yup.object().shape({
       dose: getDoseSchema(),
     }),
-  });
-
-export const getNewMedicineNotesSchema = () =>
-  yup.object().shape({
-    notes: getNotesSchema(),
   });

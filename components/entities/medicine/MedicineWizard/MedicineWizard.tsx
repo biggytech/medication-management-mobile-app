@@ -5,12 +5,10 @@ import { Input } from "@/components/common/inputs/Input";
 import {
   getNewMedicineDoseSchema,
   getNewMedicineFormSchema,
-  getNewMedicineNotesSchema,
   getNewMedicineTitleSchema,
 } from "@/validation/medicine";
 import { SelectableList } from "@/components/common/inputs/SelectableList";
 import { Text } from "@/components/common/typography/Text";
-import { TextArea } from "@/components/common/inputs/TextArea";
 import { getFormOptions } from "./utils";
 import { type MedicineData } from "@/types/medicines";
 import type { WizardScreen } from "@/components/common/Wizard/types";
@@ -18,6 +16,7 @@ import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
 import { getScheduleTypeOptions } from "@/utils/schedules/getScheduleTypeOptions";
 import { ScheduleWizard } from "@/components/schedules/ScheduleWizard";
+import { NotesWizard } from "@/components/notes/NotesWizard";
 
 /**
  * Shared medicine wizard screens configuration
@@ -99,26 +98,7 @@ export class MedicineWizard {
         ),
       },
       ScheduleWizard.getScheduleEndDateScreen(),
-      {
-        key: "notes",
-        title: LanguageService.translate("🗒️ Do you want to add notes?"),
-        getValidationSchema: getNewMedicineNotesSchema,
-        node: ({ data, setValue, onScreenSubmit, errors, setTouched }) => (
-          <>
-            <View style={styles.screen}>
-              <TextArea
-                placeholder={LanguageService.translate("Notes")}
-                value={data["notes"]}
-                onChangeText={(text) => setValue("notes", text)}
-                onBlur={() => setTouched("notes")}
-                error={errors["notes"]}
-                onSubmitEditing={() => onScreenSubmit()}
-                returnKeyType="done"
-              />
-            </View>
-          </>
-        ),
-      },
+      NotesWizard.getNotesScreen(),
     ];
   }
 }
