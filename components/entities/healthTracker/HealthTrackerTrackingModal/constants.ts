@@ -14,7 +14,7 @@ export const HEALTH_TRACKER_FIELD_CONFIGS = {
     unit2Key: "mmHg",
   },
   [HealthTrackerTypes.HEART_RATE]: {
-    label1Key: "Heart Rate (BPM)",
+    label1Key: "Heart Rate",
     label2Key: null,
     placeholder1: "72",
     placeholder2: null,
