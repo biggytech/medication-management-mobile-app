@@ -16,6 +16,7 @@ import { InlineLoader } from "@/components/common/loaders/InlineLoader";
 import { deepen } from "@/utils/objects/deepen";
 import { styles } from "@/components/common/inputs/Form/styles";
 import type { FormProps } from "@/components/common/inputs/Form/types";
+import { ReactMemoWithGeneric } from "@/utils/types/ReactMemoWithGeneric";
 
 const Form = <T extends DataForValidation = DataForValidation>({
   ref,
@@ -99,4 +100,4 @@ const Form = <T extends DataForValidation = DataForValidation>({
   );
 };
 
-export default React.memo(Form);
+export default ReactMemoWithGeneric(Form);
