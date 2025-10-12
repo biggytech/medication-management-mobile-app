@@ -19,16 +19,17 @@ import { NumberInput } from "@/components/common/inputs/NumberInput";
 import { Text } from "@/components/common/typography/Text";
 import { TextArea } from "@/components/common/inputs/TextArea";
 import { MedicineScheduleService } from "@/services/medicines/MedicineScheduleService";
-import { getFormOptions, getScheduleTypeOptions } from "./utils";
-import {
-  DEFAULT_MEDICINE_NOTIFICATION_TIME,
-  MedicineScheduleTypes,
-} from "@/constants/medicines";
+import { getFormOptions } from "./utils";
 import { type MedicineData, type MedicineSchedule } from "@/types/medicines";
 import { Gap } from "@/components/common/markup/Gap";
 import type { WizardScreen } from "@/components/common/Wizard/types";
 import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
+import {
+  DEFAULT_SCHEDULE_NOTIFICATION_TIME,
+  ScheduleTypes,
+} from "@/constants/schedules";
+import { getScheduleTypeOptions } from "@/utils/schedules/getScheduleTypeOptions";
 
 /**
  * Shared medicine wizard screens configuration
@@ -92,7 +93,7 @@ export class MedicineWizard {
             (data.schedule as any) ??
             MedicineScheduleService.getDefaultSchedule();
 
-          const setType = (type: MedicineScheduleTypes) => {
+          const setType = (type: ScheduleTypes) => {
             const updatedSchedule = MedicineScheduleService.getScheduleForType(
               schedule,
               type,
@@ -106,7 +107,7 @@ export class MedicineWizard {
               <SelectableList
                 options={scheduleTypeOptions}
                 selectedId={schedule.type}
-                onSelect={(id) => setType(id as MedicineScheduleTypes)}
+                onSelect={(id) => setType(id as ScheduleTypes)}
               />
             </View>
           );
@@ -128,14 +129,14 @@ export class MedicineWizard {
 
           return (
             <View style={styles.screen}>
-              {schedule.type === MedicineScheduleTypes.EVERY_DAY && (
+              {schedule.type === ScheduleTypes.EVERY_DAY && (
                 <>
                   <NumberInput
                     value={schedule.notificationTimes.length || 1}
                     onChange={(n: number) => {
                       const times = schedule.notificationTimes.slice(0, n);
                       while (times.length < n)
-                        times.push(DEFAULT_MEDICINE_NOTIFICATION_TIME);
+                        times.push(DEFAULT_SCHEDULE_NOTIFICATION_TIME);
                       setSchedule("notificationTimes", times);
                     }}
                     min={1}
@@ -157,7 +158,7 @@ export class MedicineWizard {
                 </>
               )}
 
-              {schedule.type === MedicineScheduleTypes.EVERY_OTHER_DAY && (
+              {schedule.type === ScheduleTypes.EVERY_OTHER_DAY && (
                 <>
                   <View style={styles.labelContainer}>
                     <Text style={styles.label}>
@@ -188,7 +189,7 @@ export class MedicineWizard {
                 </>
               )}
 
-              {schedule.type === MedicineScheduleTypes.EVERY_X_DAYS && (
+              {schedule.type === ScheduleTypes.EVERY_X_DAYS && (
                 <>
                   <NumberInput
                     value={schedule.everyXDays || 1}
@@ -228,7 +229,7 @@ export class MedicineWizard {
                 </>
               )}
 
-              {schedule.type === MedicineScheduleTypes.SPECIFIC_WEEK_DAYS && (
+              {schedule.type === ScheduleTypes.SPECIFIC_WEEK_DAYS && (
                 <>
                   <View style={styles.labelContainer}>
                     <Text style={styles.label}>
@@ -256,7 +257,7 @@ export class MedicineWizard {
                 </>
               )}
 
-              {schedule.type === MedicineScheduleTypes.ONLY_AS_NEEDED && (
+              {schedule.type === ScheduleTypes.ONLY_AS_NEEDED && (
                 <Text>{LanguageService.translate("No schedule details")}</Text>
               )}
             </View>

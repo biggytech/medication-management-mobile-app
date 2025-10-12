@@ -7,8 +7,9 @@ import { Title } from "@/components/common/typography/Title";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
-import { MedicineForms, MedicineScheduleTypes } from "@/constants/medicines";
+import { MedicineForms } from "@/constants/medicines";
 import { MILLISECONDS_IN_MINUTE } from "@/constants/dates";
+import { ScheduleTypes } from "@/constants/schedules";
 
 /**
  * Debug component for testing local push notifications.
@@ -41,7 +42,7 @@ export const LocalNotificationsDebugger: React.FC = () => {
         id: Number.MAX_SAFE_INTEGER,
         schedule: {
           dose: 1,
-          type: MedicineScheduleTypes.EVERY_DAY,
+          type: ScheduleTypes.EVERY_DAY,
           everyXDays: 1,
           notificationTimes: ["08:00", "20:00"],
           userTimeZone: "Europe/Berlin",

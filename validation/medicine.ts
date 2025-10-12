@@ -1,6 +1,7 @@
 import * as yup from "yup";
 import { LanguageService } from "@/services/language/LanguageService";
-import { MedicineScheduleTypes, MedicineForms } from "@/constants/medicines";
+import { MedicineForms } from "@/constants/medicines";
+import { ScheduleTypes } from "@/constants/schedules";
 
 export const getTitleSchema = () =>
   yup
@@ -82,8 +83,8 @@ export const getScheduleSchema = () =>
     .object()
     .shape({
       type: yup
-        .mixed<MedicineScheduleTypes>()
-        .oneOf(Object.values(MedicineScheduleTypes))
+        .mixed<ScheduleTypes>()
+        .oneOf(Object.values(ScheduleTypes))
         .required(),
       everyXDays: yup.number().required().min(0).max(365),
       notificationTimes: yup
@@ -115,7 +116,7 @@ export const getScheduleSchema = () =>
           daysOfWeek,
         } = val as any;
 
-        if (type === MedicineScheduleTypes.ONLY_AS_NEEDED) {
+        if (type === ScheduleTypes.ONLY_AS_NEEDED) {
           return (
             everyXDays === 0 &&
             (!notificationTimes || notificationTimes.length === 0) &&
@@ -126,20 +127,20 @@ export const getScheduleSchema = () =>
         if (!notificationTimes || notificationTimes.length === 0) return false;
 
         switch (type) {
-          case MedicineScheduleTypes.EVERY_DAY:
+          case ScheduleTypes.EVERY_DAY:
             return (
               notificationTimes.length >= 1 && notificationTimes.length <= 12
             );
-          case MedicineScheduleTypes.EVERY_OTHER_DAY:
+          case ScheduleTypes.EVERY_OTHER_DAY:
             return !!nextDoseDate && notificationTimes.length === 1;
-          case MedicineScheduleTypes.EVERY_X_DAYS:
+          case ScheduleTypes.EVERY_X_DAYS:
             return (
               !!nextDoseDate &&
               everyXDays >= 1 &&
               everyXDays <= 365 &&
               notificationTimes.length === 1
             );
-          case MedicineScheduleTypes.SPECIFIC_WEEK_DAYS:
+          case ScheduleTypes.SPECIFIC_WEEK_DAYS:
             return (
               Array.isArray(daysOfWeek) &&
               daysOfWeek.length > 0 &&

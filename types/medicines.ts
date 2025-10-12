@@ -1,7 +1,5 @@
-import {
-  type MedicineForms,
-  MedicineScheduleTypes,
-} from "@/constants/medicines";
+import { type MedicineForms } from "@/constants/medicines";
+import type { Schedule } from "@/types/common/schedules";
 
 export interface MedicineData<DateType = Date> {
   title: string;
@@ -17,14 +15,4 @@ export interface MedicineDataWithId<DateType = Date>
 
 export type MedicineFromApi = MedicineDataWithId<string>;
 
-export interface MedicineSchedule<DateType = Date> {
-  type: MedicineScheduleTypes;
-  everyXDays: number; // 1...365, 0 for "Only as needed"
-  notificationTimes: string[]; // 'HH:MM'
-  userTimeZone: string; // e.g. "Europe/Berlin"
-  nextDoseDate: DateType | null; // TODO: rename to nextDoseDateTime?
-  // For SPECIFIC_WEEK_DAYS, store selected week days as 0..6 (Sun..Sat)
-  daysOfWeek?: number[];
-  dose: number;
-  endDate?: DateType | null;
-}
+export type MedicineSchedule<DateType = Date> = Schedule<DateType>;

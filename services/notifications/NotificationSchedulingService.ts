@@ -2,7 +2,6 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { schedulePushNotification } from "@/utils/notifications/schedulePushNotification";
 import type { MedicineFromApi, MedicineSchedule } from "@/types/medicines";
-import { MedicineScheduleTypes } from "@/constants/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
 import { checkNotificationsPermissions } from "@/utils/notifications/checkNotificationsPermissions";
@@ -11,6 +10,7 @@ import { getDateWithTime } from "@/utils/date/getDateWithTime";
 import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { NotificationTypes } from "@/constants/notifications";
 import { endOfDay } from "@/utils/date/endOfDay";
+import { ScheduleTypes } from "@/constants/schedules";
 
 /**
  * Service for scheduling local push notifications for medication reminders.
@@ -120,35 +120,35 @@ export class NotificationSchedulingService {
       }
 
       switch (schedule.type) {
-        case MedicineScheduleTypes.EVERY_DAY:
+        case ScheduleTypes.EVERY_DAY:
           await this.scheduleEveryDayNotifications(
             schedule,
             notificationContent,
           );
           break;
 
-        case MedicineScheduleTypes.EVERY_OTHER_DAY:
+        case ScheduleTypes.EVERY_OTHER_DAY:
           await this.scheduleEveryOtherDayNotifications(
             schedule,
             notificationContent,
           );
           break;
 
-        case MedicineScheduleTypes.EVERY_X_DAYS:
+        case ScheduleTypes.EVERY_X_DAYS:
           await this.scheduleEveryXDaysNotifications(
             schedule,
             notificationContent,
           );
           break;
 
-        case MedicineScheduleTypes.SPECIFIC_WEEK_DAYS:
+        case ScheduleTypes.SPECIFIC_WEEK_DAYS:
           await this.scheduleSpecificWeekDaysNotifications(
             schedule,
             notificationContent,
           );
           break;
 
-        case MedicineScheduleTypes.ONLY_AS_NEEDED:
+        case ScheduleTypes.ONLY_AS_NEEDED:
           // No automatic scheduling for "as needed" medications
           console.log(
             `No notifications scheduled for "as needed" medication: ${title}`,

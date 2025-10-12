@@ -9,7 +9,7 @@ import { AppScreens } from "@/constants/navigation";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
 import { ddmmyyyyFromDate } from "@/utils/date/ddmmyyyyFromDate";
-import { formatScheduleInfo } from "@/utils/entities/medicine/formatScheduleInfo";
+import { formatScheduleInfo } from "@/utils/schedules/formatScheduleInfo";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
 import { fontSizesStyles } from "@/assets/styles/fonts";
