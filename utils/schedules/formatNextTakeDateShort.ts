@@ -28,5 +28,6 @@ export const formatNextTakeDateShort = ({
     return `${LanguageService.translate("Overdue")}: ${ddmmyyyyFromDate(nextTakeDateAsDate)} ${hhmmFromDate(nextTakeDateAsDate)}`;
   }
 
+  // TODO: fix next dose text for trackers
   return `${LanguageService.translate("Next dose")}: ${hhmmFromDate(nextTakeDateAsDate)}`;
 };

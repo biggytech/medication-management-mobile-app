@@ -12,6 +12,7 @@ import { Text } from "@/components/common/typography/Text";
 import { LanguageService } from "@/services/language/LanguageService";
 import { positioningStyles } from "@/assets/styles/positioning";
 import { DoseTrackingModal } from "@/components/entities/medicine/DoseTrackingModal";
+import { HealthTrackerTrackingModal } from "@/components/entities/healthTracker/HealthTrackerTrackingModal";
 import { isDueOrOverdueToday } from "@/utils/schedules/isDueOrOverdueToday";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import type { MedicationLogFromApi } from "@/types/medicationLogs";
@@ -27,6 +28,8 @@ const HomeScreen: React.FC = () => {
   const [activeMedicine, setActiveMedicine] = useState<MedicineFromApi | null>(
     null,
   );
+  const [activeHealthTracker, setActiveHealthTracker] =
+    useState<HealthTrackerFromApi | null>(null);
 
   const { data: medicines, isFetching: isMedicinesFetching } =
     useQueryWithFocus<MedicineFromApi[]>({
@@ -79,8 +82,9 @@ const HomeScreen: React.FC = () => {
             healthTracker={item}
             isPressable={isPressable}
             onPress={() => {
-              // TODO: Navigate to health tracker details
-              console.log("Health tracker pressed:", item.id);
+              setActiveHealthTracker(
+                healthTrackers?.find(({ id }) => id === item.id) ?? null,
+              );
             }}
             shortDate
             squared
@@ -90,7 +94,7 @@ const HomeScreen: React.FC = () => {
 
       return <View></View>;
     },
-    [medicines],
+    [medicines, healthTrackers],
   );
 
   const dataCombined: (
@@ -145,6 +149,12 @@ const HomeScreen: React.FC = () => {
         <DoseTrackingModal
           medicine={activeMedicine}
           onClose={() => setActiveMedicine(null)}
+        />
+      )}
+      {activeHealthTracker && (
+        <HealthTrackerTrackingModal
+          healthTracker={activeHealthTracker}
+          onClose={() => setActiveHealthTracker(null)}
         />
       )}
     </Screen>

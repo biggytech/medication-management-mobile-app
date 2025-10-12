@@ -12,6 +12,10 @@ import type {
   HealthTrackerData,
   HealthTrackerFromApi,
 } from "@/types/healthTrackers";
+import type {
+  HealthTrackingLogDataForInsert,
+  HealthTrackingLogFromApi,
+} from "@/types/healthTrackingLogs";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
@@ -19,6 +23,7 @@ import { ScheduleService } from "@/services/schedules/ScheduleService";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
 import type { RequiredField } from "@/utils/types/RequiredField";
+import { prepareHealthTrackerDataForEditing } from "@/utils/entities/healthTrackers/prepareHealthTrackerDataForEditing";
 
 enum Methods {
   GET = "GET",
@@ -320,27 +325,6 @@ export class APIService {
         },
       );
     },
-    //
-    // async rescheduleDose(data: RescheduleDoseRequest) {
-    //   const result = await APIService.getInstance().makeRequest<DoseRecord>({
-    //     method: Methods.POST,
-    //     url: `${this.path}/reschedule`,
-    //     requiresAuth: true,
-    //     body: data,
-    //   });
-    //
-    //   return result;
-    // },
-    //
-    // async cancelDose(data: CancelDoseRequest) {
-    //   const result = await APIService.getInstance().makeRequest<{}>({
-    //     method: Methods.DELETE,
-    //     url: `${this.path}/${data.doseId}`,
-    //     requiresAuth: true,
-    //   });
-    //
-    //   return result;
-    // },
   };
 
   public static healthTrackers = {
@@ -389,7 +373,7 @@ export class APIService {
       return result;
     },
 
-    async update(id: string, data: HealthTrackerData) {
+    async update(id: number, data: HealthTrackerData) {
       const result =
         await APIService.getInstance().makeRequest<HealthTrackerFromApi>({
           method: Methods.PUT,
@@ -426,6 +410,53 @@ export class APIService {
           requiresAuth: true,
         },
       );
+    },
+  };
+
+  public static healthTrackingLogs = {
+    path: "/health-tracker-logs",
+
+    async record(
+      healthTracker: HealthTrackerFromApi,
+      data: HealthTrackingLogDataForInsert,
+    ) {
+      const result =
+        await APIService.getInstance().makeRequest<HealthTrackingLogFromApi>({
+          method: Methods.POST,
+          url: `${this.path}/${healthTracker.id}/add`,
+          requiresAuth: true,
+          body: data,
+        });
+
+      // reschedule
+      const healthTrackerDataForUpdate =
+        prepareHealthTrackerDataForEditing(healthTracker);
+
+      healthTrackerDataForUpdate.schedule.nextTakeDate =
+        ScheduleService.getNextTakeDateForSchedule(
+          healthTrackerDataForUpdate.schedule,
+          data.date,
+        );
+
+      await APIService.healthTrackers.update(
+        healthTracker.id,
+        healthTrackerDataForUpdate,
+      );
+
+      return result;
+    },
+
+    async listByDate(date: Date) {
+      const formattedDate = yyyymmddFromDate(date);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      return await APIService.getInstance().makeRequest<
+        HealthTrackingLogFromApi[]
+      >({
+        method: Methods.GET,
+        url: `${this.path}/list/by-date/${formattedDate}?timezone=${timeZone}`,
+        requiresAuth: true,
+      });
     },
   };
 }

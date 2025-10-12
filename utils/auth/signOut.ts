@@ -17,5 +17,7 @@ export const signOut = async () => {
 
   queryClient.clear();
 
+  // TODO: clear all notifications
+
   router.replace(AppScreens.LOGIN);
 };

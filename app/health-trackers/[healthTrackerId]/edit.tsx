@@ -31,7 +31,7 @@ const EditHealthTrackerScreen: React.FC = () => {
         );
 
         await APIService.healthTrackers.update(
-          healthTrackerId!,
+          Number(healthTrackerId),
           data as HealthTrackerData,
         );
         showSuccess(

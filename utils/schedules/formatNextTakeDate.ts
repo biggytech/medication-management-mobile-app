@@ -20,6 +20,7 @@ export const formatNextTakeDate = ({ schedule }: SchedulableEntity<string>) => {
   ) {
     return `${LanguageService.translate("Overdue")}: ${ddmmyyyyFromDate(nextTakeDateAsDate)} ${hhmmFromDate(nextTakeDateAsDate)}`;
   }
+  // TODO: fix next dose text for trackers
 
   return `${LanguageService.translate("Next dose")}: ${ddmmyyyyFromDate(nextTakeDateAsDate)} ${hhmmFromDate(nextTakeDateAsDate)}`;
 };
