@@ -8,14 +8,22 @@ import type { WizardScreen } from "@/components/common/Wizard/types";
 import { styles } from "@/components/entities/healthTracker/HealthTrackerWizard/styles";
 import { ScheduleWizard } from "@/components/schedules/ScheduleWizard";
 import { NotesWizard } from "@/components/notes/NotesWizard";
+import type { HealthTrackerFromApi } from "@/types/healthTrackers";
+import { getAvailableHealthTrackerTypes } from "@/utils/entities/healthTrackers/getAvailableHealthTrackerTypes";
 
 /**
  * Shared health tracker wizard screens configuration
  * Contains all the wizard screens for both creating and editing health trackers
  */
 export class HealthTrackerWizard {
-  static getTypeScreen(): WizardScreen {
-    const healthTrackerTypeOptions = getHealthTrackerTypeOptions();
+  static getTypeScreen(
+    existingTrackers: HealthTrackerFromApi[] = [],
+  ): WizardScreen {
+    // Get available health tracker types (filter out existing ones)
+    const availableTypes = getAvailableHealthTrackerTypes(existingTrackers);
+    const healthTrackerTypeOptions = getHealthTrackerTypeOptions().filter(
+      (option) => availableTypes.includes(option.id as any),
+    );
 
     return {
       key: "type",

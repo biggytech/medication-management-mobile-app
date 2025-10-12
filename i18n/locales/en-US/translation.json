@@ -203,5 +203,9 @@
   "Health Tracker Reminder": "Health Tracker Reminder",
   "It's time to track": "It's time to track",
   "Health Tracker created successfully": "Health Tracker created successfully",
-  "Type": "Type"
+  "Type": "Type",
+  "All health tracker types already exist": "All health tracker types already exist",
+  "You already have a health tracker of this type": "You already have a health tracker of this type",
+  "No available health tracker types": "No available health tracker types",
+  "Back": "Back"
 }

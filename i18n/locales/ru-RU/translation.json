@@ -203,5 +203,9 @@
   "Health Tracker Reminder": "Напоминание о трекере здоровья",
   "It's time to track": "Время отслеживать",
   "Health Tracker created successfully": "Трекер здоровья успешно создан",
-  "Type": "Тип"
+  "Type": "Тип",
+  "All health tracker types already exist": "Все типы трекеров здоровья уже существуют",
+  "You already have a health tracker of this type": "У вас уже есть трекер здоровья этого типа",
+  "No available health tracker types": "Нет доступных типов трекеров здоровья",
+  "Back": "Назад"
 }
