@@ -1,16 +1,14 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { schedulePushNotification } from "@/utils/notifications/schedulePushNotification";
-import type { MedicineFromApi, MedicineSchedule } from "@/types/medicines";
+import type { MedicineFromApi } from "@/types/medicines";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
 import { checkNotificationsPermissions } from "@/utils/notifications/checkNotificationsPermissions";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
-import { getDateWithTime } from "@/utils/date/getDateWithTime";
-import { FEATURE_FLAGS } from "@/constants/featureFlags";
 import { NotificationTypes } from "@/constants/notifications";
 import { endOfDay } from "@/utils/date/endOfDay";
-import { ScheduleTypes } from "@/constants/schedules";
+import { AppColors } from "@/constants/styling/colors";
 
 /**
  * Service for scheduling local push notifications for medication reminders.
@@ -46,7 +44,7 @@ export class NotificationSchedulingService {
           name: this.NOTIFICATION_CHANNEL_NAME,
           importance: Notifications.AndroidImportance.HIGH,
           vibrationPattern: [0, 250, 250, 250],
-          lightColor: "#80d6af", // Using app's primary color
+          lightColor: AppColors.PRIMARY,
           sound: "default",
         },
       );
@@ -90,7 +88,7 @@ export class NotificationSchedulingService {
       return;
     }
 
-    const { title, schedule } = medicine;
+    const { title } = medicine;
 
     // Get medication emoji based on form
     const emoji = getMedicineEmoji(medicine);
@@ -108,56 +106,14 @@ export class NotificationSchedulingService {
     };
 
     try {
-      if (FEATURE_FLAGS.USE_V2_NOTIFICATION_SYSTEM) {
-        if (medicine.schedule.nextDoseDate) {
-          await this.scheduleSpecificDateNotification(
-            new Date(medicine.schedule.nextDoseDate),
-            notificationContent,
-          );
-          console.log("✅ Medication notifications rescheduled successfully");
-        }
-        return;
+      if (medicine.schedule.nextDoseDate) {
+        await this.scheduleSpecificDateNotification(
+          new Date(medicine.schedule.nextDoseDate),
+          notificationContent,
+        );
+        console.log("✅ Medication notifications rescheduled successfully");
       }
-
-      switch (schedule.type) {
-        case ScheduleTypes.EVERY_DAY:
-          await this.scheduleEveryDayNotifications(
-            schedule,
-            notificationContent,
-          );
-          break;
-
-        case ScheduleTypes.EVERY_OTHER_DAY:
-          await this.scheduleEveryOtherDayNotifications(
-            schedule,
-            notificationContent,
-          );
-          break;
-
-        case ScheduleTypes.EVERY_X_DAYS:
-          await this.scheduleEveryXDaysNotifications(
-            schedule,
-            notificationContent,
-          );
-          break;
-
-        case ScheduleTypes.SPECIFIC_WEEK_DAYS:
-          await this.scheduleSpecificWeekDaysNotifications(
-            schedule,
-            notificationContent,
-          );
-          break;
-
-        case ScheduleTypes.ONLY_AS_NEEDED:
-          // No automatic scheduling for "as needed" medications
-          console.log(
-            `No notifications scheduled for "as needed" medication: ${title}`,
-          );
-          break;
-
-        default:
-          console.warn(`Unknown schedule type: ${schedule.type}`);
-      }
+      return;
     } catch (error) {
       console.error("Failed to schedule medication notifications:", error);
       throw new Error("Failed to schedule medication notifications");
@@ -202,163 +158,6 @@ export class NotificationSchedulingService {
    */
   public static async getScheduledNotifications() {
     return await Notifications.getAllScheduledNotificationsAsync();
-  }
-
-  /**
-   * Schedule notifications for every day medication.
-   * Creates daily recurring notifications at specified times.
-   */
-  private static async scheduleEveryDayNotifications(
-    schedule: MedicineSchedule<string>,
-    content: Notifications.NotificationContentInput,
-  ): Promise<void> {
-    const { notificationTimes } = schedule;
-
-    for (let i = 0; i < notificationTimes.length; i++) {
-      const time = notificationTimes[i];
-      const [hours, minutes] = time.split(":").map(Number);
-
-      // Create daily recurring trigger
-      const trigger: Notifications.DailyTriggerInput = {
-        type: SchedulableTriggerInputTypes.DAILY,
-        hour: hours,
-        minute: minutes,
-      };
-
-      await schedulePushNotification(content, trigger);
-    }
-
-    console.log(`Scheduled ${notificationTimes.length} daily notifications`);
-  }
-
-  /**
-   * Schedule notifications for every other day medication.
-   * Creates notifications starting from the next dose date.
-   */
-  private static async scheduleEveryOtherDayNotifications(
-    schedule: MedicineSchedule<string>,
-    content: Notifications.NotificationContentInput,
-  ): Promise<void> {
-    const { nextDoseDate, notificationTimes } = schedule;
-
-    if (!nextDoseDate || notificationTimes.length === 0) {
-      throw new Error(
-        "Next dose date and notification time are required for every other day schedule",
-      );
-    }
-
-    const notificationDate = getDateWithTime(
-      new Date(nextDoseDate),
-      notificationTimes[0],
-    );
-
-    // Schedule the first notification
-    const firstTrigger: Notifications.DateTriggerInput = {
-      type: SchedulableTriggerInputTypes.DATE,
-      date: notificationDate,
-    };
-
-    await schedulePushNotification(content, firstTrigger);
-
-    // Schedule subsequent notifications every other day
-    // We'll schedule up to 30 days ahead to avoid too many notifications
-    for (let day = 2; day <= 30; day += 2) {
-      const futureDate = new Date(notificationDate);
-      futureDate.setDate(futureDate.getDate() + day);
-
-      const futureTrigger: Notifications.DateTriggerInput = {
-        type: SchedulableTriggerInputTypes.DATE,
-        date: futureDate,
-      };
-
-      await schedulePushNotification(content, futureTrigger);
-    }
-
-    console.log("Scheduled every other day notifications");
-  }
-
-  /**
-   * Schedule notifications for every X days medication.
-   * Creates notifications based on the specified interval.
-   */
-  private static async scheduleEveryXDaysNotifications(
-    schedule: MedicineSchedule<string>,
-    content: Notifications.NotificationContentInput,
-  ): Promise<void> {
-    const { nextDoseDate, notificationTimes, everyXDays } = schedule;
-
-    if (!nextDoseDate || notificationTimes.length === 0 || !everyXDays) {
-      throw new Error(
-        "Next dose date, notification time, and interval are required for every X days schedule",
-      );
-    }
-
-    const [hours, minutes] = notificationTimes[0].split(":").map(Number);
-
-    // Calculate the date and time for the first notification
-    const notificationDate = new Date(nextDoseDate);
-    notificationDate.setHours(hours, minutes, 0, 0);
-
-    // Schedule the first notification
-    const firstTrigger: Notifications.DateTriggerInput = {
-      type: SchedulableTriggerInputTypes.DATE,
-      date: notificationDate,
-    };
-
-    await schedulePushNotification(content, firstTrigger);
-
-    // Schedule subsequent notifications every X days
-    // We'll schedule up to 30 intervals ahead
-    for (let interval = 1; interval <= 30; interval++) {
-      const futureDate = new Date(notificationDate);
-      futureDate.setDate(futureDate.getDate() + everyXDays * interval);
-
-      const futureTrigger: Notifications.DateTriggerInput = {
-        type: SchedulableTriggerInputTypes.DATE,
-        date: futureDate,
-      };
-
-      await schedulePushNotification(content, futureTrigger);
-    }
-
-    console.log(`Scheduled every ${everyXDays} days notifications`);
-  }
-
-  /**
-   * Schedule notifications for specific week days medication.
-   * Creates weekly recurring notifications on specified days.
-   */
-  private static async scheduleSpecificWeekDaysNotifications(
-    schedule: MedicineSchedule<string>,
-    content: Notifications.NotificationContentInput,
-  ): Promise<void> {
-    const { daysOfWeek, notificationTimes } = schedule;
-
-    if (
-      !daysOfWeek ||
-      daysOfWeek.length === 0 ||
-      notificationTimes.length === 0
-    ) {
-      throw new Error(
-        "Days of week and notification time are required for specific week days schedule",
-      );
-    }
-
-    const [hours, minutes] = notificationTimes[0].split(":").map(Number);
-
-    // Schedule notifications for each selected day of the week
-    for (const dayOfWeek of daysOfWeek) {
-      const trigger: Notifications.WeeklyTriggerInput = {
-        type: SchedulableTriggerInputTypes.WEEKLY,
-        weekday: dayOfWeek + 1, // Convert from 0-6 (Sun-Sat) to 1-7 (Mon-Sun)
-        hour: hours,
-        minute: minutes,
-      };
-
-      await schedulePushNotification(content, trigger);
-    }
-
-    console.log(`Scheduled notifications for ${daysOfWeek.length} week days`);
   }
 
   private static async scheduleSpecificDateNotification(
