@@ -10,6 +10,7 @@ import { useToaster } from "@/hooks/ui/useToaster";
 import { LanguageService } from "@/services/language/LanguageService";
 import type { HealthTrackerData } from "@/types/healthTrackers";
 import { ScheduleService } from "@/services/schedules/ScheduleService";
+import { prepareHealthTrackerDataForEditing } from "@/utils/entities/healthTrackers/prepareHealthTrackerDataForEditing";
 
 const EditHealthTrackerScreen: React.FC = () => {
   const { healthTrackerId } = useLocalSearchParams<{
@@ -62,13 +63,15 @@ const EditHealthTrackerScreen: React.FC = () => {
     return null;
   }
 
+  const initialData = prepareHealthTrackerDataForEditing(healthTracker);
+
   return (
     <Screen>
       <Wizard
         screens={screens}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
-        initialData={healthTracker}
+        initialData={initialData}
       />
     </Screen>
   );

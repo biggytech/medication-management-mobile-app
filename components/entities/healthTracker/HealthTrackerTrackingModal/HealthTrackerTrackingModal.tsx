@@ -13,7 +13,6 @@ import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import { getHealthTrackerEmoji } from "@/utils/entities/healthTrackers/getHealthTrackerEmoji";
 import { getHealthTrackerName } from "@/utils/entities/healthTrackers/getHealthTrackerName";
 import {
-  formatInputValue,
   getFieldConfig,
   validateHealthTrackerInput,
 } from "./utils";
@@ -49,7 +48,7 @@ export const HealthTrackerTrackingModal: React.FC<
         // Invalidate relevant queries to refresh the UI
         await Promise.all([
           queryClient.invalidateQueries({
-            queryKey: [QUERY_KEYS.HEALTH_TRACKERS.LIST],
+            queryKey: [QUERY_KEYS.HEALTH_TRACKERS.BY_DATE],
           }),
           queryClient.invalidateQueries({
             queryKey: [QUERY_KEYS.HEALTH_TRACKER_LOGS.BY_DATE],
@@ -60,21 +59,27 @@ export const HealthTrackerTrackingModal: React.FC<
 
   const handleValue1Change = useCallback(
     (text: string) => {
-      const formatted = formatInputValue(text, healthTracker.type);
-      setValue1(formatted);
+      setValue1(text);
       setErrors([]);
     },
-    [healthTracker.type],
+    [],
   );
 
   const handleValue2Change = useCallback(
     (text: string) => {
-      const formatted = formatInputValue(text, healthTracker.type);
-      setValue2(formatted);
+      setValue2(text);
       setErrors([]);
     },
-    [healthTracker.type],
+    [],
   );
+
+  const handleValue1Blur = useCallback(() => {
+    setFocusedField(null);
+  }, []);
+
+  const handleValue2Blur = useCallback(() => {
+    setFocusedField(null);
+  }, []);
 
   const handleRecord = useCallback(async () => {
     // Dismiss keyboard first
@@ -143,7 +148,7 @@ export const HealthTrackerTrackingModal: React.FC<
               value={value1}
               onChangeText={handleValue1Change}
               onFocus={() => setFocusedField("value1")}
-              onBlur={() => setFocusedField(null)}
+              onBlur={handleValue1Blur}
               placeholder={fieldConfig.placeholder1}
               keyboardType="numeric"
               returnKeyType={fieldConfig.hasSecondField ? "next" : "done"}
@@ -175,7 +180,7 @@ export const HealthTrackerTrackingModal: React.FC<
                 value={value2}
                 onChangeText={handleValue2Change}
                 onFocus={() => setFocusedField("value2")}
-                onBlur={() => setFocusedField(null)}
+                onBlur={handleValue2Blur}
                 placeholder={fieldConfig.placeholder2 || ""}
                 keyboardType="numeric"
                 returnKeyType="done"
