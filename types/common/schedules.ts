@@ -8,6 +8,5 @@ export interface Schedule<DateType = Date> {
   nextDoseDate: DateType | null;
   // For SPECIFIC_WEEK_DAYS, store selected week days as 0..6 (Sun..Sat)
   daysOfWeek?: number[];
-  dose: number;
   endDate?: DateType | null;
 }

@@ -15,4 +15,6 @@ export interface MedicineDataWithId<DateType = Date>
 
 export type MedicineFromApi = MedicineDataWithId<string>;
 
-export type MedicineSchedule<DateType = Date> = Schedule<DateType>;
+export interface MedicineSchedule<DateType = Date> extends Schedule<DateType> {
+  dose: number;
+}
