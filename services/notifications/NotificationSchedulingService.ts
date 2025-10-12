@@ -2,13 +2,16 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { schedulePushNotification } from "@/utils/notifications/schedulePushNotification";
 import type { MedicineFromApi } from "@/types/medicines";
+import type { HealthTrackerFromApi } from "@/types/healthTrackers";
 import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
 import { checkNotificationsPermissions } from "@/utils/notifications/checkNotificationsPermissions";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
+import { getHealthTrackerEmoji } from "@/components/entities/healthTracker/HealthTrackerListItem";
 import { NotificationTypes } from "@/constants/notifications";
 import { endOfDay } from "@/utils/date/endOfDay";
 import { AppColors } from "@/constants/styling/colors";
+import { getHealthTrackerName } from "@/utils/entities/healthTrackers/getHealthTrackerName";
 
 /**
  * Service for scheduling local push notifications for medication reminders.
@@ -150,6 +153,107 @@ export class NotificationSchedulingService {
     } catch (error) {
       console.error("Failed to cancel medicine notifications:", error);
       throw new Error("Failed to cancel medicine notifications");
+    }
+  }
+
+  /**
+   * Schedule notifications for a health tracker based on its schedule configuration.
+   * Similar to medicine notifications but for health tracking reminders.
+   */
+  public static async scheduleHealthTrackerNotifications(
+    healthTracker: HealthTrackerFromApi,
+  ): Promise<void> {
+    // unschedule previous notifications
+    await NotificationSchedulingService.cancelHealthTrackerReminderNotifications(
+      healthTracker.id,
+    );
+
+    if (healthTracker.schedule.endDate && healthTracker.schedule.nextTakeDate) {
+      if (
+        endOfDay(new Date(healthTracker.schedule.endDate)) <
+        new Date(healthTracker.schedule.nextTakeDate)
+      ) {
+        console.log("Skipping schedule due to ending date", {
+          endDate: endOfDay(new Date(healthTracker.schedule.endDate)),
+          nextTakeDate: new Date(healthTracker.schedule.nextTakeDate),
+        });
+
+        // do not schedule if tracking date is bigger than ending date
+        return;
+      }
+    }
+
+    if (!(await checkNotificationsPermissions())) {
+      alert(
+        LanguageService.translate(
+          "In order to receive notifications you must grant the permission",
+        ),
+      );
+      return;
+    }
+
+    const trackerName = getHealthTrackerName(healthTracker.type);
+
+    // Get health tracker emoji based on type
+    const emoji = getHealthTrackerEmoji(healthTracker.type);
+
+    // Create notification content
+    const notificationContent: Notifications.NotificationContentInput = {
+      title: LanguageService.translate("Health Tracker Reminder"),
+      body: `${LanguageService.translate("It's time to track")} ${trackerName}! ${emoji}`,
+      data: {
+        type: NotificationTypes.HEALTH_TRACKER_REMINDER,
+        healthTrackerId: healthTracker.id,
+      },
+      sound: "default",
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+    };
+
+    try {
+      if (healthTracker.schedule.nextTakeDate) {
+        await this.scheduleSpecificDateNotification(
+          new Date(healthTracker.schedule.nextTakeDate),
+          notificationContent,
+        );
+        console.log("✅ Health tracker notifications scheduled successfully");
+      }
+      return;
+    } catch (error) {
+      console.error("Failed to schedule health tracker notifications:", error);
+      throw new Error("Failed to schedule health tracker notifications");
+    }
+  }
+
+  /**
+   * Cancel all notifications for a specific health tracker.
+   * This is useful when a health tracker is deleted or its schedule is changed.
+   */
+  public static async cancelHealthTrackerReminderNotifications(
+    healthTrackerId: number,
+  ): Promise<void> {
+    try {
+      const scheduledNotifications =
+        await NotificationSchedulingService.getScheduledNotifications();
+
+      // Find and cancel notifications for this specific health tracker
+      const healthTrackerNotifications = scheduledNotifications.filter(
+        ({ content: { data } }) =>
+          data?.type === NotificationTypes.HEALTH_TRACKER_REMINDER &&
+          data?.healthTrackerId === healthTrackerId,
+      );
+
+      for (const notification of healthTrackerNotifications) {
+        await Notifications.cancelScheduledNotificationAsync(
+          notification.identifier,
+        );
+      }
+
+      console.log(
+        `Cancelled ${healthTrackerNotifications.length} notifications for health tracker ${healthTrackerId}`,
+      );
+    } catch (error) {
+      console.error("Failed to cancel health tracker notifications:", error);
+      throw new Error("Failed to cancel health tracker notifications");
     }
   }
 
