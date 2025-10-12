@@ -7,11 +7,11 @@ import { LanguageService } from "@/services/language/LanguageService";
 import { SchedulableTriggerInputTypes } from "expo-notifications/src/Notifications.types";
 import { checkNotificationsPermissions } from "@/utils/notifications/checkNotificationsPermissions";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
-import { getHealthTrackerEmoji } from "@/components/entities/healthTracker/HealthTrackerListItem";
 import { NotificationTypes } from "@/constants/notifications";
 import { endOfDay } from "@/utils/date/endOfDay";
 import { AppColors } from "@/constants/styling/colors";
 import { getHealthTrackerName } from "@/utils/entities/healthTrackers/getHealthTrackerName";
+import { getHealthTrackerEmoji } from "@/utils/entities/healthTrackers/getHealthTrackerEmoji";
 
 /**
  * Service for scheduling local push notifications for medication reminders.

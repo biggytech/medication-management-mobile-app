@@ -7,7 +7,6 @@ import { AppColors } from "@/constants/styling/colors";
 
 import { styles } from "./styles";
 import { Round } from "@/components/common/Round";
-import { getHealthTrackerEmoji } from "./utils";
 import { formatNextTakeDate } from "@/utils/schedules/formatNextTakeDate";
 import { isOverdue } from "@/utils/schedules/isOverdue";
 import { formatNextTakeDateShort } from "@/utils/schedules/formatNextTakeDateShort";
@@ -15,6 +14,7 @@ import { isDueOrOverdueToday } from "@/utils/schedules/isDueOrOverdueToday";
 import { isEndingToday } from "@/utils/schedules/isEndingToday";
 import { LanguageService } from "@/services/language/LanguageService";
 import { getHealthTrackerName } from "@/utils/entities/healthTrackers/getHealthTrackerName";
+import { getHealthTrackerEmoji } from "@/utils/entities/healthTrackers/getHealthTrackerEmoji";
 
 const HealthTrackerListItem: React.FC<HealthTrackerListItemProps> = ({
   healthTracker,
