@@ -6,4 +6,8 @@ export enum AppScreens {
   MEDICINES_NEW = "/medicines/new",
   MEDICINES_SINGLE = "/medicines/[medicineId]",
   MEDICINES_EDIT = "/medicines/[medicineId]/edit",
+  HEALTH_TRACKERS = "/(drawer)/(tabs)/health-trackers",
+  HEALTH_TRACKERS_NEW = "/health-trackers/new",
+  HEALTH_TRACKERS_SINGLE = "/health-trackers/[healthTrackerId]",
+  HEALTH_TRACKERS_EDIT = "/health-trackers/[healthTrackerId]/edit",
 }
