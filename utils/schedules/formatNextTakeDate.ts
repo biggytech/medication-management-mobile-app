@@ -1,14 +1,10 @@
 import { LanguageService } from "@/services/language/LanguageService";
 import { ddmmyyyyFromDate } from "@/utils/date";
 import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
-import { isOverdue } from "@/utils/entities/medicine/isOverdue";
-import type { Schedule } from "@/types/common/schedules";
+import { isOverdue } from "@/utils/schedules/isOverdue";
+import type { SchedulableEntity } from "@/types/common/schedules";
 
-export const formatNextTakeDate = ({
-  schedule,
-}: {
-  schedule: Schedule<string>;
-}) => {
+export const formatNextTakeDate = ({ schedule }: SchedulableEntity<string>) => {
   const { nextTakeDate } = schedule;
 
   if (!nextTakeDate) {

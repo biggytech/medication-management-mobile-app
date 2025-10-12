@@ -1,6 +1,6 @@
-import type { Schedule } from "@/types/common/schedules";
+import type { SchedulableEntity } from "@/types/common/schedules";
 
-export const isOverdue = ({ schedule }: { schedule: Schedule<string> }) => {
+export const isOverdue = ({ schedule }: SchedulableEntity<string>) => {
   const { nextTakeDate } = schedule;
 
   if (!nextTakeDate) return false;

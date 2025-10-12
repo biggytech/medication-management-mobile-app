@@ -10,3 +10,7 @@ export interface Schedule<DateType = Date> {
   daysOfWeek?: number[];
   endDate?: DateType | null;
 }
+
+export interface SchedulableEntity<DateType = Date> {
+  schedule: Schedule<DateType>;
+}

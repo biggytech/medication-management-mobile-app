@@ -9,10 +9,10 @@ import { styles } from "./styles";
 import { Round } from "@/components/common/Round";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
 import { formatNextTakeDate } from "@/utils/schedules/formatNextTakeDate";
-import { isOverdue } from "@/utils/entities/medicine/isOverdue";
+import { isOverdue } from "@/utils/schedules/isOverdue";
 import { formatNextTakeDateShort } from "@/utils/schedules/formatNextTakeDateShort";
-import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
-import { isEndingToday } from "@/utils/entities/medicine/isEndingToday";
+import { isDueOrOverdueToday } from "@/utils/schedules/isDueOrOverdueToday";
+import { isEndingToday } from "@/utils/schedules/isEndingToday";
 import { LanguageService } from "@/services/language/LanguageService";
 
 const MedicineListItem: React.FC<MedicineListItemProps> = ({

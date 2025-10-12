@@ -12,7 +12,7 @@ import { Text } from "@/components/common/typography/Text";
 import { LanguageService } from "@/services/language/LanguageService";
 import { positioningStyles } from "@/assets/styles/positioning";
 import { DoseTrackingModal } from "@/components/entities/medicine/DoseTrackingModal";
-import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
+import { isDueOrOverdueToday } from "@/utils/schedules/isDueOrOverdueToday";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import type { MedicationLogFromApi } from "@/types/medicationLogs";
 import { MedicationLogListItem } from "@/components/entities/medicationLogs/MedicationLogListItem";

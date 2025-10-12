@@ -10,7 +10,7 @@ import type { DetailsCardItem } from "@/components/common/DetailsCard/types";
 import { DetailsCard } from "@/components/common/DetailsCard";
 import { hhmmFromDate } from "@/utils/date/hhmmFromDate";
 import { isNotNullish } from "@/utils/types/isNotNullish";
-import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
+import { isDueOrOverdueToday } from "@/utils/schedules/isDueOrOverdueToday";
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
 import { IconButton } from "@/components/common/buttons/IconButton";
 import { truncate } from "@/utils/ui/truncate";

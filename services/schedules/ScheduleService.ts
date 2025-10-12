@@ -2,7 +2,7 @@ import { getDateWithTime } from "@/utils/date/getDateWithTime";
 import { DAYS_IN_WEEK, MILLISECONDS_IN_DAY } from "@/constants/dates";
 import { addDays } from "@/utils/date/addDays";
 import { startOfDay } from "@/utils/date/startOfDay";
-import { getClosestTodayDoseDate } from "@/utils/entities/medicine/getClosestTodayDoseDate";
+import { getClosestTodayDoseDate } from "@/utils/schedules/getClosestTodayDoseDate";
 import {
   DEFAULT_SCHEDULE_NOTIFICATION_TIME,
   ScheduleTypes,

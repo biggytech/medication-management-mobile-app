@@ -1,10 +1,10 @@
-import type { MedicineFromApi } from "@/types/medicines";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
+import type { SchedulableEntity } from "@/types/common/schedules";
 
-export const isEndingToday = (medicine: MedicineFromApi) => {
+export const isEndingToday = (entity: SchedulableEntity<string>) => {
   const {
     schedule: { endDate },
-  } = medicine;
+  } = entity;
 
   if (!endDate) return false;
 
