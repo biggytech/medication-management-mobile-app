@@ -1,9 +1,9 @@
-import type { MedicineSchedule } from "@/types/medicines";
 import { getDateWithTime } from "@/utils/date/getDateWithTime";
 import { isNotNullish } from "@/utils/types/isNotNullish";
+import type { Schedule } from "@/types/common/schedules";
 
 export const getClosestTodayDoseDate = (
-  schedule: MedicineSchedule<Date> | MedicineSchedule<string>,
+  schedule: Schedule<Date> | Schedule<string>,
   fromDate: Date,
 ): Date | null => {
   const { notificationTimes } = schedule;

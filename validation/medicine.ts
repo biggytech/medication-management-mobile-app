@@ -100,7 +100,7 @@ export const getScheduleSchema = () =>
         )
         .required(),
       userTimeZone: yup.string().required(),
-      nextDoseDate: yup.date().nullable(),
+      nextTakeDate: yup.date().nullable(),
       daysOfWeek: yup.array().of(yup.number().min(0).max(6)),
     })
     .test(
@@ -112,7 +112,7 @@ export const getScheduleSchema = () =>
           type,
           everyXDays,
           notificationTimes,
-          nextDoseDate,
+          nextTakeDate,
           daysOfWeek,
         } = val as any;
 
@@ -120,7 +120,7 @@ export const getScheduleSchema = () =>
           return (
             everyXDays === 0 &&
             (!notificationTimes || notificationTimes.length === 0) &&
-            nextDoseDate === null
+            nextTakeDate === null
           );
         }
 
@@ -132,10 +132,10 @@ export const getScheduleSchema = () =>
               notificationTimes.length >= 1 && notificationTimes.length <= 12
             );
           case ScheduleTypes.EVERY_OTHER_DAY:
-            return !!nextDoseDate && notificationTimes.length === 1;
+            return !!nextTakeDate && notificationTimes.length === 1;
           case ScheduleTypes.EVERY_X_DAYS:
             return (
-              !!nextDoseDate &&
+              !!nextTakeDate &&
               everyXDays >= 1 &&
               everyXDays <= 365 &&
               notificationTimes.length === 1

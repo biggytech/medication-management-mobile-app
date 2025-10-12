@@ -121,11 +121,11 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
 
   const detailsItems: DetailsCardItem[] = useMemo(() => {
     return [
-      isDueOrOverdueToday(medicine) && medicine.schedule.nextDoseDate
+      isDueOrOverdueToday(medicine) && medicine.schedule.nextTakeDate
         ? {
             key: "planned",
             iconName: "calendar-outline",
-            label: `${LanguageService.translate("Planned to")} ${hhmmFromDate(new Date(medicine.schedule.nextDoseDate))}`,
+            label: `${LanguageService.translate("Planned to")} ${hhmmFromDate(new Date(medicine.schedule.nextTakeDate))}`,
             value: "",
           }
         : null,
@@ -187,9 +187,9 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
   const handleRescheduleOptionSelected = useCallback(
     async (id: RescheduleOptionMinutes) => {
       const updatedMedicine = prepareMedicineDataForEditing(medicine);
-      if (updatedMedicine.schedule.nextDoseDate) {
-        updatedMedicine.schedule.nextDoseDate = addMinutes(
-          updatedMedicine.schedule.nextDoseDate,
+      if (updatedMedicine.schedule.nextTakeDate) {
+        updatedMedicine.schedule.nextTakeDate = addMinutes(
+          updatedMedicine.schedule.nextTakeDate,
           id,
         );
 

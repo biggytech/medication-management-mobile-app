@@ -8,9 +8,9 @@ import { AppColors } from "@/constants/styling/colors";
 import { styles } from "./styles";
 import { Round } from "@/components/common/Round";
 import { getMedicineEmoji } from "@/utils/entities/medicine/getMedicineEmoji";
-import { formatNextDoseDate } from "@/utils/entities/medicine/formatNextDoseDate";
+import { formatNextTakeDate } from "@/utils/schedules/formatNextTakeDate";
 import { isOverdue } from "@/utils/entities/medicine/isOverdue";
-import { formatNextDoseDateShort } from "@/utils/entities/medicine/formatNextDoseDateShort";
+import { formatNextTakeDateShort } from "@/utils/schedules/formatNextTakeDateShort";
 import { isDueOrOverdueToday } from "@/utils/entities/medicine/isDueOrOverdueToday";
 import { isEndingToday } from "@/utils/entities/medicine/isEndingToday";
 import { LanguageService } from "@/services/language/LanguageService";
@@ -40,8 +40,8 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
             style={[styles.subTitle, isOverdue(medicine) ? styles.overdue : {}]}
           >
             {shortDoseDate
-              ? formatNextDoseDateShort(medicine)
-              : formatNextDoseDate(medicine)}
+              ? formatNextTakeDateShort(medicine)
+              : formatNextTakeDate(medicine)}
           </Text>
         )}
         {isEndingToday(medicine) && (

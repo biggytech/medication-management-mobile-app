@@ -46,7 +46,7 @@ export const LocalNotificationsDebugger: React.FC = () => {
           everyXDays: 1,
           notificationTimes: ["08:00", "20:00"],
           userTimeZone: "Europe/Berlin",
-          nextDoseDate: new Date(
+          nextTakeDate: new Date(
             new Date().valueOf() + MILLISECONDS_IN_MINUTE,
           ).toISOString(), // 1 minute later,
         },

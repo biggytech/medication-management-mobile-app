@@ -64,14 +64,14 @@ export class NotificationSchedulingService {
       medicine.id,
     );
 
-    if (medicine.schedule.endDate && medicine.schedule.nextDoseDate) {
+    if (medicine.schedule.endDate && medicine.schedule.nextTakeDate) {
       if (
         endOfDay(new Date(medicine.schedule.endDate)) <
-        new Date(medicine.schedule.nextDoseDate)
+        new Date(medicine.schedule.nextTakeDate)
       ) {
         console.log("Skipping schedule due to ending date", {
           endDate: endOfDay(new Date(medicine.schedule.endDate)),
-          nextDoseDate: new Date(medicine.schedule.nextDoseDate),
+          nextTakeDate: new Date(medicine.schedule.nextTakeDate),
         });
 
         // do not schedule if dose date is bigger than ending date
@@ -106,9 +106,9 @@ export class NotificationSchedulingService {
     };
 
     try {
-      if (medicine.schedule.nextDoseDate) {
+      if (medicine.schedule.nextTakeDate) {
         await this.scheduleSpecificDateNotification(
-          new Date(medicine.schedule.nextDoseDate),
+          new Date(medicine.schedule.nextTakeDate),
           notificationContent,
         );
         console.log("✅ Medication notifications rescheduled successfully");

@@ -1,13 +1,11 @@
-import type { MedicineFromApi } from "@/types/medicines";
+import type { Schedule } from "@/types/common/schedules";
 
-export const isOverdue = (medicine: MedicineFromApi) => {
-  const {
-    schedule: { nextDoseDate },
-  } = medicine;
+export const isOverdue = ({ schedule }: { schedule: Schedule<string> }) => {
+  const { nextTakeDate } = schedule;
 
-  if (!nextDoseDate) return false;
+  if (!nextTakeDate) return false;
 
-  const nextDoseDateAsDate = new Date(nextDoseDate);
+  const nextTakeDateAsDate = new Date(nextTakeDate);
 
-  return nextDoseDateAsDate < new Date();
+  return nextTakeDateAsDate < new Date();
 };

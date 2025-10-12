@@ -10,7 +10,7 @@ import {
 import type { Schedule } from "@/types/common/schedules";
 
 export class ScheduleService {
-  static getDefaultNextDoseDate() {
+  static getDefaultNextTakeDate() {
     return getDateWithTime(new Date(), DEFAULT_SCHEDULE_NOTIFICATION_TIME);
   }
 
@@ -20,20 +20,20 @@ export class ScheduleService {
       everyXDays: 1,
       notificationTimes: [DEFAULT_SCHEDULE_NOTIFICATION_TIME],
       userTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      nextDoseDate: ScheduleService.getDefaultNextDoseDate(),
+      nextTakeDate: ScheduleService.getDefaultNextTakeDate(),
       daysOfWeek: [],
     };
   }
 
-  static getNextDoseDateForSchedule(
+  static getNextTakeDateForSchedule(
     schedule: Schedule,
     takenDate?: Date,
   ): Date | null {
     switch (schedule.type) {
       case ScheduleTypes.EVERY_DAY: {
-        const { notificationTimes, nextDoseDate } = schedule;
+        const { notificationTimes, nextTakeDate } = schedule;
 
-        const fromDate = takenDate ? (nextDoseDate ?? takenDate) : new Date();
+        const fromDate = takenDate ? (nextTakeDate ?? takenDate) : new Date();
 
         if (notificationTimes.length === 0) {
           throw new Error(
@@ -58,7 +58,7 @@ export class ScheduleService {
       case ScheduleTypes.EVERY_OTHER_DAY: {
         const { notificationTimes } = schedule;
 
-        if (!schedule.nextDoseDate || notificationTimes.length === 0) {
+        if (!schedule.nextTakeDate || notificationTimes.length === 0) {
           throw new Error(
             "Next dose date and notification time are required for every other day schedule",
           );
@@ -70,17 +70,17 @@ export class ScheduleService {
           );
         }
 
-        const nextDoseDate = takenDate
+        const nextTakeDate = takenDate
           ? startOfDay(addDays(takenDate, 2))
-          : schedule.nextDoseDate;
+          : schedule.nextTakeDate;
 
-        return getDateWithTime(new Date(nextDoseDate), notificationTimes[0]);
+        return getDateWithTime(new Date(nextTakeDate), notificationTimes[0]);
       }
       case ScheduleTypes.EVERY_X_DAYS: {
         const { notificationTimes, everyXDays } = schedule;
 
         if (
-          !schedule.nextDoseDate ||
+          !schedule.nextTakeDate ||
           notificationTimes.length === 0 ||
           !everyXDays
         ) {
@@ -95,11 +95,11 @@ export class ScheduleService {
           );
         }
 
-        const nextDoseDate = takenDate
+        const nextTakeDate = takenDate
           ? startOfDay(addDays(takenDate, everyXDays))
-          : schedule.nextDoseDate;
+          : schedule.nextTakeDate;
 
-        return getDateWithTime(new Date(nextDoseDate), notificationTimes[0]);
+        return getDateWithTime(new Date(nextTakeDate), notificationTimes[0]);
       }
       case ScheduleTypes.SPECIFIC_WEEK_DAYS: {
         const { daysOfWeek, notificationTimes } = schedule;
@@ -170,37 +170,37 @@ export class ScheduleService {
       base.notificationTimes = schedule.notificationTimes.length
         ? schedule.notificationTimes
         : [DEFAULT_SCHEDULE_NOTIFICATION_TIME];
-      base.nextDoseDate =
-        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
+      base.nextTakeDate =
+        base.nextTakeDate ?? ScheduleService.getDefaultNextTakeDate();
       base.everyXDays = 1;
       base.daysOfWeek = [];
     } else if (type === ScheduleTypes.EVERY_OTHER_DAY) {
       base.notificationTimes = [
         schedule.notificationTimes[0] || DEFAULT_SCHEDULE_NOTIFICATION_TIME,
       ];
-      base.nextDoseDate =
-        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
+      base.nextTakeDate =
+        base.nextTakeDate ?? ScheduleService.getDefaultNextTakeDate();
       base.everyXDays = 2;
       base.daysOfWeek = [];
     } else if (type === ScheduleTypes.EVERY_X_DAYS) {
       base.notificationTimes = [
         schedule.notificationTimes[0] || DEFAULT_SCHEDULE_NOTIFICATION_TIME,
       ];
-      base.nextDoseDate =
-        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
+      base.nextTakeDate =
+        base.nextTakeDate ?? ScheduleService.getDefaultNextTakeDate();
       base.everyXDays = Math.min(Math.max(schedule.everyXDays || 1, 1), 365);
       base.daysOfWeek = [];
     } else if (type === ScheduleTypes.SPECIFIC_WEEK_DAYS) {
       base.notificationTimes = [
         schedule.notificationTimes[0] || DEFAULT_SCHEDULE_NOTIFICATION_TIME,
       ];
-      base.nextDoseDate =
-        base.nextDoseDate ?? ScheduleService.getDefaultNextDoseDate();
+      base.nextTakeDate =
+        base.nextTakeDate ?? ScheduleService.getDefaultNextTakeDate();
       base.everyXDays = 1;
       base.daysOfWeek = schedule.daysOfWeek?.length ? schedule.daysOfWeek : [1];
     } else if (type === ScheduleTypes.ONLY_AS_NEEDED) {
       base.notificationTimes = [];
-      base.nextDoseDate = null;
+      base.nextTakeDate = null;
       base.everyXDays = 0;
       base.daysOfWeek = [];
     }

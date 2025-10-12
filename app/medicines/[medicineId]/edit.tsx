@@ -32,8 +32,8 @@ const EditMedicineScreen: React.FC = () => {
         // Update medicine in backend
         const medicineUpdateData = data as unknown as MedicineData;
 
-        medicineUpdateData.schedule.nextDoseDate =
-          ScheduleService.getNextDoseDateForSchedule(
+        medicineUpdateData.schedule.nextTakeDate =
+          ScheduleService.getNextTakeDateForSchedule(
             medicineUpdateData.schedule,
           );
 

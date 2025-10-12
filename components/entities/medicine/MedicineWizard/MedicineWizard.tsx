@@ -165,12 +165,12 @@ export class MedicineWizard {
                   </View>
                   <DatePicker
                     placeholder={LanguageService.translate("Next dose date")}
-                    value={schedule.nextDoseDate}
-                    onChange={(d) => setSchedule("nextDoseDate", d)}
+                    value={schedule.nextTakeDate}
+                    onChange={(d) => setSchedule("nextTakeDate", d)}
                     minDate={new Date()}
                     allowSkip={false}
-                    error={errors["schedule.nextDoseDate"]}
-                    onBlur={() => setTouched("schedule.nextDoseDate")}
+                    error={errors["schedule.nextTakeDate"]}
+                    onBlur={() => setTouched("schedule.nextTakeDate")}
                   />
                   <Gap />
                   <TimePicker
@@ -205,12 +205,12 @@ export class MedicineWizard {
                   </View>
                   <DatePicker
                     placeholder={LanguageService.translate("Next dose date")}
-                    value={schedule.nextDoseDate}
-                    onChange={(d) => setSchedule("nextDoseDate", d)}
+                    value={schedule.nextTakeDate}
+                    onChange={(d) => setSchedule("nextTakeDate", d)}
                     minDate={new Date()}
                     allowSkip={false}
-                    error={errors["schedule.nextDoseDate"]}
-                    onBlur={() => setTouched("schedule.nextDoseDate")}
+                    error={errors["schedule.nextTakeDate"]}
+                    onBlur={() => setTouched("schedule.nextTakeDate")}
                   />
                   <Gap />
                   <TimePicker

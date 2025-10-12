@@ -176,7 +176,7 @@ export class APIService {
     path: "/medicines",
 
     async add(data: MedicineData) {
-      data.schedule.nextDoseDate = ScheduleService.getNextDoseDateForSchedule(
+      data.schedule.nextTakeDate = ScheduleService.getNextTakeDateForSchedule(
         data.schedule,
       );
 
@@ -267,8 +267,8 @@ export class APIService {
       // reschedule medicine
       const medicineDataForUpdate = prepareMedicineDataForEditing(medicine);
 
-      medicineDataForUpdate.schedule.nextDoseDate =
-        ScheduleService.getNextDoseDateForSchedule(
+      medicineDataForUpdate.schedule.nextTakeDate =
+        ScheduleService.getNextTakeDateForSchedule(
           medicineDataForUpdate.schedule,
           data.date,
         );
@@ -293,8 +293,8 @@ export class APIService {
       // reschedule medicine
       const medicineDataForUpdate = prepareMedicineDataForEditing(medicine);
 
-      medicineDataForUpdate.schedule.nextDoseDate =
-        ScheduleService.getNextDoseDateForSchedule(
+      medicineDataForUpdate.schedule.nextTakeDate =
+        ScheduleService.getNextTakeDateForSchedule(
           medicineDataForUpdate.schedule,
           data.date,
         );

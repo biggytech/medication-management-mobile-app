@@ -10,8 +10,8 @@ export const prepareMedicineDataForEditing = (
       endDate: medicine.schedule.endDate
         ? new Date(medicine.schedule.endDate)
         : null,
-      nextDoseDate: medicine.schedule.nextDoseDate
-        ? new Date(medicine.schedule.nextDoseDate)
+      nextTakeDate: medicine.schedule.nextTakeDate
+        ? new Date(medicine.schedule.nextTakeDate)
         : null,
     },
     notes: medicine.notes || "",
