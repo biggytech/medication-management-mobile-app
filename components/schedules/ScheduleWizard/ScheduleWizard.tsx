@@ -1,10 +1,6 @@
 import React from "react";
 import { View } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
-import {
-  getNewMedicineEndDateSchema,
-  getNewMedicineScheduleSchema,
-} from "@/validation/medicine";
 import { SelectableList } from "@/components/common/inputs/SelectableList";
 import { DatePicker } from "@/components/common/inputs/DatePicker";
 import { TimePicker } from "@/components/common/inputs/TimePicker";
@@ -13,16 +9,20 @@ import { DaysOfWeekPicker } from "@/components/common/inputs/DaysOfWeekPicker";
 import { NumberInput } from "@/components/common/inputs/NumberInput";
 import { Text } from "@/components/common/typography/Text";
 import { ScheduleService } from "@/services/schedules/ScheduleService";
-import { type MedicineSchedule } from "@/types/medicines";
 import { Gap } from "@/components/common/markup/Gap";
 import type { WizardScreen } from "@/components/common/Wizard/types";
-import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
 import {
   DEFAULT_SCHEDULE_NOTIFICATION_TIME,
   ScheduleTypes,
 } from "@/constants/schedules";
 import { getScheduleTypeOptions } from "@/utils/schedules/getScheduleTypeOptions";
 import { Schedule } from "@/types/common/schedules";
+import {
+  getSchedulableEntityEndDateSchema,
+  getSchedulableEntityScheduleSchema,
+} from "@/validation/schedules";
+
+import { styles } from "./styles";
 
 export class ScheduleWizard {
   static getScheduleTypeScreen(): WizardScreen {
@@ -31,7 +31,7 @@ export class ScheduleWizard {
     return {
       key: "scheduleType",
       title: LanguageService.translate("⏰ How should we schedule reminders?"),
-      getValidationSchema: getNewMedicineScheduleSchema,
+      getValidationSchema: getSchedulableEntityScheduleSchema,
       node: ({ data, setValue, onScreenSubmit }) => {
         const schedule: Schedule =
           (data.schedule as any) ?? ScheduleService.getDefaultSchedule();
@@ -62,13 +62,13 @@ export class ScheduleWizard {
     return {
       key: "scheduleDetails",
       title: LanguageService.translate("⚙️ Schedule details"),
-      getValidationSchema: getNewMedicineScheduleSchema,
+      getValidationSchema: getSchedulableEntityScheduleSchema,
       node: ({ data, setValue, errors, setTouched }) => {
-        const schedule: MedicineSchedule =
+        const schedule: Schedule =
           (data.schedule as any) ?? ScheduleService.getDefaultSchedule();
 
-        const setSchedule = (key: keyof MedicineSchedule, value: any) => {
-          const next = { ...schedule, [key]: value } as MedicineSchedule;
+        const setSchedule = (key: keyof Schedule, value: any) => {
+          const next = { ...schedule, [key]: value } as Schedule;
           setValue("schedule", next);
         };
 
@@ -213,7 +213,7 @@ export class ScheduleWizard {
     return {
       key: "endDate",
       title: LanguageService.translate("📅 When do you plan to finish?"),
-      getValidationSchema: getNewMedicineEndDateSchema,
+      getValidationSchema: getSchedulableEntityEndDateSchema,
       node: ({ data, setValue, onScreenSubmit, errors, setTouched }) => (
         <>
           <View style={styles.screen}>
