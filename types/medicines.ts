@@ -1,7 +1,8 @@
 import { type MedicineForms } from "@/constants/medicines";
-import type { Schedule } from "@/types/common/schedules";
+import type { SchedulableEntity, Schedule } from "@/types/common/schedules";
 
-export interface MedicineData<DateType = Date> {
+export interface MedicineData<DateType = Date>
+  extends SchedulableEntity<DateType> {
   title: string;
   form: MedicineForms;
   schedule: MedicineSchedule<DateType>;
