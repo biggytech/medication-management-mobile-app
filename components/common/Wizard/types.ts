@@ -18,6 +18,14 @@ export interface WizardScreen<T extends DataForValidation = DataForValidation> {
 export interface WizardProps<T extends DataForValidation = DataForValidation> {
   screens: WizardScreen<T>[];
   onCancel: () => void;
-  onSubmit: (data: T) => void;
+  onSubmit: (data: T) => void | Promise<void>;
   initialData?: Partial<T>;
+  /**
+   * Optional callback when submission starts
+   */
+  onSubmissionStart?: () => void;
+  /**
+   * Optional callback when submission completes (success or error)
+   */
+  onSubmissionComplete?: (success: boolean) => void;
 }

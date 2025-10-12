@@ -25,16 +25,26 @@ import { ReactMemoWithGeneric } from "@/utils/types/ReactMemoWithGeneric";
 import type { AnyObject } from "yup";
 import type { FormInterface } from "@/components/common/inputs/Form/types";
 import { IconButton } from "@/components/common/buttons/IconButton";
+import {
+  debounceSubmission,
+  isSubmissionInProgress,
+} from "@/components/common/Wizard/utils";
+import { SUBMISSION_COOLDOWN_MS } from "@/components/common/Wizard/constants";
+import { OverlayLoader } from "@/components/common/loaders/OverlayLoader";
 
 const Wizard = <T extends DataForValidation = DataForValidation>({
   screens,
   onCancel,
   onSubmit,
   initialData,
+  onSubmissionStart,
+  onSubmissionComplete,
 }: WizardProps<T>) => {
   const [activeScreenIndex, setActiveScreenIndex] = useState<number>(0);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const scrollViewRef = useRef<ScrollView | null>(null);
+  const lastSubmissionTimeRef = useRef<number>(0);
 
   const formRef = useRef<FormInterface<T> | null>(null);
 
@@ -58,17 +68,45 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
   }, [activeScreenIndex, screens, singleScreenWidth]);
 
   const handleNextClick = useCallback(
-    (formData?: Partial<AnyObject>) => {
+    async (formData?: Partial<AnyObject>) => {
+      // Prevent double submission by checking if already submitting
+      if (isSubmissionInProgress(isSubmitting)) {
+        return;
+      }
+
+      // Check cooldown period to prevent rapid successive clicks
+      const now = Date.now();
+      if (now - lastSubmissionTimeRef.current < SUBMISSION_COOLDOWN_MS) {
+        return;
+      }
+
       Keyboard.dismiss();
 
       const nextScreenIndex = screens[activeScreenIndex + 1]
         ? activeScreenIndex + 1
         : -1;
 
+      // If this is the final screen, handle submission with debouncing
       if (nextScreenIndex === -1) {
         const immediateData = formData || formRef.current?.getData();
         if (immediateData) {
-          return onSubmit(immediateData as Required<T>);
+          // Update last submission time
+          lastSubmissionTimeRef.current = now;
+
+          // Call submission start callback
+          onSubmissionStart?.();
+
+          // Use debounced submission to prevent rapid double clicks
+          try {
+            await debounceSubmission(
+              () => onSubmit(immediateData as Required<T>),
+              setIsSubmitting,
+            );
+            onSubmissionComplete?.(true);
+          } catch (error) {
+            onSubmissionComplete?.(false);
+            throw error;
+          }
         }
       }
 
@@ -77,7 +115,15 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
         animated: true,
       });
     },
-    [activeScreenIndex, onSubmit, screens, singleScreenWidth],
+    [
+      activeScreenIndex,
+      onSubmit,
+      screens,
+      singleScreenWidth,
+      isSubmitting,
+      onSubmissionStart,
+      onSubmissionComplete,
+    ],
   );
 
   const handleScroll = useCallback(
@@ -105,6 +151,9 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
 
   const activeScreenTitle = screens[activeScreenIndex]?.title ?? null;
 
+  // Enhanced disabled state that includes submission state
+  const isButtonDisabled = isSubmitDisabled || isSubmitting;
+
   const getValidationSchema = screens[activeScreenIndex]?.getValidationSchema;
 
   return (
@@ -115,13 +164,13 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
           <IconButton onPress={handlePrevClick} iconName={"arrow-back"} />
         )}
         <TouchableOpacity
-          disabled={isSubmitDisabled}
+          disabled={isButtonDisabled}
           onPress={() => handleNextClick()}
         >
           <Ionicons
             name={hasNext ? "arrow-forward" : "checkmark"}
             size={Spacings.BIG}
-            color={isSubmitDisabled ? AppColors.GREY : AppColors.WHITE}
+            color={isButtonDisabled ? AppColors.GREY : AppColors.WHITE}
           />
         </TouchableOpacity>
       </View>
@@ -201,7 +250,21 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
                       setTouched,
                       isValid,
                       errors,
-                      onScreenSubmit: (formData?: Partial<AnyObject>) => {
+                      onScreenSubmit: async (formData?: Partial<AnyObject>) => {
+                        // Prevent double submission at screen level
+                        if (isSubmissionInProgress(isSubmitting)) {
+                          return;
+                        }
+
+                        // Check cooldown period to prevent rapid successive clicks
+                        const now = Date.now();
+                        if (
+                          now - lastSubmissionTimeRef.current <
+                          SUBMISSION_COOLDOWN_MS
+                        ) {
+                          return;
+                        }
+
                         const immediateData =
                           formData || formRef.current?.getData();
                         if (immediateData) {
@@ -211,7 +274,7 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
                             immediateData,
                           );
                           if (isValidImmediate) {
-                            handleNextClick(immediateData);
+                            await handleNextClick(immediateData);
                           }
                         }
                       },
@@ -223,6 +286,7 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
           )}
         </Form>
       </View>
+      {isSubmitting && <OverlayLoader />}
     </View>
   );
 };
