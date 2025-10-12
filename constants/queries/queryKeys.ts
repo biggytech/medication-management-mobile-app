@@ -7,5 +7,6 @@ export const QUERY_KEYS = {
   },
   HEALTH_TRACKERS: {
     LIST: "health-trackers",
+    SINGLE: "health-tracker-single",
   },
 };

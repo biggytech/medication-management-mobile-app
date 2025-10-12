@@ -192,7 +192,7 @@ export class NotificationSchedulingService {
       return;
     }
 
-    const trackerName = getHealthTrackerName(healthTracker.type);
+    const trackerName = getHealthTrackerName(healthTracker.type).toLowerCase();
 
     // Get health tracker emoji based on type
     const emoji = getHealthTrackerEmoji(healthTracker.type);
@@ -207,6 +207,7 @@ export class NotificationSchedulingService {
       },
       sound: "default",
       priority: Notifications.AndroidNotificationPriority.HIGH,
+      color: AppColors.ACCENT,
     };
 
     try {

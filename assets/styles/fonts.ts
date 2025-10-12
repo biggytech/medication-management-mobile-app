@@ -17,4 +17,7 @@ export const fontSizesStyles = StyleSheet.create({
   huge: {
     fontSize: FontSizes.HUGE,
   },
+  mega: {
+    fontSize: FontSizes.HUGE * 2,
+  },
 });
