@@ -14,30 +14,30 @@ import { NotesWizard } from "@/components/notes/NotesWizard";
  * Contains all the wizard screens for both creating and editing health trackers
  */
 export class HealthTrackerWizard {
-  /**
-   * Get all wizard screens for health tracker creation/editing
-   */
-  static getScreens(): WizardScreen[] {
+  static getTypeScreen(): WizardScreen {
     const healthTrackerTypeOptions = getHealthTrackerTypeOptions();
 
+    return {
+      key: "type",
+      title: LanguageService.translate("🏥 What would you like to track?"),
+      getValidationSchema: getNewHealthTrackerTypeSchema,
+      node: ({ data, setValue, errors, onScreenSubmit }) => (
+        <View style={styles.screen}>
+          <SelectableList
+            options={healthTrackerTypeOptions}
+            selectedId={data["type"]}
+            onSelect={(id) => {
+              setValue("type", id);
+              onScreenSubmit(); // Auto-submit when type is selected
+            }}
+          />
+        </View>
+      ),
+    };
+  }
+
+  static getScheduleAndNotesScreens(): WizardScreen[] {
     return [
-      {
-        key: "type",
-        title: LanguageService.translate("🏥 What would you like to track?"),
-        getValidationSchema: getNewHealthTrackerTypeSchema,
-        node: ({ data, setValue, errors, onScreenSubmit }) => (
-          <View style={styles.screen}>
-            <SelectableList
-              options={healthTrackerTypeOptions}
-              selectedId={data["type"]}
-              onSelect={(id) => {
-                setValue("type", id);
-                onScreenSubmit(); // Auto-submit when type is selected
-              }}
-            />
-          </View>
-        ),
-      },
       ScheduleWizard.getScheduleTypeScreen(),
       ScheduleWizard.getScheduleDetailsScreen(),
       ScheduleWizard.getScheduleEndDateScreen(),

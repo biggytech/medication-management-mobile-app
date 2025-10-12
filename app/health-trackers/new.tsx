@@ -35,10 +35,18 @@ const NewHealthTrackerScreen: React.FC = () => {
     [],
   );
 
+  const screens = useMemo(
+    () => [
+      HealthTrackerWizard.getTypeScreen(),
+      ...HealthTrackerWizard.getScheduleAndNotesScreens(),
+    ],
+    [],
+  );
+
   return (
     <Screen>
       <Wizard
-        screens={HealthTrackerWizard.getScreens()}
+        screens={screens}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         initialData={initialData}
