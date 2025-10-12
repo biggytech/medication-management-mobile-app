@@ -9,7 +9,7 @@ export type ValidationOutput<T extends DataForValidation = DataForValidation> =
   };
 
 export const validateObject = <T extends DataForValidation = DataForValidation>(
-  schema: yup.ObjectSchema<Partial<T>>,
+  schema: yup.ObjectSchema<any>,
   touchedFields: Partial<{
     [key in keyof T]: boolean;
   }>,
