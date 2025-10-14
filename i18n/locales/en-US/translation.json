@@ -239,5 +239,14 @@
   "Did you have cycle today?": "Did you have cycle today?",
   "Yes": "Yes",
   "No": "No",
-  "Recorded": "Recorded"
+  "Recorded": "Recorded",
+  "💊 How many do you have?": "💊 How many do you have?",
+  "Count": "Count",
+  "Count is required": "Count is required",
+  "Count should be between 1 and 9999": "Count should be between 1 and 9999",
+  "Remaining": "Remaining",
+  "The medicine is gone!": "The medicine is gone!",
+  "Only {count} doses left!": "Only {count} doses left!",
+  "for {count} doses": "for {count} doses",
+  "Not enough for one dose!": "Not enough for one dose!"
 }

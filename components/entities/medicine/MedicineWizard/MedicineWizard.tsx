@@ -1,8 +1,10 @@
 import React from "react";
 import { View } from "react-native";
+import * as yup from "yup";
 import { LanguageService } from "@/services/language/LanguageService";
 import { Input } from "@/components/common/inputs/Input";
 import {
+  getCountSchema,
   getNewMedicineDoseSchema,
   getNewMedicineFormSchema,
   getNewMedicineTitleSchema,
@@ -16,6 +18,7 @@ import { styles } from "@/components/entities/medicine/MedicineWizard/styles";
 import { getMedicineDoseText } from "@/utils/entities/medicine/getMedicineDoseText";
 import { ScheduleWizard } from "@/components/schedules/ScheduleWizard";
 import { NotesWizard } from "@/components/notes/NotesWizard";
+import { Link } from "@/components/common/buttons/Link";
 
 /**
  * Shared medicine wizard screens configuration
@@ -92,6 +95,41 @@ export class MedicineWizard {
                 {getMedicineDoseText(data as MedicineData)}
               </Text>
             </View>
+          </View>
+        ),
+      },
+      {
+        key: "count",
+        title: LanguageService.translate("💊 How many do you have?"),
+        getValidationSchema: () =>
+          yup.object().shape({
+            count: getCountSchema(),
+          }),
+        node: ({ data, setValue, errors, onScreenSubmit, setTouched }) => (
+          <View style={styles.screen}>
+            <View style={styles.row}>
+              <Input
+                placeholder={LanguageService.translate("Count")}
+                value={String(data.count ?? "")}
+                onChangeText={(text) => setValue("count", text)}
+                onBlur={() => setTouched("count")}
+                error={errors["count"]}
+                onSubmitEditing={() => onScreenSubmit()}
+                keyboardType="numeric"
+                inputMode="numeric"
+                maxLength={4}
+                returnKeyType="next"
+              />
+              <Text style={styles.label}>
+                {getMedicineDoseText(data as MedicineData)}
+              </Text>
+            </View>
+            <Link
+              text={LanguageService.translate("Skip")}
+              onPress={() => {
+                onScreenSubmit();
+              }}
+            />
           </View>
         ),
       },

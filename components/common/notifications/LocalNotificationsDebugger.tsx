@@ -50,6 +50,7 @@ export const LocalNotificationsDebugger: React.FC = () => {
             new Date().valueOf() + MILLISECONDS_IN_MINUTE,
           ).toISOString(), // 1 minute later,
         },
+        count: null,
       };
 
       await NotificationSchedulingService.scheduleMedicineNotifications(

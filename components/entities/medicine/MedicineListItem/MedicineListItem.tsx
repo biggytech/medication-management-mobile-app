@@ -14,6 +14,12 @@ import { formatNextTakeDateShort } from "@/utils/schedules/formatNextTakeDateSho
 import { isDueOrOverdueToday } from "@/utils/schedules/isDueOrOverdueToday";
 import { isEndingToday } from "@/utils/schedules/isEndingToday";
 import { LanguageService } from "@/services/language/LanguageService";
+import {
+  getLowCountWarningText,
+  getMedicineCountDisplayText,
+  isLowCount,
+} from "@/utils/entities/medicine/getMedicineCountText";
+import { isNotNullish } from "@/utils/types/isNotNullish";
 
 const MedicineListItem: React.FC<MedicineListItemProps> = ({
   medicine,
@@ -48,6 +54,20 @@ const MedicineListItem: React.FC<MedicineListItemProps> = ({
           <Text style={[styles.subTitle]}>
             {LanguageService.translate("Ending today")}
           </Text>
+        )}
+        {isNotNullish(medicine.count) && (
+          <>
+            <Text
+              style={[styles.subTitle, isLowCount(medicine) ? styles.warn : {}]}
+            >
+              {getMedicineCountDisplayText(medicine)}
+            </Text>
+            {isLowCount(medicine) && (
+              <Text style={[styles.subTitle, styles.lowCount]}>
+                {getLowCountWarningText(medicine)}
+              </Text>
+            )}
+          </>
         )}
       </View>
       <View style={styles.right}>

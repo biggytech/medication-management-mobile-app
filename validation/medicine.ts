@@ -25,6 +25,13 @@ export const getDoseSchema = () =>
     .min(1, LanguageService.translate("Dose should be between 1 and 100"))
     .max(100, LanguageService.translate("Dose should be between 1 and 100"));
 
+export const getCountSchema = () =>
+  yup
+    .number()
+    .typeError(LanguageService.translate("Count is required"))
+    .min(1, LanguageService.translate("Count should be between 1 and 9999"))
+    .max(9999, LanguageService.translate("Count should be between 1 and 9999"));
+
 export const getNewMedicineTitleSchema = () =>
   yup.object().shape({
     title: getTitleSchema(),

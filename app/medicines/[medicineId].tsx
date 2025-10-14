@@ -25,6 +25,7 @@ import type { MedicineFromApi } from "@/types/medicines";
 import { NotificationSchedulingService } from "@/services/notifications/NotificationSchedulingService";
 import { useToaster } from "@/hooks/ui/useToaster";
 import { truncate } from "@/utils/ui/truncate";
+import { isNotNullish } from "@/utils/types/isNotNullish";
 
 const MedicineScreen: React.FC = () => {
   const { medicineId } = useLocalSearchParams<{
@@ -146,6 +147,15 @@ const MedicineScreen: React.FC = () => {
         iconName: "document-text",
         label: LanguageService.translate("Notes"),
         value: truncate(medicine.notes, 100),
+      });
+    }
+
+    if (isNotNullish(medicine.count)) {
+      items.push({
+        key: "count",
+        iconName: "cube",
+        label: LanguageService.translate("Remaining"),
+        value: `${medicine.count} ${getMedicineDoseText(medicine)}`,
       });
     }
 

@@ -26,4 +26,11 @@ export const styles = StyleSheet.create({
   overdue: {
     color: AppColors.NEGATIVE,
   },
+  lowCount: {
+    color: AppColors.NEGATIVE,
+    fontWeight: "bold",
+  },
+  warn: {
+    color: AppColors.NEGATIVE,
+  },
 });

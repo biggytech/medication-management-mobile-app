@@ -282,6 +282,15 @@ export class APIService {
           data.date,
         );
 
+      // decrease medicine count
+      if (medicineDataForUpdate.count) {
+        const updatedCount = Math.max(
+          0,
+          medicineDataForUpdate.count - medicineDataForUpdate.schedule.dose,
+        );
+        medicineDataForUpdate.count = updatedCount;
+      }
+
       await APIService.medicines.update(medicine.id, medicineDataForUpdate);
 
       return result;

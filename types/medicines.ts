@@ -9,6 +9,7 @@ export interface MedicineData<DateType = Date>
   title: string;
   form: MedicineForms;
   schedule: MedicineSchedule<DateType>;
+  count: number | null; // Optional count field for tracking remaining medicine count
 }
 
 export type MedicineDataWithId<DateType = Date> = MedicineData<DateType> &
