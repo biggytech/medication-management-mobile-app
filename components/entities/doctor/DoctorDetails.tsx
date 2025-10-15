@@ -9,6 +9,8 @@ import type { DoctorFromApi } from "@/types/doctors";
 import { GradientHeader } from "@/components/common/GradientHeader";
 import { transparentColor } from "@/utils/ui/transparentColor";
 import { darkenHexColor } from "@/utils/ui/darkenHexColor";
+import { IconButton } from "@/components/common/buttons/IconButton";
+import { router } from "expo-router";
 
 interface DoctorDetailsProps {
   doctor: DoctorFromApi;
@@ -23,6 +25,9 @@ export const DoctorDetails: React.FC<DoctorDetailsProps> = ({ doctor }) => {
           transparentColor(AppColors.SECONDARY, 0.5),
           transparentColor(AppColors.ACCENT, 0.4),
         ]}
+        left={
+          <IconButton onPress={() => router.back()} iconName={"arrow-back"} />
+        }
       >
         {/* Doctor Photo */}
         {doctor.photoUrl && (
