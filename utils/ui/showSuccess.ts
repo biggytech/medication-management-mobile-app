@@ -11,5 +11,6 @@ export const showSuccess = (message: string, details?: string) => {
     textColor: AppColors.WHITE,
     iconColor: AppColors.WHITE,
     icon: "checkmark-circle",
+    visibilityTime: 1000,
   });
 };

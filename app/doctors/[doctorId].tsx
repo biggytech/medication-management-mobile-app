@@ -13,10 +13,12 @@ import { AppColors } from "@/constants/styling/colors";
 import { Text } from "@/components/common/typography/Text";
 import { Spacings } from "@/constants/styling/spacings";
 import { Button } from "@/components/common/buttons/Button";
+import { useToaster } from "@/hooks/ui/useToaster";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useLocalSearchParams<{ doctorId: string }>();
   const queryClient = useQueryClient();
+  const { showSuccess } = useToaster();
 
   const {
     data: doctor,
@@ -44,6 +46,8 @@ export default function DoctorDetailsPage() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.DOCTORS.DETAILS],
       });
+      // Show success toast
+      showSuccess(LanguageService.translate("Doctor added successfully"));
     },
   });
 
@@ -58,6 +62,8 @@ export default function DoctorDetailsPage() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.DOCTORS.DETAILS, doctorId],
       });
+      // Show success toast
+      showSuccess(LanguageService.translate("Doctor removed successfully"));
     },
   });
 
