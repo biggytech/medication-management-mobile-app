@@ -47,6 +47,20 @@ export default function DoctorDetailsPage() {
     },
   });
 
+  const removeDoctorMutation = useMutation({
+    mutationFn: (doctorId: number) =>
+      APIService.patients.removeDoctor(doctorId),
+    onSuccess: () => {
+      // Invalidate and refetch my doctors list and doctor details
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PATIENTS.MY_DOCTORS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.DOCTORS.DETAILS, doctorId],
+      });
+    },
+  });
+
   // Check if current doctor is already in my doctors list
   const isMyDoctor =
     myDoctors?.patients.some(
@@ -80,16 +94,32 @@ export default function DoctorDetailsPage() {
     }
   };
 
+  const handleRemoveDoctor = () => {
+    if (doctorId) {
+      removeDoctorMutation.mutate(Number(doctorId));
+    }
+  };
+
   return (
     <View style={styles.container}>
       <DoctorDetails doctor={doctor} />
-      {!isMyDoctor && !isLoadingMyDoctors && (
+      {!isLoadingMyDoctors && (
         <View style={styles.buttonContainer}>
-          <Button
-            text={LanguageService.translate("Add as My Doctor")}
-            onPress={handleBecomePatient}
-            disabled={becomePatientMutation.isPending}
-          />
+          {!isMyDoctor ? (
+            <Button
+              text={LanguageService.translate("Add as My Doctor")}
+              onPress={handleBecomePatient}
+              disabled={becomePatientMutation.isPending}
+              color={AppColors.POSITIVE}
+            />
+          ) : (
+            <Button
+              text={LanguageService.translate("Remove from My Doctors")}
+              onPress={handleRemoveDoctor}
+              disabled={removeDoctorMutation.isPending}
+              color={AppColors.NEGATIVE}
+            />
+          )}
         </View>
       )}
     </View>

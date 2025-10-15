@@ -259,5 +259,8 @@
   "Doctor Details": "Doctor Details",
   "Phone": "Phone",
   "Failed to load doctor details": "Failed to load doctor details",
-  "Add as My Doctor": "Add as My Doctor"
+  "Add as My Doctor": "Add as My Doctor",
+  "Remove from My Doctors": "Remove from My Doctors",
+  "Doctor removed successfully": "Doctor removed successfully",
+  "Failed to remove doctor": "Failed to remove doctor"
 }

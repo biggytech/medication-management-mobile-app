@@ -259,5 +259,8 @@
   "Doctor Details": "Детали врача",
   "Phone": "Телефон",
   "Failed to load doctor details": "Не удалось загрузить детали врача",
-  "Add as My Doctor": "Добавить как моего врача"
+  "Add as My Doctor": "Добавить как моего врача",
+  "Remove from My Doctors": "Удалить из моих врачей",
+  "Doctor removed successfully": "Врач успешно удален",
+  "Failed to remove doctor": "Не удалось удалить врача"
 }

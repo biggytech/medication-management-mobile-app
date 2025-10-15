@@ -538,5 +538,16 @@ export class APIService {
 
       return result;
     },
+
+    async removeDoctor(doctorId: number) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.POST,
+        url: `${this.path}/remove-doctor`,
+        requiresAuth: true,
+        body: { doctorId },
+      });
+
+      return result;
+    },
   };
 }
