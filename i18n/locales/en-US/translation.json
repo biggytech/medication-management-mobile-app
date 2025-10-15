@@ -263,5 +263,8 @@
   "Remove from My Doctors": "Remove from My Doctors",
   "Doctor added successfully": "Doctor added successfully",
   "Doctor removed successfully": "Doctor removed successfully",
-  "Failed to remove doctor": "Failed to remove doctor"
+  "Failed to remove doctor": "Failed to remove doctor",
+  "My Doctors": "My Doctors",
+  "Failed to load doctors": "Failed to load doctors",
+  "Add doctors to your list to see them here": "Add doctors to your list to see them here"
 }

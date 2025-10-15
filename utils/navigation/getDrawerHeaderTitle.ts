@@ -17,6 +17,8 @@ export const getDrawerHeaderTitle = (
       return LanguageService.translate("Medicines");
     case "health-trackers":
       return LanguageService.translate("Health Trackers");
+    case "doctors":
+      return LanguageService.translate("My Doctors");
     default:
       return LanguageService.translate("Home");
   }

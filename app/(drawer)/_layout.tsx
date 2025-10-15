@@ -105,6 +105,25 @@ export default function DrawerLayout() {
             headerRight: () => <DoctorSearchHeader />,
           })}
         />
+        <Drawer.Screen
+          name="doctors"
+          options={{
+            headerTitle: LanguageService.translate("My Doctors"),
+            title: LanguageService.translate("My Doctors"),
+            drawerIcon: ({ focused, size, color }) => (
+              <Ionicons
+                name={"people"}
+                size={size}
+                color={focused ? FOCUSED_COLOR : color}
+              />
+            ),
+            drawerActiveTintColor: FOCUSED_COLOR,
+            headerStyle: {
+              backgroundColor: AppColors.PRIMARY,
+            },
+            headerTintColor: AppColors.WHITE,
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );

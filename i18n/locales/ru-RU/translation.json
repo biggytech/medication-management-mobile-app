@@ -263,5 +263,8 @@
   "Remove from My Doctors": "Удалить из моих врачей",
   "Doctor added successfully": "Врач успешно добавлен",
   "Doctor removed successfully": "Врач успешно удален",
-  "Failed to remove doctor": "Не удалось удалить врача"
+  "Failed to remove doctor": "Не удалось удалить врача",
+  "My Doctors": "Мои врачи",
+  "Failed to load doctors": "Не удалось загрузить врачей",
+  "Add doctors to your list to see them here": "Добавьте врачей в свой список, чтобы увидеть их здесь"
 }
