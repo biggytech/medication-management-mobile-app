@@ -16,6 +16,7 @@ import type {
   HealthTrackingLogDataForInsert,
   HealthTrackingLogFromApi,
 } from "@/types/healthTrackingLogs";
+import type { DoctorsApiResponse, DoctorSearchParams } from "@/types/doctors";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
@@ -65,7 +66,15 @@ export class APIService {
         throw new Error("Token is not set for authenticated route");
       }
 
-      const response = await fetch(`${this.BASE_URL}${url}`, {
+      let requestURL = `${this.BASE_URL}${url}`;
+
+      if (params) {
+        requestURL =
+          `${requestURL}?` +
+          new URLSearchParams(params as Record<string, string>).toString();
+      }
+
+      const response = await fetch(requestURL, {
         method,
         headers: {
           Accept: "application/json",
@@ -466,6 +475,24 @@ export class APIService {
         url: `${this.path}/list/by-date/${formattedDate}?timezone=${timeZone}`,
         requiresAuth: true,
       });
+    },
+  };
+
+  public static doctors = {
+    path: "/doctors",
+
+    async list(params?: DoctorSearchParams) {
+      const queryParams = params ? { name: params.name } : {};
+
+      const result =
+        await APIService.getInstance().makeRequest<DoctorsApiResponse>({
+          method: Methods.GET,
+          url: this.path,
+          requiresAuth: true,
+          params: queryParams,
+        });
+
+      return result;
     },
   };
 }
