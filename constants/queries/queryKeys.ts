@@ -13,4 +13,7 @@ export const QUERY_KEYS = {
   HEALTH_TRACKER_LOGS: {
     BY_DATE: "health-tracker-logs-by-date",
   },
+  DOCTORS: {
+    LIST: "doctors",
+  },
 };

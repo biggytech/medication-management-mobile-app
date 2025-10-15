@@ -43,7 +43,7 @@ export default function SignUpScreen(): ReactNode {
               autoFocus
               placeholder={LanguageService.translate("Full Name")}
               value={data["fullName"]}
-              onChangeText={(text) => setValue("fullName", text.trim())}
+              onChangeText={(text) => setValue("fullName", text)}
               onBlur={() => setTouched("fullName")}
               error={errors["fullName"]}
             />

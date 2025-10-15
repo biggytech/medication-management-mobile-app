@@ -1,10 +1,10 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Animated,
   ScrollView,
   TextInput,
   TouchableOpacity,
   View,
-  Animated,
 } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,6 +16,7 @@ import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import DoctorSearchResult from "./DoctorSearchResult";
 import { styles } from "./styles";
 import type { DoctorSearchBarProps } from "./types";
+import { AppColors } from "@/constants/styling/colors";
 
 const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({
   onDoctorSelect,
@@ -25,6 +26,7 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const inputRef = useRef<TextInput>(null);
+  const containerRef = useRef<View>(null);
   const animatedWidth = useRef(new Animated.Value(55)).current;
   const animatedOpacity = useRef(new Animated.Value(0)).current;
 
@@ -75,8 +77,17 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({
   const handleClearSearch = useCallback(() => {
     setSearchQuery("");
     setShowResults(false);
-    inputRef.current?.focus();
+    setIsExpanded(false);
+    inputRef.current?.blur();
   }, []);
+
+  const handleContainerPress = useCallback(() => {
+    // If not expanded, expand it
+    if (!isExpanded) {
+      setIsExpanded(true);
+      inputRef.current?.focus();
+    }
+  }, [isExpanded]);
 
   const handleDoctorSelect = useCallback(
     (doctor: any) => {
@@ -92,55 +103,65 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({
   const doctors = doctorsData?.doctors || [];
 
   return (
-    <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.searchContainer,
-          isExpanded ? styles.expanded : {},
-          { width: animatedWidth },
-        ]}
+    <View style={styles.container} ref={containerRef}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={handleContainerPress}
+        style={{ flex: 1 }}
       >
-        <TouchableOpacity
-          onPress={() => {
-            if (!isExpanded) {
-              setIsExpanded(true);
-            }
-          }}
+        <Animated.View
+          style={[
+            styles.searchContainer,
+            isExpanded ? styles.expandedSearchContainer : {},
+            { width: animatedWidth },
+          ]}
         >
-          <Ionicons
-            name="search"
-            size={20}
-            color="#666"
-            style={styles.searchIcon}
-          />
-        </TouchableOpacity>
-        <Animated.View style={{ flex: 1, opacity: animatedOpacity }}>
-          <TextInput
-            ref={inputRef}
-            style={[styles.searchInput]}
-            placeholder={
-              placeholder || LanguageService.translate("Search for doctors...")
-            }
-            value={searchQuery}
-            onChangeText={handleSearchChange}
-            onFocus={handleSearchFocus}
-            onBlur={handleSearchBlur}
-            returnKeyType="search"
-          />
-        </Animated.View>
-        {searchQuery.length > 0 && (
-          <Animated.View style={{ opacity: animatedOpacity }}>
-            <TouchableOpacity
-              onPress={handleClearSearch}
-              style={styles.clearIcon}
-            >
-              <Ionicons name="close-circle" size={20} color="#666" />
-            </TouchableOpacity>
+          <TouchableOpacity onPress={handleContainerPress}>
+            <Ionicons
+              name="search"
+              size={20}
+              color="#666"
+              style={[
+                styles.searchIcon,
+                isExpanded ? styles.searchIconExpanded : {},
+              ]}
+            />
+          </TouchableOpacity>
+          <Animated.View style={{ flex: 1, opacity: animatedOpacity }}>
+            <TextInput
+              ref={inputRef}
+              style={[styles.searchInput]}
+              placeholder={
+                placeholder ||
+                LanguageService.translate("Search for doctors...")
+              }
+              value={searchQuery}
+              onChangeText={handleSearchChange}
+              onFocus={handleSearchFocus}
+              onBlur={handleSearchBlur}
+              returnKeyType="search"
+              placeholderTextColor={AppColors.WHITE}
+            />
           </Animated.View>
-        )}
-      </Animated.View>
+          {searchQuery.length > 0 && (
+            <Animated.View style={{ opacity: animatedOpacity }}>
+              <TouchableOpacity
+                onPress={handleClearSearch}
+                style={styles.clearIcon}
+              >
+                <Ionicons
+                  style={styles.clearIconImage}
+                  name="close-circle-outline"
+                  size={20}
+                  color="#666"
+                />
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+        </Animated.View>
+      </TouchableOpacity>
 
-      {showResults && (
+      {searchQuery.length > 0 && showResults && (
         <View style={styles.resultsContainer}>
           <ScrollView keyboardShouldPersistTaps="handled">
             {isLoading ? (
