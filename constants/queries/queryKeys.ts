@@ -17,4 +17,7 @@ export const QUERY_KEYS = {
     LIST: "doctors",
     DETAILS: "doctor-details",
   },
+  PATIENTS: {
+    MY_DOCTORS: "my-doctors",
+  },
 };

@@ -258,5 +258,6 @@
   "Doctors": "Врачи",
   "Doctor Details": "Детали врача",
   "Phone": "Телефон",
-  "Failed to load doctor details": "Не удалось загрузить детали врача"
+  "Failed to load doctor details": "Не удалось загрузить детали врача",
+  "Add as My Doctor": "Добавить как моего врача"
 }

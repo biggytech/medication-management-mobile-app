@@ -21,3 +21,27 @@ export interface DoctorsApiResponse {
 export interface DoctorSearchParams {
   name?: string;
 }
+
+export interface MyDoctorFromApi {
+  userId: number;
+  doctorId: number;
+  doctor: {
+    id: number;
+    userId: number;
+    specialisation: string;
+    placeOfWork: string;
+    phone: string | null;
+    photoUrl: string | null;
+    user: {
+      id: number;
+      fullName: string;
+      email: string;
+      isGuest: boolean;
+    };
+  };
+}
+
+export interface MyDoctorsApiResponse {
+  patients: MyDoctorFromApi[];
+  total: number;
+}

@@ -20,6 +20,8 @@ import type {
   DoctorFromApi,
   DoctorsApiResponse,
   DoctorSearchParams,
+  MyDoctorFromApi,
+  MyDoctorsApiResponse,
 } from "@/types/doctors";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
@@ -509,6 +511,32 @@ export class APIService {
       });
 
       return result.doctor;
+    },
+  };
+
+  public static patients = {
+    path: "/patients",
+
+    async getMyDoctors() {
+      const result =
+        await APIService.getInstance().makeRequest<MyDoctorsApiResponse>({
+          method: Methods.GET,
+          url: `${this.path}/my-doctors`,
+          requiresAuth: true,
+        });
+
+      return result;
+    },
+
+    async becomePatient(doctorId: number) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.POST,
+        url: `${this.path}/become-patient`,
+        requiresAuth: true,
+        body: { doctorId },
+      });
+
+      return result;
     },
   };
 }

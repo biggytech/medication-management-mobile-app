@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { APIService } from "@/services/APIService";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import { DoctorDetails } from "@/components/entities/doctor/DoctorDetails";
@@ -11,9 +11,12 @@ import { GradientHeader } from "@/components/common/GradientHeader";
 import { LanguageService } from "@/services/language/LanguageService";
 import { AppColors } from "@/constants/styling/colors";
 import { Text } from "@/components/common/typography/Text";
+import { Spacings } from "@/constants/styling/spacings";
+import { Button } from "@/components/common/buttons/Button";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useLocalSearchParams<{ doctorId: string }>();
+  const queryClient = useQueryClient();
 
   const {
     data: doctor,
@@ -24,6 +27,31 @@ export default function DoctorDetailsPage() {
     queryFn: () => APIService.doctors.getById(Number(doctorId)),
     enabled: !!doctorId,
   });
+
+  const { data: myDoctors, isLoading: isLoadingMyDoctors } = useQuery({
+    queryKey: [QUERY_KEYS.PATIENTS.MY_DOCTORS],
+    queryFn: () => APIService.patients.getMyDoctors(),
+  });
+
+  const becomePatientMutation = useMutation({
+    mutationFn: (doctorId: number) =>
+      APIService.patients.becomePatient(doctorId),
+    onSuccess: () => {
+      // Invalidate and refetch my doctors list
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PATIENTS.MY_DOCTORS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.DOCTORS.DETAILS],
+      });
+    },
+  });
+
+  // Check if current doctor is already in my doctors list
+  const isMyDoctor =
+    myDoctors?.patients.some(
+      (myDoctor) => myDoctor.doctor.id === Number(doctorId),
+    ) ?? false;
 
   if (isLoading) {
     return (
@@ -46,9 +74,24 @@ export default function DoctorDetailsPage() {
     );
   }
 
+  const handleBecomePatient = () => {
+    if (doctorId) {
+      becomePatientMutation.mutate(Number(doctorId));
+    }
+  };
+
   return (
     <View style={styles.container}>
       <DoctorDetails doctor={doctor} />
+      {!isMyDoctor && !isLoadingMyDoctors && (
+        <View style={styles.buttonContainer}>
+          <Button
+            text={LanguageService.translate("Add as My Doctor")}
+            onPress={handleBecomePatient}
+            disabled={becomePatientMutation.isPending}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -56,6 +99,10 @@ export default function DoctorDetailsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: AppColors.BACKGROUND,
+  },
+  buttonContainer: {
+    padding: Spacings.STANDART,
     backgroundColor: AppColors.BACKGROUND,
   },
 });
