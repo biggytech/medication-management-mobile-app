@@ -18,6 +18,7 @@ import { Button } from "@/components/common/buttons/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
+import { DoctorSearchHeader } from "@/components/common/DoctorSearchHeader";
 
 const FOCUSED_COLOR = AppColors.SECONDARY;
 
@@ -101,6 +102,7 @@ export default function DrawerLayout() {
               backgroundColor: AppColors.PRIMARY,
             },
             headerTintColor: AppColors.WHITE,
+            headerRight: () => <DoctorSearchHeader />,
           })}
         />
       </Drawer>
