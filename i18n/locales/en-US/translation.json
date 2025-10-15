@@ -248,5 +248,12 @@
   "The medicine is gone!": "The medicine is gone!",
   "Only {count} doses left!": "Only {count} doses left!",
   "for {count} doses": "for {count} doses",
-  "Not enough for one dose!": "Not enough for one dose!"
+  "Not enough for one dose!": "Not enough for one dose!",
+  "Search Doctors": "Search Doctors",
+  "Search for doctors...": "Search for doctors...",
+  "No doctors found": "No doctors found",
+  "Specialization": "Specialization",
+  "Place of Work": "Place of Work",
+  "Contact": "Contact",
+  "Doctors": "Doctors"
 }

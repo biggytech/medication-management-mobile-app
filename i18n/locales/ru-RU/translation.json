@@ -248,5 +248,12 @@
   "The medicine is gone!": "Лекарство закончилось!",
   "Only {count} doses left!": "Хватит только на {count} прием(а)!",
   "for {count} doses": "на {count} доз",
-  "Not enough for one dose!": "Не хватит на один прием!"
+  "Not enough for one dose!": "Не хватит на один прием!",
+  "Search Doctors": "Поиск врачей",
+  "Search for doctors...": "Поиск врачей...",
+  "No doctors found": "Врачи не найдены",
+  "Specialization": "Специализация",
+  "Place of Work": "Место работы",
+  "Contact": "Контакт",
+  "Doctors": "Врачи"
 }
