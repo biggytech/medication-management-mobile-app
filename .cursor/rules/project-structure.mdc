@@ -1,0 +1,60 @@
+---
+alwaysApply: true
+---
+
+# Project Structure Guide
+
+This is a React Native medication management mobile app built with Expo, TypeScript, and i18n support.
+
+## Core Architecture
+
+- **Framework**: React Native with Expo Router for navigation
+- **Language**: TypeScript with strict typing
+- **Internationalization**: i18next with support for English (en-US) and Russian (ru-RU)
+- **State Management**: TanStack Query for server state
+- **Styling**: React Native StyleSheet
+
+## Directory Structure
+
+### App Navigation Screens (`app/`)
+- Navigation pages/screens follow Expo Router conventions
+- Use file-based routing with `_layout.tsx` for nested layouts
+
+### Components (`components/`)
+- **Common Components** (`components/common/`): Reusable UI components
+- **Entity Components** (`components/entities/entityName/`): Domain-specific components
+- Each component folder contains:
+  - `index.ts` - Default export
+  - `ComponentName.tsx` - Main component
+  - `types.ts` - TypeScript interfaces
+  - `styles.ts` - Component-specific styles
+  - `constants.ts` - Component constants
+  - `utils.ts` - Component utility functions (as separate functions)
+
+### Shared Resources (Root Level)
+- **`assets/`**: Images, fonts, and atomic styles
+- **`constants/`**: App-wide constants and configuration
+- **`hooks/`**: Custom React hooks organized by domain
+- **`i18n/`**: Internationalization files
+- **`providers/`**: React context providers
+- **`services/`**: Business logic and API service
+- **`types/`**: TypeScript type definitions
+- **`utils/`**: Utility functions organized by domain
+- **`validation/`**: Form validation schemas
+
+## File Organization Principles
+
+1. **Extract Complex Logic**: Move complex logic to `utils/` or `services/`
+2. **Avoid Duplication**: Extract duplicated constants to `constants/` files
+3. **Domain Organization**: Group related functionality by domain (medicines, healthTrackers, etc.)
+4. **Atomic Styles**: Use predefined `AppColors`, `FontSizes`, and `Spacings` from `constants/styling/`
+5. **Component Reusability**: Always check `components/common/` before creating new components
+
+## Key Files Reference
+
+- [app.config.js](mdc:app.config.js) - Expo configuration
+- [package.json](mdc:package.json) - Dependencies and scripts
+- [services/APIService.ts](mdc:services/APIService.ts) - API service pattern
+- [services/language/LanguageService.ts](mdc:services/language/LanguageService.ts) - i18n service
+- [constants/styling/](mdc:assets/styles/) - Styling constants (fonts, colors, spacing)
+- [i18n/locales/](mdc:i18n/locales/) - Translation files

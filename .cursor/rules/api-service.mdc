@@ -1,0 +1,204 @@
+---
+globs: services/**/*.ts,services/**/*.tsx
+---
+
+# API Service Patterns
+
+## Service Structure
+
+Follow the established pattern from [services/APIService.ts](mdc:services/APIService.ts):
+
+### 1. Singleton Pattern
+```typescript
+export class APIService {
+  private static instance: APIService | null = null;
+  
+  private constructor() {}
+  
+  private static getInstance() {
+    if (APIService.instance === null) {
+      APIService.instance = new APIService();
+    }
+    return APIService.instance;
+  }
+}
+```
+
+### 2. HTTP Methods Enum
+```typescript
+enum Methods {
+  GET = "GET",
+  POST = "POST", 
+  PUT = "PUT",
+  DELETE = "DELETE",
+}
+```
+
+### 3. Centralized Request Handler
+```typescript
+private async makeRequest<T>(options: {
+  method: Methods;
+  url: string;
+  params?: object;
+  body?: object;
+  requiresAuth: boolean;
+}): Promise<T> {
+  // Centralized request logic with error handling
+}
+```
+
+## API Endpoint Organization
+
+### 1. Grouped by Domain
+```typescript
+public static medicines = {
+  path: "/medicines",
+  
+  async add(data: MedicineData) { /* implementation */ },
+  async list() { /* implementation */ },
+  async get(id: number) { /* implementation */ },
+  async update(id: number, data: MedicineData) { /* implementation */ },
+  async delete(id: number) { /* implementation */ },
+};
+
+public static healthTrackers = {
+  path: "/health-trackers",
+  
+  async create(data: HealthTrackerData) { /* implementation */ },
+  async list() { /* implementation */ },
+  async getById(id: string) { /* implementation */ },
+  async update(id: number, data: HealthTrackerData) { /* implementation */ },
+  async delete(id: string) { /* implementation */ },
+};
+```
+
+### 2. Consistent Method Patterns
+- **Create/Add**: `POST` to `{path}/add` or `{path}`
+- **List**: `GET` to `{path}/list`
+- **Get Single**: `GET` to `{path}/{id}`
+- **Update**: `PUT` to `{path}/{id}`
+- **Delete**: `DELETE` to `{path}/{id}`
+
+## API Service Rules
+
+### 1. Always Use APIService Pattern
+- Create new methods in `services/APIService.ts`
+- Follow the existing singleton pattern
+- Use the centralized `makeRequest` method
+- Assume all endpoints already exist on the backend
+
+### 2. Error Handling
+- Use the existing error handling from `makeRequest`
+- Errors are automatically logged and shown to users
+- Use `getApiErrorText` and `getErrorMessage` utilities
+
+### 3. Authentication
+- Set `requiresAuth: true` for protected endpoints
+- Use `requiresAuth: false` for public endpoints
+- Authentication is handled automatically by `makeRequest`
+
+## Creating New API Methods
+
+### 1. Add to Existing Domain
+```typescript
+// In services/APIService.ts
+public static medicines = {
+  // ... existing methods
+  
+  async getByDate(date: Date) {
+    const formattedDate = yyyymmddFromDate(date);
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    return await APIService.getInstance().makeRequest<MedicineFromApi[]>({
+      method: Methods.GET,
+      url: `${this.path}/list/by-date/${formattedDate}?timezone=${timeZone}`,
+      requiresAuth: true,
+    });
+  },
+};
+```
+
+### 2. Create New Domain
+```typescript
+public static newDomain = {
+  path: "/new-domain",
+  
+  async create(data: NewDomainData) {
+    const result = await APIService.getInstance().makeRequest<NewDomainFromApi>({
+      method: Methods.POST,
+      url: `${this.path}/add`,
+      requiresAuth: true,
+      body: data,
+    });
+    
+    return result;
+  },
+};
+```
+
+## Service Integration
+
+### 1. Business Logic Services
+- Create domain-specific services in `services/` folder
+- Examples: `AuthService`, `ScheduleService`, `NotificationSchedulingService`
+- These services can use APIService methods
+
+### 2. Data Preparation
+- Use utility functions for data transformation
+- Examples: `prepareMedicineDataForEditing`, `prepareHealthTrackerDataForEditing`
+- Keep business logic in service classes
+
+## Examples
+
+### Good API Service Usage
+```typescript
+// In a component or hook
+import { APIService } from '@/services/APIService';
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
+import { QUERY_KEYS } from "@/constants/queries/queryKeys";
+
+const { data: medicines, isFetching: isMedicinesFetching } =
+    useQueryWithFocus<MedicineFromApi[]>({
+      queryKey: [QUERY_KEYS.MEDICINES.BY_DATE, activeDate],
+      queryFn: () => APIService.medicines.listByDate(activeDate),
+    });
+```
+
+### Service Integration
+```typescript
+// In services/MedicineService.ts
+import { APIService } from './APIService';
+import { ScheduleService } from './schedules/ScheduleService';
+import { NotificationSchedulingService } from './notifications/NotificationSchedulingService';
+
+export class MedicineService {
+  static async addMedicine(data: MedicineData) {
+    // Prepare data
+    data.schedule.nextTakeDate = ScheduleService.getNextTakeDateForSchedule(data.schedule);
+    
+    // API call
+    const result = await APIService.medicines.add(data);
+    
+    // Schedule notifications
+    await NotificationSchedulingService.scheduleMedicineNotifications(result);
+    
+    return result;
+  }
+}
+```
+
+## Anti-Patterns to Avoid
+
+❌ **Don't create separate API services - use APIService**
+❌ **Don't handle errors manually - use existing error handling**
+❌ **Don't hardcode URLs - use the path property**
+
+## Best Practices
+
+✅ **Follow the established singleton pattern**
+✅ **Use the centralized makeRequest method**
+✅ **Group endpoints by domain**
+✅ **Use consistent naming conventions**
+✅ **Handle authentication properly**
+✅ **Transform data consistently**
+✅ **Integrate with business logic services**

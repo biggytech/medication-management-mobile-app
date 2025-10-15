@@ -1,0 +1,120 @@
+---
+globs: components/**/*.tsx,components/**/*.ts
+---
+
+# Component Organization Rules
+
+## Component Structure
+
+Every component must follow this folder structure:
+```
+ComponentName/
+├── index.ts          # Default export
+├── ComponentName.tsx # Main component
+├── types.ts          # TypeScript interfaces
+├── styles.ts         # Component styles
+├── constants.ts      # Component constants
+└── utils.ts         # Utility functions (as separate functions)
+```
+
+## Component Placement
+
+### Common Components (`components/common/`)
+- Reusable UI components used across the app
+- Examples: buttons, inputs, headers, modals, loaders
+- Always check existing common components before creating new ones
+- Should be highly reusable and configurable
+
+### Entity Components (`components/entities/entityName/`)
+- Domain-specific components for medicines, healthTrackers, etc.
+- Business logic components tied to specific entities
+- Examples: `components/entities/medicine/`, `components/entities/healthTracker/`
+
+## Component Development Rules
+
+### 1. Reusability First
+- **ALWAYS** check `components/common/` for existing components
+- Reuse existing components whenever possible
+- Create new common components only when necessary
+- Extract complex markup into reusable components
+
+### 2. Component Structure
+```typescript
+// ComponentName.tsx
+import React from 'react';
+import { View, Text } from 'react-native';
+import { styles } from './styles';
+import { ComponentNameProps } from './types';
+
+export const ComponentName: React.FC<ComponentNameProps> = ({
+  // props
+}) => {
+  return (
+    <View style={styles.container}>
+      <Text>Component content</Text>
+    </View>
+  );
+};
+```
+
+### 3. File Organization
+- **`index.ts`**: Export the main component as default
+- **`types.ts`**: Define all TypeScript interfaces and types
+- **`styles.ts`**: Use atomic styles from `assets/styles/` when possible
+- **`constants.ts`**: Component-specific constants
+- **`utils.ts`**: Utility functions as separate, pure functions
+
+### 4. Styling Guidelines
+- Use styling constants from `constants/styling/` (colors, spacings, fonts)
+- Import from `@/assets/styles/` and `@/constants/styling/`
+
+### 5. TypeScript Requirements
+- Define all props in `types.ts`
+- Use strict typing for all component props
+- Export interfaces for reuse in other components
+
+## Examples
+
+### Good Component Structure
+```typescript
+// components/common/buttons/PrimaryButton/types.ts
+export interface PrimaryButtonProps {
+  title: string;
+  onPress: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+}
+
+// components/common/buttons/PrimaryButton/utils.ts
+export const getButtonStyle = (disabled: boolean) => {
+  return disabled ? styles.disabled : styles.enabled;
+};
+
+export const getTextStyle = (loading: boolean) => {
+  return loading ? styles.loadingText : styles.normalText;
+};
+```
+
+### Component Usage
+```typescript
+// In pages or other components
+import { PrimaryButton } from '@/components/common/buttons/PrimaryButton';
+import { LanguageService } from '@/services/language/LanguageService';
+
+const MyPage = () => {
+  return (
+    <PrimaryButton
+      title={LanguageService.translate("Save")}
+      onPress={handleSave}
+    />
+  );
+};
+```
+
+## Anti-Patterns to Avoid
+
+❌ **Don't create components without checking existing ones**
+❌ **Don't put styles directly in component files**
+❌ **Don't create components without proper TypeScript types**
+❌ **Don't duplicate component logic - extract to utils**
+❌ **Don't create entity-specific components in common folder**

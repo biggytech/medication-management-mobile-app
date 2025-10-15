@@ -1,0 +1,30 @@
+---
+globs: app/**/*.tsx
+---
+
+# Page File Organization
+
+```typescript
+// Component file structure
+import React from 'react';
+// ... other imports
+
+// Types and interfaces
+interface PageProps {
+  // props definition
+}
+
+// Main component
+export const PageName: React.FC<PageProps> = ({ props }) => {
+  // Page logic
+
+  return (
+    // JSX
+  );
+};
+
+// Styles
+const styles = StyleSheet.create({
+  // styles
+});
+```
