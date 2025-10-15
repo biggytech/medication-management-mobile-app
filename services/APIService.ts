@@ -16,7 +16,11 @@ import type {
   HealthTrackingLogDataForInsert,
   HealthTrackingLogFromApi,
 } from "@/types/healthTrackingLogs";
-import type { DoctorsApiResponse, DoctorSearchParams } from "@/types/doctors";
+import type {
+  DoctorFromApi,
+  DoctorsApiResponse,
+  DoctorSearchParams,
+} from "@/types/doctors";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
@@ -493,6 +497,18 @@ export class APIService {
         });
 
       return result;
+    },
+
+    async getById(id: number) {
+      const result = await APIService.getInstance().makeRequest<{
+        doctor: DoctorFromApi;
+      }>({
+        method: Methods.GET,
+        url: `${this.path}/${id}`,
+        requiresAuth: true,
+      });
+
+      return result.doctor;
     },
   };
 }

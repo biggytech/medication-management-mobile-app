@@ -10,12 +10,10 @@ const GradientHeader: React.FC<GradientHeaderProps> = ({
   children,
   left,
   right,
+  colors = [AppColors.PRIMARY, AppColors.SECONDARY],
 }) => {
   return (
-    <LinearGradient
-      colors={[AppColors.PRIMARY, AppColors.SECONDARY]}
-      style={styles.header}
-    >
+    <LinearGradient colors={colors} style={styles.header}>
       <View style={[styles.action, styles.left]}>{left}</View>
       <View style={styles.center}>{children}</View>
       <View style={[styles.action, styles.right]}>{right}</View>

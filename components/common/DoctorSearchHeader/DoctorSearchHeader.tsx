@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { router } from "expo-router";
 import { DoctorSearchBar } from "@/components/common/DoctorSearchBar";
 import { LanguageService } from "@/services/language/LanguageService";
 import { AppColors } from "@/constants/styling/colors";
@@ -15,8 +16,8 @@ const DoctorSearchHeader: React.FC<DoctorSearchHeaderProps> = ({
 }) => {
   const handleDoctorSelect = (doctor: DoctorFromApi) => {
     onDoctorSelect?.(doctor);
-    // You can add navigation logic here if needed
-    console.log("Selected doctor:", doctor);
+    // Navigate to doctor details page
+    router.push(`/doctors/${doctor.id}`);
   };
 
   return (

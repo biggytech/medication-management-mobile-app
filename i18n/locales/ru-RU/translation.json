@@ -255,5 +255,8 @@
   "Specialization": "Специализация",
   "Place of Work": "Место работы",
   "Contact": "Контакт",
-  "Doctors": "Врачи"
+  "Doctors": "Врачи",
+  "Doctor Details": "Детали врача",
+  "Phone": "Телефон",
+  "Failed to load doctor details": "Не удалось загрузить детали врача"
 }

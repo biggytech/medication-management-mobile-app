@@ -255,5 +255,8 @@
   "Specialization": "Specialization",
   "Place of Work": "Place of Work",
   "Contact": "Contact",
-  "Doctors": "Doctors"
+  "Doctors": "Doctors",
+  "Doctor Details": "Doctor Details",
+  "Phone": "Phone",
+  "Failed to load doctor details": "Failed to load doctor details"
 }
