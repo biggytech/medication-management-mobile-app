@@ -4,6 +4,7 @@ export interface DoctorFromApi {
   specialisation: string;
   placeOfWork: string;
   photoUrl: string | null;
+  phone: string | null;
   user: {
     id: number;
     fullName: string;
