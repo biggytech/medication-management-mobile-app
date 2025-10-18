@@ -28,6 +28,7 @@ export class AuthService {
   private token: string | null = null;
   private fullName: string = LanguageService.translate("Guest");
   private isGuest: boolean = true;
+  private isDoctor: boolean = false;
   private id: number = 0;
 
   private constructor() {}
@@ -85,11 +86,12 @@ export class AuthService {
   }
 
   public static setAuthInfo(authInfo: AuthInfo) {
-    const { token, fullName, isGuest, id } = authInfo;
+    const { token, fullName, isGuest, isDoctor, id } = authInfo;
 
     AuthService.getInstance().token = token;
     AuthService.getInstance().fullName = fullName;
     AuthService.getInstance().isGuest = isGuest;
+    AuthService.getInstance().isDoctor = isDoctor;
     AuthService.getInstance().id = id;
   }
 
@@ -97,6 +99,7 @@ export class AuthService {
     AuthService.getInstance().token = null;
     AuthService.getInstance().fullName = LanguageService.translate("Guest");
     AuthService.getInstance().isGuest = true;
+    AuthService.getInstance().isDoctor = false;
     AuthService.getInstance().id = 0;
   }
 

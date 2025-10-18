@@ -14,12 +14,16 @@ import { signIn } from "@/utils/auth/signIn";
 import { signOut } from "@/utils/auth/signOut";
 import { UserFromApi } from "@/types/users";
 
-export type CurrentUser = Pick<UserFromApi, "id" | "fullName" | "isGuest">;
+export type CurrentUser = Pick<
+  UserFromApi,
+  "id" | "fullName" | "isGuest" | "isDoctor"
+>;
 
 export const CURRENT_USER_DEFAULT = {
   id: 0,
   fullName: "Unknown",
   isGuest: true,
+  isDoctor: false,
 };
 
 const AuthContext = createContext<{
@@ -66,6 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           id: authInfo.id,
           fullName: authInfo.fullName,
           isGuest: authInfo.isGuest,
+          isDoctor: authInfo.isDoctor,
         });
       }
     })();

@@ -4,6 +4,7 @@ export interface AuthInfo {
   token: string | null;
   fullName: string;
   isGuest: boolean;
+  isDoctor: boolean;
   id: number;
 }
 
