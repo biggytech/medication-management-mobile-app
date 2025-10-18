@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
 import { Input } from "@/components/common/inputs/Input";
-import { AuthType } from "@/services/auth/AuthService";
+import { AuthData, AuthType } from "@/services/auth/AuthService";
 import { Title } from "@/components/common/typography/Title";
 import { getNewUserSchema } from "@/validation/user";
 import { Screen } from "@/components/common/markup/Screen";
@@ -15,12 +15,14 @@ export default function SignUpScreen(): ReactNode {
   const onSignUpPress = async (data: {
     fullName: string;
     email: string;
-    password: string;
+    password?: string | null;
   }) => {
-    if (getIsAuthenticated()) {
-      await signIn(AuthType.ANONYMOUS_FINISH_SIGN_UP, data);
-    } else {
-      await signIn(AuthType.DEFAULT_SIGN_UP, data);
+    if (data.password) {
+      if (getIsAuthenticated()) {
+        await signIn(AuthType.ANONYMOUS_FINISH_SIGN_UP, data as AuthData);
+      } else {
+        await signIn(AuthType.DEFAULT_SIGN_UP, data as AuthData);
+      }
     }
   };
 
@@ -61,7 +63,7 @@ export default function SignUpScreen(): ReactNode {
               enterKeyHint={"done"}
               returnKeyType={"done"}
               secureTextEntry
-              value={data["password"]}
+              value={data["password"] ?? undefined}
               onChangeText={(text) => setValue("password", text)}
               onBlur={() => setTouched("password")}
               error={errors["password"]}

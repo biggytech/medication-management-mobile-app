@@ -281,5 +281,10 @@
   "Failed to load profile": "Failed to load profile",
   "No profile data available": "No profile data available",
   "male": "Male",
-  "female": "Female"
+  "female": "Female",
+  "Edit Profile": "Edit Profile",
+  "Profile updated successfully": "Profile updated successfully",
+  "Failed to update profile": "Failed to update profile",
+  "Date of birth cannot be in the future": "Date of birth cannot be in the future",
+  "Invalid sex value": "Invalid sex value"
 }

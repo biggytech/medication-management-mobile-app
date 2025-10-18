@@ -9,7 +9,7 @@ export class AnonymousFinishSignUpAuthStrategy implements AuthStrategy {
       throw new Error(LanguageService.translate("Missing required fields"));
     }
 
-    const { token, full_name } = await APIService.signUp.anonymousFinish({
+    const { token, full_name, id } = await APIService.signUp.anonymousFinish({
       full_name: data.fullName,
       email: data.email,
       password: data.password,
@@ -18,7 +18,8 @@ export class AnonymousFinishSignUpAuthStrategy implements AuthStrategy {
     return {
       fullName: full_name,
       token,
-      isGuest: false, // TODO; retrieve from backend
+      isGuest: false,
+      id,
     };
   }
 }

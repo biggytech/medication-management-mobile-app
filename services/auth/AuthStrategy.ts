@@ -1,9 +1,10 @@
 import type { AuthData } from "./AuthService";
 
 export interface AuthInfo {
-  token: string;
+  token: string | null;
   fullName: string;
   isGuest: boolean;
+  id: number;
 }
 
 export interface AuthStrategy {

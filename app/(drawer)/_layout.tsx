@@ -23,7 +23,7 @@ import { DoctorSearchHeader } from "@/components/common/DoctorSearchHeader";
 const FOCUSED_COLOR = AppColors.SECONDARY;
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
-  const { signOut } = useAuthSession();
+  const { signOut, currentUser } = useAuthSession();
 
   const handleSignOutClick = () => {
     if (AuthService.isGuest) {
@@ -66,8 +66,8 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         />
       </DrawerContentScrollView>
       <View style={styles.userNameView}>
-        <Text style={styles.userName}>{AuthService.fullName}</Text>
-        {AuthService.isGuest && (
+        <Text style={styles.userName}>{currentUser.fullName}</Text>
+        {currentUser.isGuest && (
           <Button
             text={LanguageService.translate("Finish sign up")}
             size={FontSizes.SMALL}

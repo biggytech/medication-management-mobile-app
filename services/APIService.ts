@@ -20,10 +20,9 @@ import type {
   DoctorFromApi,
   DoctorsApiResponse,
   DoctorSearchParams,
-  MyDoctorFromApi,
   MyDoctorsApiResponse,
 } from "@/types/doctors";
-import type { UserFromApi } from "@/types/users";
+import type { UserDataForEditing, UserFromApi } from "@/types/users";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
@@ -560,6 +559,28 @@ export class APIService {
         method: Methods.GET,
         url: `${this.path}/profile`,
         requiresAuth: true,
+      });
+
+      return result;
+    },
+
+    async updateProfile(data: UserDataForEditing) {
+      const formattedData: UserDataForEditing<string> = {
+        ...data,
+        dateOfBirth: data.dateOfBirth
+          ? yyyymmddFromDate(data.dateOfBirth)
+          : null,
+      };
+
+      if (formattedData.password) {
+        formattedData.isGuest = false;
+      }
+
+      const result = await APIService.getInstance().makeRequest<UserFromApi>({
+        method: Methods.PUT,
+        url: `${this.path}/profile`,
+        requiresAuth: true,
+        body: formattedData,
       });
 
       return result;

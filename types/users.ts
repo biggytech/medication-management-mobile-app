@@ -14,6 +14,15 @@ export interface UserDataWithPassword<DateType = Date>
   password: string;
 }
 
+export interface UserDataForEditing<DateType = Date>
+  extends Pick<
+    UserDataWithPassword<DateType>,
+    "fullName" | "email" | "sex" | "dateOfBirth"
+  > {
+  password: string | null;
+  isGuest?: false;
+}
+
 export interface UserDataWithId<DateType = Date>
   extends UserData<DateType>,
     IdableEntity {

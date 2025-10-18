@@ -281,5 +281,10 @@
   "Failed to load profile": "Не удалось загрузить профиль",
   "No profile data available": "Данные профиля недоступны",
   "male": "Мужской",
-  "female": "Женский"
+  "female": "Женский",
+  "Edit Profile": "Редактировать профиль",
+  "Profile updated successfully": "Профиль успешно обновлен",
+  "Failed to update profile": "Не удалось обновить профиль",
+  "Date of birth cannot be in the future": "Дата рождения не может быть в будущем",
+  "Invalid sex value": "Неверное значение пола"
 }

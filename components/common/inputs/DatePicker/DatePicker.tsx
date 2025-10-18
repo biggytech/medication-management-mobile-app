@@ -19,6 +19,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   placeholder,
   style,
   allowSkip = true,
+  showTodayButton = true,
   onSkipClick,
   error,
   onBlur,
@@ -59,15 +60,17 @@ const DatePicker: React.FC<DatePickerProps> = ({
       </TouchableOpacity>
       <ErrorMessage text={error} />
       <View style={styles.actions}>
-        <Button
-          style={styles.action}
-          text={LanguageService.translate("Today")}
-          onPress={() => {
-            const today = clampToDateOnly(new Date());
-            onChange(today);
-            setIsPickerVisible(false);
-          }}
-        />
+        {showTodayButton && (
+          <Button
+            style={styles.action}
+            text={LanguageService.translate("Today")}
+            onPress={() => {
+              const today = clampToDateOnly(new Date());
+              onChange(today);
+              setIsPickerVisible(false);
+            }}
+          />
+        )}
         {allowSkip && (
           <Link
             style={styles.action}

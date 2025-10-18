@@ -28,6 +28,7 @@ export class AuthService {
   private token: string | null = null;
   private fullName: string = LanguageService.translate("Guest");
   private isGuest: boolean = true;
+  private id: number = 0;
 
   private constructor() {}
 
@@ -67,7 +68,7 @@ export class AuthService {
     }
   }
 
-  public static async loadAuthInfo(): Promise<void> {
+  public static async loadAuthInfo(): Promise<AuthInfo | null> {
     if (!AuthService.getInstance().token) {
       const authInfo = await AsyncStorage.getItem(AuthService.AUTH_INFO_KEY);
 
@@ -75,23 +76,28 @@ export class AuthService {
         try {
           const authInfoParsed: AuthInfo = JSON.parse(authInfo);
           AuthService.setAuthInfo(authInfoParsed);
+          return authInfoParsed;
         } catch {}
       }
     }
+
+    return null;
   }
 
-  private static setAuthInfo(authInfo: AuthInfo) {
-    const { token, fullName, isGuest } = authInfo;
+  public static setAuthInfo(authInfo: AuthInfo) {
+    const { token, fullName, isGuest, id } = authInfo;
 
     AuthService.getInstance().token = token;
     AuthService.getInstance().fullName = fullName;
     AuthService.getInstance().isGuest = isGuest;
+    AuthService.getInstance().id = id;
   }
 
   private static resetAuthInfo() {
     AuthService.getInstance().token = null;
     AuthService.getInstance().fullName = LanguageService.translate("Guest");
     AuthService.getInstance().isGuest = true;
+    AuthService.getInstance().id = 0;
   }
 
   private static async saveAuthInfo(authInfo: AuthInfo): Promise<void> {

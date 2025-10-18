@@ -1,5 +1,10 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import {
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 import { Text } from "@/components/common/typography/Text";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
@@ -26,18 +31,12 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 }) => {
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        disabled && styles.disabledButton,
-        style,
-      ]}
+      style={[styles.button, disabled && styles.disabledButton, style]}
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.8}
     >
-      <Text style={[styles.text, textStyle]}>
-        {title}
-      </Text>
+      <Text style={[styles.text, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };

@@ -8,7 +8,7 @@ import { Button } from "@/components/common/buttons/Button";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
 import { Link } from "@/components/common/buttons/Link";
-import { AuthType } from "@/services/auth/AuthService";
+import { AuthData, AuthType } from "@/services/auth/AuthService";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { getSignInDefaultSchema } from "@/validation/user";
@@ -20,8 +20,13 @@ export default function LoginScreen(): ReactNode {
 
   const { signIn } = useAuthSession();
 
-  const onLoginPress = async (data: { email: string; password: string }) => {
-    await signIn(AuthType.DEFAULT_SIGN_IN, data);
+  const onLoginPress = async (data: {
+    email: string;
+    password?: string | null;
+  }) => {
+    if (data.email && data.password) {
+      await signIn(AuthType.DEFAULT_SIGN_IN, data as AuthData);
+    }
   };
 
   const onWithoutLoginClick = async () => {
@@ -71,7 +76,7 @@ export default function LoginScreen(): ReactNode {
                 enterKeyHint={"done"}
                 returnKeyType={"done"}
                 secureTextEntry
-                value={data["password"]}
+                value={data["password"] ?? undefined}
                 onChangeText={(text) => setValue("password", text)}
                 onBlur={() => setTouched("password")}
                 error={errors["password"]}

@@ -6,5 +6,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     flex: 1,
+    // backgroundColor: "yellow",
+    // flexShrink: 1,
   },
 });
