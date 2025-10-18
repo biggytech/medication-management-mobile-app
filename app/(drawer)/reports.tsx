@@ -204,9 +204,9 @@ export default function ReportsPage() {
 
       Alert.alert(
         LanguageService.translate("Report sent to doctor successfully"),
-        LanguageService.translate("Report has been sent to Dr. {doctorName}", {
-          doctorName: doctor.doctor.user.fullName,
-        }),
+        LanguageService.translate(
+          "Report has been sent to Dr. {doctorName}",
+        ).replace("{doctorName}", doctor.doctor.user.fullName),
       );
     } catch (error) {
       console.error("Error sending report to doctor:", error);
