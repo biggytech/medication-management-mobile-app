@@ -2,11 +2,11 @@ import { IdableEntity } from "@/types/common/ids";
 import { SexTypes } from "@/constants/users";
 
 export interface UserData<DateType = Date> {
-  full_name: string;
-  is_guest: boolean;
+  fullName: string;
+  isGuest: boolean;
   email: string;
   sex: SexTypes | null;
-  date_of_birth: DateType | null;
+  dateOfBirth: DateType | null;
 }
 
 export interface UserDataWithPassword<DateType = Date>
