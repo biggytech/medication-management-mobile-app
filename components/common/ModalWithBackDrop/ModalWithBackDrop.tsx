@@ -11,6 +11,7 @@ const ModalWithBackDrop: React.FC<ModalWithBackDropProps> = ({
   onClose,
   children,
   isLoading = false,
+  disableScrollView = false,
 }) => {
   return (
     <Modal
@@ -26,12 +27,16 @@ const ModalWithBackDrop: React.FC<ModalWithBackDropProps> = ({
             <Text style={styles.modalTitle}>{title}</Text>
           </View>
 
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            style={styles.modalContent}
-          >
-            {children}
-          </ScrollView>
+          {disableScrollView ? (
+            <View style={styles.modalContent}>{children}</View>
+          ) : (
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+              style={styles.modalContent}
+            >
+              {children}
+            </ScrollView>
+          )}
           {isLoading && <OverlayLoader style={styles.loader} />}
         </View>
       </TouchableOpacity>

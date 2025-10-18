@@ -5,4 +5,5 @@ export interface ModalWithBackDropProps {
   onClose: () => void;
   children: ReactNode;
   isLoading?: boolean;
+  disableScrollView?: boolean;
 }

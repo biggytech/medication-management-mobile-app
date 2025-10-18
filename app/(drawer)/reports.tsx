@@ -3,6 +3,7 @@ import { Alert, Linking, StyleSheet, View } from "react-native";
 import { Text } from "@/components/common/typography/Text";
 import { DatePicker } from "@/components/common/inputs/DatePicker";
 import { PrimaryButton } from "@/components/common/buttons/PrimaryButton";
+import { DoctorSelectionModal } from "@/components/common/DoctorSelectionModal";
 import { LanguageService } from "@/services/language/LanguageService";
 import { AppColors } from "@/constants/styling/colors";
 import { FontSizes } from "@/constants/styling/fonts";
@@ -15,6 +16,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { DEFAULT_LANGUAGE } from "@/constants/language";
 import FileViewer from "react-native-file-viewer";
+import type { MyDoctorFromApi } from "@/types/doctors";
 
 interface ReportFormData {
   startDate: Date | null;
@@ -27,6 +29,7 @@ export default function ReportsPage() {
     endDate: null,
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isDoctorModalVisible, setIsDoctorModalVisible] = useState(false);
   const { currentLanguage } = useCurrentLanguage();
 
   const handleStartDateChange = (date: Date | null) => {
@@ -91,7 +94,7 @@ export default function ReportsPage() {
       // Verify the file was written correctly
       const fileInfo = await FileSystem.getInfoAsync(fileUri);
 
-      // Show options to view or share
+      // Show options to view, share, or send to doctor
       Alert.alert(
         LanguageService.translate("Report Generated"),
         LanguageService.translate(
@@ -105,6 +108,10 @@ export default function ReportsPage() {
           {
             text: LanguageService.translate("Share Report"),
             onPress: () => sharePDF(fileUri, fileName),
+          },
+          {
+            text: LanguageService.translate("Send to Doctor"),
+            onPress: () => setIsDoctorModalVisible(true),
           },
           {
             text: LanguageService.translate("Cancel"),
@@ -180,6 +187,42 @@ export default function ReportsPage() {
     }
   };
 
+  const sendToDoctor = async (doctor: MyDoctorFromApi) => {
+    if (!formData.startDate || !formData.endDate) return;
+
+    setIsGenerating(true);
+    try {
+      const startDate = yyyymmddFromDate(clampToDateOnly(formData.startDate));
+      const endDate = yyyymmddFromDate(clampToDateOnly(formData.endDate));
+
+      await APIService.patientReports.sendToDoctor({
+        startDate,
+        endDate,
+        language: currentLanguage ?? DEFAULT_LANGUAGE,
+        doctorId: doctor.doctorId,
+      });
+
+      Alert.alert(
+        LanguageService.translate("Report sent to doctor successfully"),
+        LanguageService.translate("Report has been sent to Dr. {doctorName}", {
+          doctorName: doctor.doctor.user.fullName,
+        }),
+      );
+    } catch (error) {
+      console.error("Error sending report to doctor:", error);
+      Alert.alert(
+        LanguageService.translate("Error"),
+        LanguageService.translate("Failed to send report to doctor"),
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSelectDoctor = (doctor: MyDoctorFromApi) => {
+    sendToDoctor(doctor);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -232,6 +275,14 @@ export default function ReportsPage() {
           style={styles.generateButton}
         />
       </View>
+
+      {isDoctorModalVisible && (
+        <DoctorSelectionModal
+          isVisible={isDoctorModalVisible}
+          onClose={() => setIsDoctorModalVisible(false)}
+          onSelectDoctor={handleSelectDoctor}
+        />
+      )}
     </View>
   );
 }
