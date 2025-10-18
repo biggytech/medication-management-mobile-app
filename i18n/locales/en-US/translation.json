@@ -320,5 +320,10 @@
   "Patients": "Patients",
   "No patients found": "No patients found",
   "Patients will appear here when they register with you": "Patients will appear here when they register with you",
-  "Failed to load patients": "Failed to load patients"
+  "Failed to load patients": "Failed to load patients",
+  "Generate Patient Report": "Generate Patient Report",
+  "Send Report": "Send Report",
+  "Report sent successfully": "Report sent successfully",
+  "Failed to send report": "Failed to send report",
+  "End date must be after start date": "End date must be after start date"
 }

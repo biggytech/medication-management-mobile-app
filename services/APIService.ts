@@ -696,5 +696,26 @@ export class APIService {
 
       return result;
     },
+
+    async sendToDoctorForPatient(params: {
+      startDate: string;
+      endDate: string;
+      language: string;
+      userId: number;
+    }) {
+      const result = await APIService.getInstance().makeRequest<{}>({
+        method: Methods.POST,
+        url: `${this.path}/send-to-doctor`,
+        requiresAuth: true,
+        body: {
+          start_date: params.startDate,
+          end_date: params.endDate,
+          language: params.language,
+          user_id: params.userId,
+        },
+      });
+
+      return result;
+    },
   };
 }
