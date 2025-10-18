@@ -66,6 +66,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
             text={LanguageService.translate("Today")}
             onPress={() => {
               const today = clampToDateOnly(new Date());
+              // const today = endOfDay(new Date());
               onChange(today);
               setIsPickerVisible(false);
             }}

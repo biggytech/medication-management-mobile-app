@@ -161,7 +161,7 @@ export default function ReportsPage() {
       if (isAvailable) {
         // Use FileSystem to get a shareable URI
         const shareableUri = await FileSystem.getContentUriAsync(fileUri);
-        await Sharing.shareAsync(shareableUri, {
+        await Sharing.shareAsync(fileUri, {
           mimeType: "application/pdf",
           dialogTitle: LanguageService.translate("Share Report"),
         });
@@ -203,6 +203,7 @@ export default function ReportsPage() {
               onChange={handleStartDateChange}
               placeholder={LanguageService.translate("Select start date")}
               minDate={new Date(2020, 0, 1)} // Allow historical data
+              allowSkip={false}
             />
           </View>
 
@@ -215,6 +216,7 @@ export default function ReportsPage() {
               onChange={handleEndDateChange}
               placeholder={LanguageService.translate("Select end date")}
               minDate={formData.startDate || new Date(2020, 0, 1)}
+              allowSkip={false}
             />
           </View>
         </View>
