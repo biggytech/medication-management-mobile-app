@@ -16,8 +16,11 @@ export const styles = StyleSheet.create({
     marginTop: Spacings.BIG,
   },
   button: {
-    flex: 1,
+    // flex: 1,
     marginHorizontal: Spacings.SMALL,
+    padding: Spacings.SMALL,
+    minHeight: "auto",
+    // height: 30,
   },
   patientName: {
     fontSize: FontSizes.BIG,
