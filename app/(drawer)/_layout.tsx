@@ -125,6 +125,25 @@ export default function DrawerLayout() {
           }}
         />
         <Drawer.Screen
+          name="reports"
+          options={{
+            headerTitle: LanguageService.translate("Reports"),
+            title: LanguageService.translate("Reports"),
+            drawerIcon: ({ focused, size, color }) => (
+              <Ionicons
+                name={"document-text"}
+                size={size}
+                color={focused ? FOCUSED_COLOR : color}
+              />
+            ),
+            drawerActiveTintColor: FOCUSED_COLOR,
+            headerStyle: {
+              backgroundColor: AppColors.PRIMARY,
+            },
+            headerTintColor: AppColors.WHITE,
+          }}
+        />
+        <Drawer.Screen
           name="profile"
           options={{
             headerTitle: LanguageService.translate("My Profile"),
