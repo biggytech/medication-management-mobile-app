@@ -29,4 +29,6 @@ export interface UserDataWithId<DateType = Date>
   uuid: string;
 }
 
-export type UserFromApi = UserDataWithId<string>;
+export type UserFromApi = UserDataWithId<string> & {
+  isDoctor: boolean;
+};
