@@ -316,5 +316,9 @@
   "No doctors available": "Нет доступных врачей",
   "Report sent to doctor successfully": "Отчет успешно отправлен врачу",
   "Failed to send report to doctor": "Не удалось отправить отчет врачу",
-  "Report has been sent to Dr. {doctorName}": "Отчет отправлен доктору {doctorName}"
+  "Report has been sent to Dr. {doctorName}": "Отчет отправлен доктору {doctorName}",
+  "Patients": "Пациенты",
+  "No patients found": "Пациенты не найдены",
+  "Patients will appear here when they register with you": "Пациенты появятся здесь, когда зарегистрируются у вас",
+  "Failed to load patients": "Не удалось загрузить пациентов"
 }

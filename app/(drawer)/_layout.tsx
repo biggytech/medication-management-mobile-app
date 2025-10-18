@@ -13,7 +13,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { AppColors } from "@/constants/styling/colors";
 import { Text } from "@/components/common/typography/Text";
 import { Alert, StyleSheet, View } from "react-native";
-import { AuthService } from "@/services/auth/AuthService";
 import { Button } from "@/components/common/buttons/Button";
 import { FontSizes } from "@/constants/styling/fonts";
 import { router } from "expo-router";
@@ -26,7 +25,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { signOut, currentUser } = useAuthSession();
 
   const handleSignOutClick = () => {
-    if (AuthService.isGuest) {
+    if (currentUser.isGuest) {
       Alert.alert(
         LanguageService.translate("You're logged in as a guest"),
         LanguageService.translate(
@@ -82,6 +81,8 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 }
 
 export default function DrawerLayout() {
+  const { currentUser } = useAuthSession();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />}>
@@ -141,6 +142,28 @@ export default function DrawerLayout() {
               backgroundColor: AppColors.PRIMARY,
             },
             headerTintColor: AppColors.WHITE,
+          }}
+        />
+        <Drawer.Screen
+          name="patients"
+          options={{
+            headerTitle: LanguageService.translate("Patients"),
+            title: LanguageService.translate("Patients"),
+            drawerIcon: ({ focused, size, color }) => (
+              <Ionicons
+                name={"people"}
+                size={size}
+                color={focused ? FOCUSED_COLOR : color}
+              />
+            ),
+            drawerActiveTintColor: FOCUSED_COLOR,
+            headerStyle: {
+              backgroundColor: AppColors.PRIMARY,
+            },
+            headerTintColor: AppColors.WHITE,
+            drawerItemStyle: currentUser.isDoctor
+              ? { display: "flex" }
+              : { display: "none" },
           }}
         />
         <Drawer.Screen

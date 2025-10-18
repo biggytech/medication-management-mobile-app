@@ -163,6 +163,7 @@ export class APIService {
         id: number;
         token: string;
         full_name: string;
+        is_doctor: boolean;
       }>({
         method: Methods.POST,
         url: `${this.path}/default`,
@@ -182,6 +183,7 @@ export class APIService {
         id: number;
         token: string;
         full_name: string;
+        is_doctor: boolean;
       }>({
         method: Methods.POST,
         url: `${this.path}/anonymous`,
@@ -200,6 +202,7 @@ export class APIService {
         id: number;
         token: string;
         full_name: string;
+        is_doctor: boolean;
       }>({
         method: Methods.POST,
         url: `${this.path}/anonymous/finish`,
@@ -219,6 +222,7 @@ export class APIService {
         id: number;
         token: string;
         full_name: string;
+        is_doctor: boolean;
       }>({
         method: Methods.POST,
         url: `${this.path}/default`,
@@ -597,6 +601,18 @@ export class APIService {
 
       return result;
     },
+
+    async getPatients() {
+      const result = await APIService.getInstance().makeRequest<{
+        patients: UserFromApi[];
+      }>({
+        method: Methods.GET,
+        url: this.path,
+        requiresAuth: true,
+      });
+
+      return result.patients;
+    },
   };
 
   public static users = {
@@ -608,6 +624,8 @@ export class APIService {
         url: `${this.path}/profile`,
         requiresAuth: true,
       });
+
+      console.log("PROFILE!!!", result);
 
       return result;
     },

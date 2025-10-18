@@ -67,6 +67,7 @@ export const UserProfileEditForm: React.FC<UserProfileEditFormProps> = ({
       fullName: result.fullName,
       isGuest: result.isGuest,
       id: result.id,
+      isDoctor: result.isDoctor,
     });
   };
 

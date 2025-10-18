@@ -13,6 +13,7 @@ import {
 import { signIn } from "@/utils/auth/signIn";
 import { signOut } from "@/utils/auth/signOut";
 import { UserFromApi } from "@/types/users";
+import { APIService } from "@/services/APIService";
 
 export type CurrentUser = Pick<
   UserFromApi,
@@ -63,16 +64,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     (async (): Promise<void> => {
       const authInfo = await AuthService.loadAuthInfo();
-      setIsLoading(false);
 
       if (authInfo) {
+        // setCurrentUser({
+        //   id: authInfo.id,
+        //   fullName: authInfo.fullName,
+        //   isGuest: authInfo.isGuest,
+        //   isDoctor: authInfo.isDoctor,
+        // });
+
+        const userProfile = await APIService.users.getProfile();
+
+        console.log("userProfile", userProfile);
+
         setCurrentUser({
-          id: authInfo.id,
-          fullName: authInfo.fullName,
-          isGuest: authInfo.isGuest,
-          isDoctor: authInfo.isDoctor,
+          id: userProfile.id,
+          fullName: userProfile.fullName,
+          isGuest: userProfile.isGuest,
+          isDoctor: userProfile.isDoctor,
         });
       }
+
+      setIsLoading(false);
     })();
   }, []);
 

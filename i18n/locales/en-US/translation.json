@@ -316,5 +316,9 @@
   "No doctors available": "No doctors available",
   "Report sent to doctor successfully": "Report sent to doctor successfully",
   "Failed to send report to doctor": "Failed to send report to doctor",
-  "Report has been sent to Dr. {doctorName}": "Report has been sent to Dr. {doctorName}"
+  "Report has been sent to Dr. {doctorName}": "Report has been sent to Dr. {doctorName}",
+  "Patients": "Patients",
+  "No patients found": "No patients found",
+  "Patients will appear here when they register with you": "Patients will appear here when they register with you",
+  "Failed to load patients": "Failed to load patients"
 }
