@@ -14,6 +14,7 @@ import { clampToDateOnly } from "@/utils/date/clampToDateOnly";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { DEFAULT_LANGUAGE } from "@/constants/language";
+import FileViewer from "react-native-file-viewer";
 
 interface ReportFormData {
   startDate: Date | null;
@@ -82,9 +83,13 @@ export default function ReportsPage() {
       const fileName = `patient-report-${startDate}-to-${endDate}.pdf`;
       const fileUri = `${FileSystem.documentDirectory}${fileName}`;
 
+      // Write the base64 data to file
       await FileSystem.writeAsStringAsync(fileUri, pdfBlob, {
         encoding: FileSystem.EncodingType.Base64,
       });
+
+      // Verify the file was written correctly
+      const fileInfo = await FileSystem.getInfoAsync(fileUri);
 
       // Show options to view or share
       Alert.alert(
@@ -122,9 +127,17 @@ export default function ReportsPage() {
 
   const viewPDF = async (fileUri: string) => {
     try {
-      const canOpen = await Linking.canOpenURL(fileUri);
+      // Use FileSystem to get a shareable URI
+      const shareableUri = await FileSystem.getContentUriAsync(fileUri);
+      const canOpen = await Linking.canOpenURL(shareableUri);
+      console.log("share uri", fileUri);
+      console.log("canOpen", canOpen);
       if (canOpen) {
-        await Linking.openURL(fileUri);
+        await FileViewer.open(fileUri, {
+          showOpenWithDialog: true,
+          showAppsSuggestions: true,
+        });
+        // await Linking.openURL(shareableUri);
       } else {
         Alert.alert(
           LanguageService.translate("Error"),
@@ -146,7 +159,9 @@ export default function ReportsPage() {
     try {
       const isAvailable = await Sharing.isAvailableAsync();
       if (isAvailable) {
-        await Sharing.shareAsync(fileUri, {
+        // Use FileSystem to get a shareable URI
+        const shareableUri = await FileSystem.getContentUriAsync(fileUri);
+        await Sharing.shareAsync(shareableUri, {
           mimeType: "application/pdf",
           dialogTitle: LanguageService.translate("Share Report"),
         });
