@@ -59,8 +59,16 @@ export class APIService {
     params?: object;
     body?: object;
     requiresAuth: boolean;
+    responseType?: "json" | "blob";
   }): Promise<T> {
-    const { method, url, params, body, requiresAuth } = options;
+    const {
+      method,
+      url,
+      params,
+      body,
+      requiresAuth,
+      responseType = "json",
+    } = options;
 
     console.log(`[${method}] ${url}`, new Date());
     params && console.log(`params - ${JSON.stringify(params)}`);
@@ -83,7 +91,8 @@ export class APIService {
       const response = await fetch(requestURL, {
         method,
         headers: {
-          Accept: "application/json",
+          Accept:
+            responseType === "blob" ? "application/pdf" : "application/json",
           "Content-Type": "application/json",
           Authorization: requiresAuth ? `Bearer ${token}` : "",
         },
@@ -91,9 +100,15 @@ export class APIService {
       });
 
       if (isSuccessfulStatus(response)) {
-        const json = await response.json();
-        console.log(`response - ${JSON.stringify(json)}`);
-        return snakeCaseToCamelCaseObject(json);
+        if (responseType === "blob") {
+          const blob = await response.blob();
+          const base64 = await this.blobToBase64(blob);
+          return base64 as T;
+        } else {
+          const json = await response.json();
+          console.log(`response - ${JSON.stringify(json)}`);
+          return snakeCaseToCamelCaseObject(json);
+        }
       }
 
       const error = await getErrorMessage(response);
@@ -105,6 +120,20 @@ export class APIService {
 
       throw error;
     }
+  }
+
+  private async blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        // Remove the data:application/pdf;base64, prefix
+        const base64 = result.split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
   public static signIn = {
@@ -581,6 +610,30 @@ export class APIService {
         url: `${this.path}/profile`,
         requiresAuth: true,
         body: formattedData,
+      });
+
+      return result;
+    },
+  };
+
+  public static patientReports = {
+    path: "/patient-reports",
+
+    async generate(params: {
+      startDate: string;
+      endDate: string;
+      language: string;
+    }) {
+      const result = await APIService.getInstance().makeRequest<string>({
+        method: Methods.GET,
+        url: `${this.path}/generate`,
+        requiresAuth: true,
+        responseType: "blob",
+        params: {
+          start_date: params.startDate,
+          end_date: params.endDate,
+          language: params.language,
+        },
       });
 
       return result;
