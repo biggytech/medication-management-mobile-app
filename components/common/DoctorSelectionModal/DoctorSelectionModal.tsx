@@ -52,7 +52,7 @@ export const DoctorSelectionModal: React.FC<DoctorSelectionModalProps> = ({
         <Text style={styles.doctorSpecialization}>
           {item.doctor.specialisation}
         </Text>
-        <Text style={styles.doctorPlaceOfWork}>{item.doctor.placeOfWork}</Text>
+        <Text style={styles.doctorPlaceOfWork}>{item.doctor.user.email}</Text>
       </View>
     </TouchableOpacity>
   );
