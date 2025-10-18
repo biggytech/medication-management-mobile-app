@@ -309,5 +309,12 @@
   "Failed to open PDF file.": "Не удалось открыть PDF файл.",
   "Share Report": "Поделиться отчетом",
   "Sharing is not available on this device.": "Поделиться нельзя на этом устройстве.",
-  "Failed to share PDF file.": "Не удалось поделиться PDF файлом."
+  "Failed to share PDF file.": "Не удалось поделиться PDF файлом.",
+  "Send to Doctor": "Отправить врачу",
+  "Select Doctor": "Выбрать врача",
+  "Choose a doctor to send the report to": "Выберите врача для отправки отчета",
+  "No doctors available": "Нет доступных врачей",
+  "Report sent to doctor successfully": "Отчет успешно отправлен врачу",
+  "Failed to send report to doctor": "Не удалось отправить отчет врачу",
+  "Report has been sent to Dr. {doctorName}": "Отчет отправлен доктору {doctorName}"
 }

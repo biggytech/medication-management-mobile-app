@@ -309,5 +309,12 @@
   "Failed to open PDF file.": "Failed to open PDF file.",
   "Share Report": "Share Report",
   "Sharing is not available on this device.": "Sharing is not available on this device.",
-  "Failed to share PDF file.": "Failed to share PDF file."
+  "Failed to share PDF file.": "Failed to share PDF file.",
+  "Send to Doctor": "Send to Doctor",
+  "Select Doctor": "Select Doctor",
+  "Choose a doctor to send the report to": "Choose a doctor to send the report to",
+  "No doctors available": "No doctors available",
+  "Report sent to doctor successfully": "Report sent to doctor successfully",
+  "Failed to send report to doctor": "Failed to send report to doctor",
+  "Report has been sent to Dr. {doctorName}": "Report has been sent to Dr. {doctorName}"
 }
