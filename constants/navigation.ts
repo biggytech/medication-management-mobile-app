@@ -10,4 +10,5 @@ export enum AppScreens {
   HEALTH_TRACKERS_NEW = "/health-trackers/new",
   HEALTH_TRACKERS_SINGLE = "/health-trackers/[healthTrackerId]",
   HEALTH_TRACKERS_EDIT = "/health-trackers/[healthTrackerId]/edit",
+  PROFILE = "/(drawer)/profile",
 }

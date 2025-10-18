@@ -266,5 +266,20 @@
   "Failed to remove doctor": "Не удалось удалить врача",
   "My Doctors": "Мои врачи",
   "Failed to load doctors": "Не удалось загрузить врачей",
-  "Add doctors to your list to see them here": "Добавьте врачей в свой список, чтобы увидеть их здесь"
+  "Add doctors to your list to see them here": "Добавьте врачей в свой список, чтобы увидеть их здесь",
+  "My Profile": "Мой профиль",
+  "Personal Information": "Личная информация",
+  "Account Information": "Информация об аккаунте",
+  "Sex": "Пол",
+  "Date of Birth": "Дата рождения",
+  "User ID": "ID пользователя",
+  "UUID": "UUID",
+  "Account Type": "Тип аккаунта",
+  "Guest Account": "Гостевой аккаунт",
+  "Registered Account": "Зарегистрированный аккаунт",
+  "Not specified": "Не указано",
+  "Failed to load profile": "Не удалось загрузить профиль",
+  "No profile data available": "Данные профиля недоступны",
+  "male": "Мужской",
+  "female": "Женский"
 }

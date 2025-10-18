@@ -266,5 +266,20 @@
   "Failed to remove doctor": "Failed to remove doctor",
   "My Doctors": "My Doctors",
   "Failed to load doctors": "Failed to load doctors",
-  "Add doctors to your list to see them here": "Add doctors to your list to see them here"
+  "Add doctors to your list to see them here": "Add doctors to your list to see them here",
+  "My Profile": "My Profile",
+  "Personal Information": "Personal Information",
+  "Account Information": "Account Information",
+  "Sex": "Sex",
+  "Date of Birth": "Date of Birth",
+  "User ID": "User ID",
+  "UUID": "UUID",
+  "Account Type": "Account Type",
+  "Guest Account": "Guest Account",
+  "Registered Account": "Registered Account",
+  "Not specified": "Not specified",
+  "Failed to load profile": "Failed to load profile",
+  "No profile data available": "No profile data available",
+  "male": "Male",
+  "female": "Female"
 }

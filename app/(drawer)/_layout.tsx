@@ -124,6 +124,25 @@ export default function DrawerLayout() {
             headerTintColor: AppColors.WHITE,
           }}
         />
+        <Drawer.Screen
+          name="profile"
+          options={{
+            headerTitle: LanguageService.translate("My Profile"),
+            title: LanguageService.translate("My Profile"),
+            drawerIcon: ({ focused, size, color }) => (
+              <Ionicons
+                name={"person"}
+                size={size}
+                color={focused ? FOCUSED_COLOR : color}
+              />
+            ),
+            drawerActiveTintColor: FOCUSED_COLOR,
+            headerStyle: {
+              backgroundColor: AppColors.PRIMARY,
+            },
+            headerTintColor: AppColors.WHITE,
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );

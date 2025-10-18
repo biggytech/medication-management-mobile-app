@@ -23,6 +23,7 @@ import type {
   MyDoctorFromApi,
   MyDoctorsApiResponse,
 } from "@/types/doctors";
+import type { UserFromApi } from "@/types/users";
 import { camelCaseToSnakeCaseObject } from "@/utils/objects/camelCaseToSnakeCaseObject";
 import { snakeCaseToCamelCaseObject } from "@/utils/objects/snakeCaseToCamelCaseObject";
 import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
@@ -545,6 +546,20 @@ export class APIService {
         url: `${this.path}/remove-doctor`,
         requiresAuth: true,
         body: { doctorId },
+      });
+
+      return result;
+    },
+  };
+
+  public static users = {
+    path: "/users",
+
+    async getProfile() {
+      const result = await APIService.getInstance().makeRequest<UserFromApi>({
+        method: Methods.GET,
+        url: `${this.path}/profile`,
+        requiresAuth: true,
       });
 
       return result;
