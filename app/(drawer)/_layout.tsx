@@ -18,6 +18,7 @@ import { FontSizes } from "@/constants/styling/fonts";
 import { router } from "expo-router";
 import { AppScreens } from "@/constants/navigation";
 import { DoctorSearchHeader } from "@/components/common/DoctorSearchHeader";
+import { ChatDrawerIcon } from "@/components/common/ChatDrawerIcon";
 
 const FOCUSED_COLOR = AppColors.SECONDARY;
 
@@ -150,11 +151,7 @@ export default function DrawerLayout() {
             headerTitle: LanguageService.translate("Chat"),
             title: LanguageService.translate("Chat"),
             drawerIcon: ({ focused, size, color }) => (
-              <Ionicons
-                name={"chatbubbles"}
-                size={size}
-                color={focused ? FOCUSED_COLOR : color}
-              />
+              <ChatDrawerIcon focused={focused} size={size} color={color} />
             ),
             drawerActiveTintColor: FOCUSED_COLOR,
             headerStyle: {
