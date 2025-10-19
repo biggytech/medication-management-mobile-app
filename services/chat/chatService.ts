@@ -36,7 +36,7 @@ export class ChatService {
     otherUserId: number,
     limit: number = 50,
     offset: number = 0,
-  ): Promise<ChatMessage[]> {
+  ) {
     const response =
       await APIService.getInstance().makeRequest<ChatMessagesResponse>({
         method: Methods.GET,
@@ -44,7 +44,10 @@ export class ChatService {
         requiresAuth: true,
       });
 
-    return response.data ?? [];
+    return {
+      messages: response.data ?? [],
+      otherUserName: response.otherUser?.fullName ?? "",
+    };
   }
 
   /**

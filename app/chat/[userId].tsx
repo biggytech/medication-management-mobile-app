@@ -29,13 +29,12 @@ export default function ChatDetailScreen() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [otherUserName, setOtherUserName] = useState<string>("");
   const flatListRef = useRef<FlatList>(null);
   const queryClient = useQueryClient();
   const { currentUser } = useAuthSession();
 
   const {
-    data: initialMessages,
+    data: { messages: initialMessages = [], otherUserName = "" } = {},
     isLoading,
     error,
     refetch,
@@ -63,30 +62,6 @@ export default function ChatDetailScreen() {
       );
     },
   });
-
-  useEffect(() => {
-    if (initialMessages) {
-      setMessages(initialMessages.reverse()); // Reverse to show oldest first
-
-      // Extract other user's name from the first message
-      if (initialMessages.length > 0) {
-        const firstMessage = initialMessages[0];
-        // Determine which user is the "other" user (not the current user)
-        const currentUserId = currentUser.id;
-        let otherName = "";
-
-        if (firstMessage.senderId === currentUserId) {
-          // Current user is sender, so receiver is the other user
-          otherName = firstMessage.receiverName || "";
-        } else {
-          // Current user is receiver, so sender is the other user
-          otherName = firstMessage.senderName || "";
-        }
-
-        setOtherUserName(otherName);
-      }
-    }
-  }, [initialMessages, currentUser.id]);
 
   useEffect(() => {
     // Mark conversation as read when user opens it

@@ -1,3 +1,5 @@
+import { UserFromApi } from "@/types/users";
+
 export interface ChatMessage {
   id: number;
   senderId: number;
@@ -38,4 +40,5 @@ export interface ChatMessagesResponse {
   success: boolean;
   data?: ChatMessage[];
   error?: string;
+  otherUser: UserFromApi;
 }
