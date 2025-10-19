@@ -114,6 +114,9 @@ export default function ChatDetailScreen() {
     // Use the current user ID from auth context
     const isCurrentUser = item.senderId === currentUser.id;
 
+    console.log("HERE!!!");
+    console.log(item, currentUser);
+
     return <MessageBubble message={item} isCurrentUser={isCurrentUser} />;
   };
 

@@ -84,6 +84,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             isGuest: userProfile.isGuest,
             isDoctor: userProfile.isDoctor,
           });
+
+          console.log("CURRENT USER UPDATED!", userProfile);
         }
       } catch (err) {
         console.log("err");
