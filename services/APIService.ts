@@ -60,11 +60,11 @@ enum Methods {
 
 export class APIService {
   private static instance: APIService | null = null;
-  private BASE_URL = serverUri;
+  public BASE_URL = serverUri;
 
   private constructor() {}
 
-  private static getInstance() {
+  public static getInstance() {
     if (APIService.instance === null) {
       APIService.instance = new APIService();
     }

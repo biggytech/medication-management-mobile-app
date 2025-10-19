@@ -1,10 +1,10 @@
 import React from "react";
 import {
-  StyleSheet,
-  View,
   FlatList,
-  TouchableOpacity,
   Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { APIService } from "@/services/APIService";
@@ -42,7 +42,7 @@ export default function DoctorsListPage() {
         {item.doctor.photoUrl && (
           <Image
             source={{
-              uri: `${(process.env.EXPO_PUBLIC_SERVER_BASE_URL ?? "").replace("/api", "")}/${item.doctor.photoUrl}`,
+              uri: `${(APIService.getInstance().BASE_URL ?? "").replace("/api", "")}/${item.doctor.photoUrl}`,
             }}
             style={styles.doctorPhoto}
           />
