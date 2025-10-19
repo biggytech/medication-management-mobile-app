@@ -49,9 +49,9 @@ const serverUri = Constants.expoConfig?.hostUri
 //     ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
 //     : `api.example.com`;
 
-console.log("api", serverUri);
+console.log("serverUri", serverUri);
 
-enum Methods {
+export enum Methods {
   GET = "GET",
   POST = "POST",
   PUT = "PUT",
@@ -72,7 +72,7 @@ export class APIService {
     return APIService.instance;
   }
 
-  private async makeRequest<T>(options: {
+  public async makeRequest<T>(options: {
     method: Methods;
     url: string;
     params?: object;

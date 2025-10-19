@@ -17,6 +17,8 @@ export default function RootLayout(): ReactNode {
     })();
   }, []);
 
+  console.log("isTokenLoading", isTokenLoading);
+
   if (isTokenLoading || isLanguageLoading) {
     return <BlockingLoader />;
   }

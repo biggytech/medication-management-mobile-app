@@ -63,29 +63,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      const authInfo = await AuthService.loadAuthInfo();
+      try {
+        const authInfo = await AuthService.loadAuthInfo();
 
-      if (authInfo) {
-        // setCurrentUser({
-        //   id: authInfo.id,
-        //   fullName: authInfo.fullName,
-        //   isGuest: authInfo.isGuest,
-        //   isDoctor: authInfo.isDoctor,
-        // });
+        if (authInfo) {
+          // setCurrentUser({
+          //   id: authInfo.id,
+          //   fullName: authInfo.fullName,
+          //   isGuest: authInfo.isGuest,
+          //   isDoctor: authInfo.isDoctor,
+          // });
 
-        const userProfile = await APIService.users.getProfile();
+          const userProfile = await APIService.users.getProfile();
 
-        console.log("userProfile", userProfile);
+          console.log("userProfile", userProfile);
 
-        setCurrentUser({
-          id: userProfile.id,
-          fullName: userProfile.fullName,
-          isGuest: userProfile.isGuest,
-          isDoctor: userProfile.isDoctor,
-        });
+          setCurrentUser({
+            id: userProfile.id,
+            fullName: userProfile.fullName,
+            isGuest: userProfile.isGuest,
+            isDoctor: userProfile.isDoctor,
+          });
+        }
+      } catch (err) {
+        console.log("err");
+        console.log(err);
+        await signOut();
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     })();
   }, []);
 
