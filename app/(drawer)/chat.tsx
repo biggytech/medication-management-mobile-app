@@ -1,6 +1,5 @@
 import React from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { ChatService } from "@/services/chat/chatService";
 import { ChatConversation } from "@/types/chatMessages";
@@ -9,6 +8,7 @@ import { InlineLoader } from "@/components/common/loaders/InlineLoader";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LanguageService } from "@/services/language/LanguageService";
 import { AppColors } from "@/constants/styling/colors";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 export default function ChatScreen() {
   const {
@@ -17,7 +17,7 @@ export default function ChatScreen() {
     error,
     refetch,
     isFetching,
-  } = useQuery({
+  } = useQueryWithFocus({
     queryKey: ["chat-conversations"],
     queryFn: ChatService.getConversations,
   });

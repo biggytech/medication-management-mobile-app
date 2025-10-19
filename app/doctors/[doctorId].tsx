@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { APIService } from "@/services/APIService";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import { DoctorDetails } from "@/components/entities/doctor/DoctorDetails";
@@ -14,6 +14,7 @@ import { Text } from "@/components/common/typography/Text";
 import { Spacings } from "@/constants/styling/spacings";
 import { Button } from "@/components/common/buttons/Button";
 import { useToaster } from "@/hooks/ui/useToaster";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useLocalSearchParams<{ doctorId: string }>();
@@ -24,13 +25,13 @@ export default function DoctorDetailsPage() {
     data: doctor,
     isLoading,
     error,
-  } = useQuery({
+  } = useQueryWithFocus({
     queryKey: [QUERY_KEYS.DOCTORS.DETAILS, doctorId],
     queryFn: () => APIService.doctors.getById(Number(doctorId)),
     enabled: !!doctorId,
   });
 
-  const { data: myDoctors, isLoading: isLoadingMyDoctors } = useQuery({
+  const { data: myDoctors, isLoading: isLoadingMyDoctors } = useQueryWithFocus({
     queryKey: [QUERY_KEYS.PATIENTS.MY_DOCTORS],
     queryFn: () => APIService.patients.getMyDoctors(),
   });

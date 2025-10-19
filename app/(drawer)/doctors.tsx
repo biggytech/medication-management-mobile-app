@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 import { APIService } from "@/services/APIService";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import { InlineLoader } from "@/components/common/loaders/InlineLoader";
@@ -18,13 +17,14 @@ import { Spacings } from "@/constants/styling/spacings";
 import { FontSizes } from "@/constants/styling/fonts";
 import { router } from "expo-router";
 import type { MyDoctorFromApi } from "@/types/doctors";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 export default function DoctorsListPage() {
   const {
     data: myDoctors,
     isLoading,
     error,
-  } = useQuery({
+  } = useQueryWithFocus({
     queryKey: [QUERY_KEYS.PATIENTS.MY_DOCTORS],
     queryFn: () => APIService.patients.getMyDoctors(),
   });

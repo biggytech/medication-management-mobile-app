@@ -8,7 +8,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { ChatService } from "@/services/chat/chatService";
 import { ChatMessage } from "@/types/chatMessages";
@@ -24,6 +24,7 @@ import { Text } from "@/components/common/typography/Text";
 import { IconButton } from "@/components/common/buttons/IconButton";
 import { useAuthSession } from "@/providers/AuthProvider";
 import { Title } from "@/components/common/typography/Title";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 export default function ChatDetailScreen() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -38,7 +39,7 @@ export default function ChatDetailScreen() {
     isLoading,
     error,
     refetch,
-  } = useQuery({
+  } = useQueryWithFocus({
     queryKey: ["chat-messages", userId],
     queryFn: () => ChatService.getConversationMessages(Number(userId)),
     enabled: !!userId,
@@ -51,7 +52,7 @@ export default function ChatDetailScreen() {
         message,
       }),
     onSuccess: (newMessage) => {
-      setMessages((prev) => [newMessage, ...prev]);
+      setMessages((prev) => [...prev, newMessage]);
       // Mark conversation as read
       ChatService.markConversationAsRead(Number(userId));
     },
@@ -62,6 +63,12 @@ export default function ChatDetailScreen() {
       );
     },
   });
+
+  useEffect(() => {
+    if (initialMessages) {
+      setMessages(initialMessages.reverse()); // Reverse to show oldest first
+    }
+  }, [initialMessages, currentUser.id]);
 
   useEffect(() => {
     // Mark conversation as read when user opens it

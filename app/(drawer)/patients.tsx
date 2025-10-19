@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
-import { useQuery } from "@tanstack/react-query";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { APIService } from "@/services/APIService";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import { InlineLoader } from "@/components/common/loaders/InlineLoader";
@@ -16,13 +15,14 @@ import { yyyymmddFromDate } from "@/utils/date/yyyymmddFromDate";
 import { showError } from "@/utils/ui/showError";
 import { showSuccess } from "@/utils/ui/showSuccess";
 import type { UserFromApi } from "@/types/users";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 export default function PatientsPage() {
   const {
     data: patients,
     isLoading,
     error,
-  } = useQuery({
+  } = useQueryWithFocus({
     queryKey: [QUERY_KEYS.PATIENTS.LIST],
     queryFn: () => APIService.patients.getPatients(),
   });

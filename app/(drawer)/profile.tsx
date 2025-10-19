@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 import { useIsFocused } from "@react-navigation/native";
 import { APIService } from "@/services/APIService";
 import { LanguageService } from "@/services/language/LanguageService";
@@ -16,6 +15,7 @@ import { SexTypes } from "@/constants/users";
 import { UserDataForEditing } from "@/types/users";
 import { Heading } from "@/components/common/typography/Heading";
 import { IconButton } from "@/components/common/buttons/IconButton";
+import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -25,7 +25,7 @@ export default function ProfilePage() {
     data: userProfile,
     isLoading,
     error,
-  } = useQuery({
+  } = useQueryWithFocus({
     queryKey: ["userProfile"],
     queryFn: () => APIService.users.getProfile(),
   });
