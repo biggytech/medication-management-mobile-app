@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { APIService } from "@/services/APIService";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
@@ -106,6 +106,12 @@ export default function DoctorDetailsPage() {
     }
   };
 
+  const handleStartChat = () => {
+    if (doctor) {
+      router.push(`/chat/${doctor.user.id}`);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <DoctorDetails doctor={doctor} />
@@ -126,6 +132,13 @@ export default function DoctorDetailsPage() {
               color={AppColors.NEGATIVE}
             />
           )}
+          <View style={styles.chatButtonContainer}>
+            <Button
+              text={LanguageService.translate("Start Chat")}
+              onPress={handleStartChat}
+              color={AppColors.PRIMARY}
+            />
+          </View>
         </View>
       )}
     </View>
@@ -140,5 +153,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: Spacings.STANDART,
     backgroundColor: AppColors.BACKGROUND,
+  },
+  chatButtonContainer: {
+    marginTop: Spacings.SMALL,
   },
 });
