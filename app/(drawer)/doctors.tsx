@@ -18,6 +18,7 @@ import { FontSizes } from "@/constants/styling/fonts";
 import { router } from "expo-router";
 import type { MyDoctorFromApi } from "@/types/doctors";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
+import { getAbsolutePhotoUrl } from "@/utils/ui/getAbsolutePhotoUrl";
 
 export default function DoctorsListPage() {
   const {
@@ -42,7 +43,7 @@ export default function DoctorsListPage() {
         {item.doctor.photoUrl && (
           <Image
             source={{
-              uri: `${(APIService.getInstance().BASE_URL ?? "").replace("/api", "")}/${item.doctor.photoUrl}`,
+              uri: getAbsolutePhotoUrl(item.doctor.photoUrl),
             }}
             style={styles.doctorPhoto}
           />

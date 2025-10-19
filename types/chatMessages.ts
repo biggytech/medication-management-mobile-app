@@ -17,6 +17,7 @@ export interface ChatConversation {
   lastMessage?: string;
   lastMessageTime?: string;
   unreadCount: number;
+  photoUrl?: string;
 }
 
 export interface SendMessageRequest {

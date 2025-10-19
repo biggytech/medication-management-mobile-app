@@ -11,7 +11,7 @@ import { transparentColor } from "@/utils/ui/transparentColor";
 import { darkenHexColor } from "@/utils/ui/darkenHexColor";
 import { IconButton } from "@/components/common/buttons/IconButton";
 import { router } from "expo-router";
-import { APIService } from "@/services/APIService";
+import { getAbsolutePhotoUrl } from "@/utils/ui/getAbsolutePhotoUrl";
 
 interface DoctorDetailsProps {
   doctor: DoctorFromApi;
@@ -35,7 +35,7 @@ export const DoctorDetails: React.FC<DoctorDetailsProps> = ({ doctor }) => {
           <View style={styles.photoContainer}>
             <Image
               source={{
-                uri: `${(APIService.getInstance().BASE_URL ?? "").replace("/api", "")}/${doctor.photoUrl}`,
+                uri: getAbsolutePhotoUrl(doctor.photoUrl),
               }}
               style={styles.photo}
             />

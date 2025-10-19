@@ -6,6 +6,8 @@ import { FontSizes } from "@/constants/styling/fonts";
 import { Spacings } from "@/constants/styling/spacings";
 import { LanguageService } from "@/services/language/LanguageService";
 import { formatDate } from "@/utils/date/formatDate";
+import { Avatar } from "@/components/common/Avatar";
+import { getAbsolutePhotoUrl } from "@/utils/ui/getAbsolutePhotoUrl";
 
 interface ConversationItemProps {
   conversation: ChatConversation;
@@ -18,10 +20,12 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
 }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {conversation.otherUserName.charAt(0).toUpperCase()}
-        </Text>
+      <View style={styles.avatarContainer}>
+        <Avatar
+          name={conversation.otherUserName}
+          photoUrl={getAbsolutePhotoUrl(conversation.photoUrl)}
+          size={50}
+        />
       </View>
 
       <View style={styles.content}>
@@ -65,19 +69,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: AppColors.LIGHT_GRAY,
   },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: AppColors.PRIMARY,
-    justifyContent: "center",
-    alignItems: "center",
+  avatarContainer: {
     marginRight: Spacings.STANDART,
-  },
-  avatarText: {
-    fontSize: FontSizes.BIG,
-    fontWeight: "bold",
-    color: AppColors.WHITE,
   },
   content: {
     flex: 1,
