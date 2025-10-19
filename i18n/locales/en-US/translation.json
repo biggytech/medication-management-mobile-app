@@ -325,5 +325,13 @@
   "Send Report": "Send Report",
   "Report sent successfully": "Report sent successfully",
   "Failed to send report": "Failed to send report",
-  "End date must be after start date": "End date must be after start date"
+  "End date must be after start date": "End date must be after start date",
+  "Chat": "Chat",
+  "Type a message...": "Type a message...",
+  "Send": "Send",
+  "No messages yet": "No messages yet",
+  "Failed to load conversations": "Failed to load conversations",
+  "Failed to load messages": "Failed to load messages",
+  "Failed to send message": "Failed to send message",
+  "Start Chat": "Start Chat"
 }

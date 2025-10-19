@@ -325,5 +325,13 @@
   "Send Report": "Отправить отчет",
   "Report sent successfully": "Отчет успешно отправлен",
   "Failed to send report": "Не удалось отправить отчет",
-  "End date must be after start date": "Дата окончания должна быть после даты начала"
+  "End date must be after start date": "Дата окончания должна быть после даты начала",
+  "Chat": "Чат",
+  "Type a message...": "Введите сообщение...",
+  "Send": "Отправить",
+  "No messages yet": "Пока нет сообщений",
+  "Failed to load conversations": "Не удалось загрузить разговоры",
+  "Failed to load messages": "Не удалось загрузить сообщения",
+  "Failed to send message": "Не удалось отправить сообщение",
+  "Start Chat": "Начать чат"
 }
