@@ -145,6 +145,25 @@ export default function DrawerLayout() {
           }}
         />
         <Drawer.Screen
+          name="chat"
+          options={{
+            headerTitle: LanguageService.translate("Chat"),
+            title: LanguageService.translate("Chat"),
+            drawerIcon: ({ focused, size, color }) => (
+              <Ionicons
+                name={"chatbubbles"}
+                size={size}
+                color={focused ? FOCUSED_COLOR : color}
+              />
+            ),
+            drawerActiveTintColor: FOCUSED_COLOR,
+            headerStyle: {
+              backgroundColor: AppColors.PRIMARY,
+            },
+            headerTintColor: AppColors.WHITE,
+          }}
+        />
+        <Drawer.Screen
           name="patients"
           options={{
             headerTitle: LanguageService.translate("Patients"),
