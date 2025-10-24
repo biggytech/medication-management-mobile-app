@@ -30,7 +30,9 @@ export const getCountSchema = () =>
     .number()
     .typeError(LanguageService.translate("Count is required"))
     .min(1, LanguageService.translate("Count should be between 1 and 9999"))
-    .max(9999, LanguageService.translate("Count should be between 1 and 9999"));
+    .max(9999, LanguageService.translate("Count should be between 1 and 9999"))
+    .optional()
+    .nullable();
 
 export const getNewMedicineTitleSchema = () =>
   yup.object().shape({

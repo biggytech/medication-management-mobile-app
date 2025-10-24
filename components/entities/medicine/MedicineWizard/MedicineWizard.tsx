@@ -110,7 +110,7 @@ export class MedicineWizard {
             <View style={styles.row}>
               <Input
                 placeholder={LanguageService.translate("Count")}
-                value={String(data.count ?? "")}
+                value={data.count}
                 onChangeText={(text) => setValue("count", text)}
                 onBlur={() => setTouched("count")}
                 error={errors["count"]}

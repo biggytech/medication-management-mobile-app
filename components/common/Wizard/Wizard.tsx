@@ -268,11 +268,13 @@ const Wizard = <T extends DataForValidation = DataForValidation>({
                         const immediateData =
                           formData || formRef.current?.getData();
                         if (immediateData) {
-                          const { isValid: isValidImmediate } = validateObject(
-                            getValidationSchema(),
-                            {},
-                            immediateData,
-                          );
+                          const { isValid: isValidImmediate, errors } =
+                            validateObject(
+                              getValidationSchema(),
+                              {},
+                              immediateData,
+                            );
+                          console.log("A", errors, isValidImmediate);
                           if (isValidImmediate) {
                             await handleNextClick(immediateData);
                           }
