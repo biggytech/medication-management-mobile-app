@@ -96,7 +96,8 @@ export class APIService {
     try {
       const token = AuthService.token;
       if (requiresAuth && !token) {
-        throw new Error("Token is not set for authenticated route");
+        // throw new Error("Token is not set for authenticated route");
+        throw new Error("TOKEN_NOT_SET");
       }
 
       let requestURL = `${this.BASE_URL}${url}`;
@@ -135,7 +136,9 @@ export class APIService {
     } catch (error) {
       console.log(`error - ${error}`);
 
-      showError(getApiErrorText(error));
+      if ((error as Error)?.message !== "TOKEN_NOT_SET") {
+        showError(getApiErrorText(error));
+      }
 
       throw error;
     }
