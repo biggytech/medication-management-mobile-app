@@ -145,7 +145,6 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
             value: "",
           }
         : null,
-      // TODO: add last medication log item
     ].filter(isNotNullish);
   }, [medicine]);
 
@@ -231,14 +230,12 @@ export const DoseTrackingModal: React.FC<DoseTrackingModalProps> = ({
         <DetailsCard items={detailsItems} noValues noPadding />
 
         <View style={styles.actionButtons}>
-          {/*TODO: undo skipping*/}
           <IconButton
             iconName={"close"}
             text={LanguageService.translate("Skip")}
             onPress={handleSkipDose}
             color={AppColors.NEGATIVE}
           />
-          {/*TODO: undo taking*/}
           <IconButton
             iconName={"checkmark"}
             text={LanguageService.translate("Take")}

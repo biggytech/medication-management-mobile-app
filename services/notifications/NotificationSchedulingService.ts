@@ -13,22 +13,11 @@ import { AppColors } from "@/constants/styling/colors";
 import { getHealthTrackerName } from "@/utils/entities/healthTrackers/getHealthTrackerName";
 import { getHealthTrackerEmoji } from "@/utils/entities/healthTrackers/getHealthTrackerEmoji";
 
-/**
- * Service for scheduling local push notifications for medication reminders.
- * This service handles the complex logic of scheduling notifications based on
- * different medication schedule types and ensures notifications are properly
- * formatted with medication names and emojis.
- */
 export class NotificationSchedulingService {
   private static readonly NOTIFICATION_CHANNEL_ID = "medication-reminders";
   private static readonly NOTIFICATION_CHANNEL_NAME = "Medication Reminders";
 
-  /**
-   * Initialize the notification service by setting up the notification channel
-   * and configuring notification behavior.
-   */
   public static async initialize(): Promise<void> {
-    // Configure notification behavior
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldPlaySound: true,
@@ -39,7 +28,6 @@ export class NotificationSchedulingService {
       }),
     });
 
-    // Create notification channel for Android
     if (Platform.OS === "android") {
       await Notifications.setNotificationChannelAsync(
         this.NOTIFICATION_CHANNEL_ID,
@@ -54,15 +42,9 @@ export class NotificationSchedulingService {
     }
   }
 
-  /**
-   * Schedule notifications for a new medicine based on its schedule configuration.
-   * This method handles all different schedule types and creates appropriate
-   * notification triggers for each case.
-   */
   public static async scheduleMedicineNotifications(
     medicine: MedicineFromApi,
   ): Promise<void> {
-    // unschedule previous notifications
     await NotificationSchedulingService.cancelMedicineReminderNotifications(
       medicine.id,
     );
@@ -77,7 +59,6 @@ export class NotificationSchedulingService {
           nextTakeDate: new Date(medicine.schedule.nextTakeDate),
         });
 
-        // do not schedule if dose date is bigger than ending date
         return;
       }
     }
@@ -93,10 +74,8 @@ export class NotificationSchedulingService {
 
     const { title } = medicine;
 
-    // Get medication emoji based on form
     const emoji = getMedicineEmoji(medicine);
 
-    // Create notification content
     const notificationContent: Notifications.NotificationContentInput = {
       title: LanguageService.translate("Medication Reminder"),
       body: `${LanguageService.translate("It's time to take")} ${title}! ${emoji}`,
@@ -123,10 +102,6 @@ export class NotificationSchedulingService {
     }
   }
 
-  /**
-   * Cancel all notifications for a specific medicine.
-   * This is useful when a medicine is deleted or its schedule is changed.
-   */
   public static async cancelMedicineReminderNotifications(
     medicineId: number,
   ): Promise<void> {
@@ -134,7 +109,6 @@ export class NotificationSchedulingService {
       const scheduledNotifications =
         await NotificationSchedulingService.getScheduledNotifications();
 
-      // Find and cancel notifications for this specific medicine
       const medicineNotifications = scheduledNotifications.filter(
         ({ content: { data } }) =>
           data?.type === NotificationTypes.MEDICINE_REMINDER &&
@@ -156,14 +130,9 @@ export class NotificationSchedulingService {
     }
   }
 
-  /**
-   * Schedule notifications for a health tracker based on its schedule configuration.
-   * Similar to medicine notifications but for health tracking reminders.
-   */
   public static async scheduleHealthTrackerNotifications(
     healthTracker: HealthTrackerFromApi,
   ): Promise<void> {
-    // unschedule previous notifications
     await NotificationSchedulingService.cancelHealthTrackerReminderNotifications(
       healthTracker.id,
     );
@@ -178,7 +147,6 @@ export class NotificationSchedulingService {
           nextTakeDate: new Date(healthTracker.schedule.nextTakeDate),
         });
 
-        // do not schedule if tracking date is bigger than ending date
         return;
       }
     }
@@ -194,10 +162,8 @@ export class NotificationSchedulingService {
 
     const trackerName = getHealthTrackerName(healthTracker.type).toLowerCase();
 
-    // Get health tracker emoji based on type
     const emoji = getHealthTrackerEmoji(healthTracker.type);
 
-    // Create notification content
     const notificationContent: Notifications.NotificationContentInput = {
       title: LanguageService.translate("Health Tracker Reminder"),
       body: `${LanguageService.translate("It's time to track")} ${trackerName}! ${emoji}`,
@@ -225,10 +191,6 @@ export class NotificationSchedulingService {
     }
   }
 
-  /**
-   * Cancel all notifications for a specific health tracker.
-   * This is useful when a health tracker is deleted or its schedule is changed.
-   */
   public static async cancelHealthTrackerReminderNotifications(
     healthTrackerId: number,
   ): Promise<void> {
@@ -236,7 +198,6 @@ export class NotificationSchedulingService {
       const scheduledNotifications =
         await NotificationSchedulingService.getScheduledNotifications();
 
-      // Find and cancel notifications for this specific health tracker
       const healthTrackerNotifications = scheduledNotifications.filter(
         ({ content: { data } }) =>
           data?.type === NotificationTypes.HEALTH_TRACKER_REMINDER &&
@@ -258,9 +219,6 @@ export class NotificationSchedulingService {
     }
   }
 
-  /**
-   * Get all scheduled notifications for debugging purposes.
-   */
   public static async getScheduledNotifications() {
     return await Notifications.getAllScheduledNotificationsAsync();
   }

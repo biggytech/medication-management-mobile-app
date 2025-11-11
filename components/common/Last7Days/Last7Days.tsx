@@ -28,7 +28,6 @@ export const Last7Days: React.FC<Last7DaysProps> = ({
 
   return (
     <View style={[boxShadowStyles.small, styles.container]}>
-      {/* Days row */}
       <View style={styles.daysRow}>
         {days.map((date) => {
           const dayData = createDayData(date, activeDate);
@@ -41,7 +40,6 @@ export const Last7Days: React.FC<Last7DaysProps> = ({
               onPress={() => handleDayPress(date)}
               activeOpacity={0.7}
             >
-              {/* Day name */}
               <Text
                 style={[
                   styles.dayName,
@@ -51,7 +49,6 @@ export const Last7Days: React.FC<Last7DaysProps> = ({
                 {translatedDayName}
               </Text>
 
-              {/* Day number in circle */}
               <View
                 style={[
                   styles.dayNumberContainer,
@@ -72,7 +69,6 @@ export const Last7Days: React.FC<Last7DaysProps> = ({
         })}
       </View>
 
-      {/* Active date text */}
       <Text style={styles.activeDateText}>
         {getRelativeDateText(activeDate)}
       </Text>
