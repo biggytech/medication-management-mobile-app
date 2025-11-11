@@ -28,11 +28,12 @@ export const validateObject = <T extends DataForValidation = DataForValidation>(
   } catch (error) {
     if (error instanceof ValidationError) {
       isValid = false;
-      console.log("error", error);
 
       const { path, message } = error;
       if (path && touchedFields[path]) {
         errors[path as keyof ValidationOutput<T>] = message;
+      } else {
+        // console.log("error", error);
       }
     }
   }

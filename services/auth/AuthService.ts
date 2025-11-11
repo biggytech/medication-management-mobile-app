@@ -70,17 +70,17 @@ export class AuthService {
   }
 
   public static async loadAuthInfo(): Promise<AuthInfo | null> {
-    if (!AuthService.getInstance().token) {
-      const authInfo = await AsyncStorage.getItem(AuthService.AUTH_INFO_KEY);
+    // if (!AuthService.getInstance().token) {
+    const authInfo = await AsyncStorage.getItem(AuthService.AUTH_INFO_KEY);
 
-      if (authInfo) {
-        try {
-          const authInfoParsed: AuthInfo = JSON.parse(authInfo);
-          AuthService.setAuthInfo(authInfoParsed);
-          return authInfoParsed;
-        } catch {}
-      }
+    if (authInfo) {
+      try {
+        const authInfoParsed: AuthInfo = JSON.parse(authInfo);
+        AuthService.setAuthInfo(authInfoParsed);
+        return authInfoParsed;
+      } catch {}
     }
+    // }
 
     return null;
   }

@@ -25,6 +25,8 @@ const FOCUSED_COLOR = AppColors.SECONDARY;
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { signOut, currentUser } = useAuthSession();
 
+  console.log("currentUser", currentUser);
+
   const handleSignOutClick = () => {
     if (currentUser.isGuest) {
       Alert.alert(
