@@ -333,5 +333,7 @@
   "Failed to load conversations": "Failed to load conversations",
   "Failed to load messages": "Failed to load messages",
   "Failed to send message": "Failed to send message",
-  "Start Chat": "Start Chat"
+  "Start Chat": "Start Chat",
+  "All": "All",
+  "Filter by type": "Filter by type"
 }

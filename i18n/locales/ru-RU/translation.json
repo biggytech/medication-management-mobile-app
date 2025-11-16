@@ -333,5 +333,7 @@
   "Failed to load conversations": "Не удалось загрузить разговоры",
   "Failed to load messages": "Не удалось загрузить сообщения",
   "Failed to send message": "Не удалось отправить сообщение",
-  "Start Chat": "Начать чат"
+  "Start Chat": "Начать чат",
+  "All": "Все",
+  "Filter by type": "Фильтр по типу"
 }
