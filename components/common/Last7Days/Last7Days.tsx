@@ -6,6 +6,7 @@ import {
   generateLast7Days,
   getRelativeDateText,
   getTranslatedDayName,
+  isCurrentWeek,
 } from "./utils";
 import type { Last7DaysProps } from "./types";
 import { Text } from "@/components/common/typography/Text";
@@ -13,23 +14,25 @@ import { boxShadowStyles } from "@/assets/styles/shadows";
 import { IconButton } from "@/components/common/buttons/IconButton";
 import { AppColors } from "@/constants/styling/colors";
 import { Spacings } from "@/constants/styling/spacings";
+import { getMondayOfWeek } from "@/utils/date/getMondayOfWeek";
+import { addDays } from "@/utils/date/addDays";
+import { LanguageService } from "@/services/language/LanguageService";
 
 /**
- * Last7Days component displays a row of 7 days (including today and 6 previous days)
+ * Last7Days component displays a row of 7 days starting from Monday of the week
  * with the ability to select an active date. The active date is highlighted with
  * the app's accent color, and below the days row shows the relative date text.
- * Includes arrow buttons to navigate 7 days back or forward.
+ * Includes arrow buttons to navigate 7 days back or forward, and a "Today" button
+ * to quickly return to the current week when viewing a different week.
  */
 export const Last7Days: React.FC<Last7DaysProps> = ({
   activeDate,
   onActiveDateChange,
 }) => {
-  // Initialize start date to 6 days ago (so today is the last day)
+  // Initialize start date to Monday of current week
   const getInitialStartDate = () => {
     const today = new Date();
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 6);
-    return startDate;
+    return getMondayOfWeek(today);
   };
 
   const [windowStartDate, setWindowStartDate] =
@@ -40,20 +43,34 @@ export const Last7Days: React.FC<Last7DaysProps> = ({
     [windowStartDate],
   );
 
+  const isShowingCurrentWeek = useMemo(
+    () => isCurrentWeek(windowStartDate),
+    [windowStartDate],
+  );
+
   const handleDayPress = (date: Date) => {
     onActiveDateChange(date);
   };
 
   const handlePreviousWeek = () => {
-    const newStartDate = new Date(windowStartDate);
-    newStartDate.setDate(windowStartDate.getDate() - 7);
+    const newStartDate = addDays(windowStartDate, -7);
     setWindowStartDate(newStartDate);
+    // Automatically select the first day (Monday) of the new week
+    onActiveDateChange(newStartDate);
   };
 
   const handleNextWeek = () => {
-    const newStartDate = new Date(windowStartDate);
-    newStartDate.setDate(windowStartDate.getDate() + 7);
+    const newStartDate = addDays(windowStartDate, 7);
     setWindowStartDate(newStartDate);
+    // Automatically select the first day (Monday) of the new week
+    onActiveDateChange(newStartDate);
+  };
+
+  const handleReturnToToday = () => {
+    const today = new Date();
+    const mondayOfCurrentWeek = getMondayOfWeek(today);
+    setWindowStartDate(mondayOfCurrentWeek);
+    onActiveDateChange(today);
   };
 
   return (
@@ -115,9 +132,22 @@ export const Last7Days: React.FC<Last7DaysProps> = ({
         </View>
       </View>
 
-      <Text style={styles.activeDateText}>
-        {getRelativeDateText(activeDate)}
-      </Text>
+      <View style={styles.bottomRow}>
+        <Text style={styles.activeDateText}>
+          {getRelativeDateText(activeDate)}
+        </Text>
+        {!isShowingCurrentWeek && (
+          <TouchableOpacity
+            onPress={handleReturnToToday}
+            style={styles.returnBackButton}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.returnBackButtonText}>
+              {LanguageService.translate("return to today")}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };

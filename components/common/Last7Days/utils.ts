@@ -1,27 +1,23 @@
 import { LanguageService } from "@/services/language/LanguageService";
 import { DAY_NAMES, MONTH_NAMES } from "./constants";
 import type { DayData } from "./types";
+import { getMondayOfWeek } from "@/utils/date/getMondayOfWeek";
+import { addDays } from "@/utils/date/addDays";
 
 /**
- * Generates an array of 7 consecutive days starting from the given start date
- * If no start date is provided, defaults to 6 days ago (so today is the last day)
+ * Generates an array of 7 consecutive days starting from Monday of the week
+ * If no start date is provided, defaults to Monday of the current week
  */
 export function generateLast7Days(startDate?: Date): Date[] {
   const today = new Date();
-  const baseDate =
-    startDate ||
-    (() => {
-      const date = new Date(today);
-      date.setDate(today.getDate() - 6);
-      return date;
-    })();
+  const baseDate = startDate
+    ? getMondayOfWeek(startDate)
+    : getMondayOfWeek(today);
 
   const days: Date[] = [];
 
   for (let i = 0; i < 7; i++) {
-    const date = new Date(baseDate);
-    date.setDate(baseDate.getDate() + i);
-    days.push(date);
+    days.push(addDays(baseDate, i));
   }
 
   return days;
@@ -53,6 +49,17 @@ export function isSameDay(date1: Date, date2: Date): boolean {
     date1.getMonth() === date2.getMonth() &&
     date1.getDate() === date2.getDate()
   );
+}
+
+/**
+ * Checks if a date is in the current week (Monday to Sunday)
+ */
+export function isCurrentWeek(date: Date): boolean {
+  const today = new Date();
+  const mondayOfCurrentWeek = getMondayOfWeek(today);
+  const mondayOfGivenWeek = getMondayOfWeek(date);
+
+  return isSameDay(mondayOfCurrentWeek, mondayOfGivenWeek);
 }
 
 /**

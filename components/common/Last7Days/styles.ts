@@ -3,6 +3,7 @@ import { CIRCLE_SIZE } from "./constants";
 import { Spacings } from "@/constants/styling/spacings";
 import { FontSizes } from "@/constants/styling/fonts";
 import { AppColors } from "@/constants/styling/colors";
+import { transparentColor } from "@/utils/ui/transparentColor";
 
 export const styles = StyleSheet.create({
   container: {
@@ -46,10 +47,32 @@ export const styles = StyleSheet.create({
   dayNumberActive: {
     color: AppColors.WHITE,
   },
+  bottomRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    minHeight: 24,
+  },
   activeDateText: {
     fontSize: FontSizes.STANDART,
     color: AppColors.ACCENT,
     textAlign: "center",
+    fontWeight: 600,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    zIndex: 0,
+  },
+  returnBackButton: {
+    paddingHorizontal: Spacings.SMALL,
+    paddingVertical: 3,
+    backgroundColor: transparentColor(AppColors.ACCENT, 0.5),
+    borderRadius: 16,
+    zIndex: 1,
+  },
+  returnBackButtonText: {
+    fontSize: FontSizes.SMALL,
+    color: AppColors.WHITE,
     fontWeight: 600,
   },
 });
