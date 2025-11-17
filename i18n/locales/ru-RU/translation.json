@@ -352,5 +352,8 @@
   "Request Pending": "Запрос ожидает",
   "Request sent successfully": "Запрос успешно отправлен",
   "Cancel Request": "Отменить запрос",
-  "Request canceled successfully": "Запрос успешно отменен"
+  "Request canceled successfully": "Запрос успешно отменен",
+  "In 1 hour": "Через 1 час",
+  "Notification skipped for 1 hour": "Уведомление отложено на 1 час",
+  "Failed to skip notification": "Не удалось отложить уведомление"
 }

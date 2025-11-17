@@ -62,4 +62,8 @@ export const getRescheduleOptions =
       id: 15,
       title: LanguageService.translate("In 15 minutes"),
     },
+    {
+      id: 60,
+      title: LanguageService.translate("In 1 hour"),
+    },
   ];

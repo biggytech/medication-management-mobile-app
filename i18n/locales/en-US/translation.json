@@ -352,5 +352,8 @@
   "Request Pending": "Request Pending",
   "Request sent successfully": "Request sent successfully",
   "Cancel Request": "Cancel Request",
-  "Request canceled successfully": "Request canceled successfully"
+  "Request canceled successfully": "Request canceled successfully",
+  "In 1 hour": "In 1 hour",
+  "Notification skipped for 1 hour": "Notification skipped for 1 hour",
+  "Failed to skip notification": "Failed to skip notification"
 }
