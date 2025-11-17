@@ -17,6 +17,7 @@ import { deepen } from "@/utils/objects/deepen";
 import { styles } from "@/components/common/inputs/Form/styles";
 import type { FormProps } from "@/components/common/inputs/Form/types";
 import { ReactMemoWithGeneric } from "@/utils/types/ReactMemoWithGeneric";
+import { noop } from "@/utils/noop";
 
 const Form = <T extends DataForValidation = DataForValidation>({
   ref,
@@ -90,7 +91,7 @@ const Form = <T extends DataForValidation = DataForValidation>({
       {onSubmit && submitText && (
         <Button
           text={submitText}
-          onPress={handleSubmit}
+          onPress={isButtonDisabled ? noop : handleSubmit}
           disabled={isButtonDisabled}
           color={AppColors.POSITIVE}
         />

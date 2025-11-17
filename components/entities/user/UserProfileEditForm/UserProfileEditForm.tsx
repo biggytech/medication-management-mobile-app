@@ -61,8 +61,19 @@ export const UserProfileEditForm: React.FC<UserProfileEditFormProps> = ({
     },
   });
 
-  const handleSubmit = async (data: Omit<UserDataForEditing, "isGuest">) => {
-    const result = await updateProfileMutation.mutateAsync(data);
+  const handleSubmit = async (
+    data: Omit<UserDataForEditing, "isGuest"> & {
+      passwordConfirmation?: string | null;
+    },
+  ) => {
+    // Remove passwordConfirmation before sending to API
+    const { passwordConfirmation, ...dataToSend } = data;
+    // Only include password if it's provided
+    const finalData: Omit<UserDataForEditing, "isGuest"> = {
+      ...dataToSend,
+      password: dataToSend.password || null,
+    };
+    const result = await updateProfileMutation.mutateAsync(finalData);
     setCurrentUser({
       fullName: result.fullName,
       isGuest: result.isGuest,
@@ -122,6 +133,21 @@ export const UserProfileEditForm: React.FC<UserProfileEditFormProps> = ({
                 onChangeText={(text) => setValue("password", text)}
                 onBlur={() => setTouched("password")}
                 error={errors.password}
+                secureTextEntry
+                style={styles.input}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>
+                {LanguageService.translate("Confirm Password")}
+              </Text>
+              <Input
+                placeholder={LanguageService.translate("Confirm Password")}
+                value={data.passwordConfirmation || ""}
+                onChangeText={(text) => setValue("passwordConfirmation", text)}
+                onBlur={() => setTouched("passwordConfirmation")}
+                error={errors.passwordConfirmation}
                 secureTextEntry
                 style={styles.input}
               />

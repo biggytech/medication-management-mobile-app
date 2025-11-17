@@ -36,14 +36,23 @@ export const getPasswordSchema = ({
   } else {
     return yup
       .string()
-      .min(
-        8,
+      .nullable()
+      .optional()
+      .transform((value) => (value === "" ? null : value))
+      .test(
+        "min-length-if-provided",
         LanguageService.translate(
           "Password must contain at least 8 characters",
         ),
-      )
-      .optional()
-      .nullable();
+        (value) => {
+          // If value is null/undefined/empty, it's valid (optional)
+          if (!value || value.length === 0) {
+            return true;
+          }
+          // If value is provided, it must be at least 8 characters
+          return value.length >= 8;
+        },
+      );
   }
 };
 
@@ -87,6 +96,22 @@ export const getUserProfileEditSchema = () =>
     password: getPasswordSchema({
       isRequired: false,
     }),
+    passwordConfirmation: yup
+      .string()
+      .nullable()
+      .optional()
+      .transform((value) => (value === "" ? null : value))
+      .when("password", {
+        is: (value: string | null | undefined) => value && value.length > 0,
+        then: (schema) =>
+          schema
+            .required(LanguageService.translate("Confirm Password is required"))
+            .oneOf(
+              [yup.ref("password")],
+              LanguageService.translate("Passwords do not match"),
+            ),
+        otherwise: (schema) => schema.nullable().optional(),
+      }),
     sex: getSexSchema(),
     dateOfBirth: getDateOfBirthSchema(),
   });
