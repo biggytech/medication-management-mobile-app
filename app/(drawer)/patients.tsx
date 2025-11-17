@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
+import React, { useState, useMemo } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { APIService } from "@/services/APIService";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import { InlineLoader } from "@/components/common/loaders/InlineLoader";
@@ -18,6 +25,7 @@ import type { UserFromApi } from "@/types/users";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/common/buttons/Button";
+import { Input } from "@/components/common/inputs/Input";
 
 interface PendingRequest {
   id: number;
@@ -29,7 +37,7 @@ interface PendingRequest {
 
 export default function PatientsPage() {
   const queryClient = useQueryClient();
-  
+
   const {
     data: patients,
     isLoading,
@@ -49,9 +57,12 @@ export default function PatientsPage() {
   });
 
   const approveMutation = useMutation({
-    mutationFn: (patientId: number) => APIService.patients.approvePatient(patientId),
+    mutationFn: (patientId: number) =>
+      APIService.patients.approvePatient(patientId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PATIENTS.PENDING_REQUESTS] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PATIENTS.PENDING_REQUESTS],
+      });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PATIENTS.LIST] });
       showSuccess(LanguageService.translate("Patient request approved"));
     },
@@ -61,9 +72,12 @@ export default function PatientsPage() {
   });
 
   const declineMutation = useMutation({
-    mutationFn: (patientId: number) => APIService.patients.declinePatient(patientId),
+    mutationFn: (patientId: number) =>
+      APIService.patients.declinePatient(patientId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PATIENTS.PENDING_REQUESTS] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PATIENTS.PENDING_REQUESTS],
+      });
       showSuccess(LanguageService.translate("Patient request declined"));
     },
     onError: () => {
@@ -77,6 +91,7 @@ export default function PatientsPage() {
   );
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSendingReport, setIsSendingReport] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handlePatientPress = (patient: UserFromApi) => {
     setSelectedPatient(patient);
@@ -175,6 +190,19 @@ export default function PatientsPage() {
     </View>
   );
 
+  // Filter patients based on search query
+  const filteredPatients = useMemo(() => {
+    if (!patients) return [];
+    if (!searchQuery.trim()) return patients;
+
+    const query = searchQuery.toLowerCase().trim();
+    return patients.filter(
+      (patient) =>
+        patient.fullName.toLowerCase().includes(query) ||
+        patient.email.toLowerCase().includes(query),
+    );
+  }, [patients, searchQuery]);
+
   if (isLoading || isLoadingPending) {
     return (
       <View style={styles.container}>
@@ -216,11 +244,51 @@ export default function PatientsPage() {
           <Text style={styles.sectionTitle}>
             {LanguageService.translate("My Patients")}
           </Text>
+          {patients && patients.length > 0 && (
+            <View style={styles.searchContainer}>
+              <View style={styles.searchInputWrapper}>
+                <Ionicons
+                  name="search"
+                  size={20}
+                  color={AppColors.SECONDARY}
+                  style={styles.searchIcon}
+                />
+                <Input
+                  style={styles.searchInput}
+                  placeholder={LanguageService.translate("Search patients...")}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  containerStyle={styles.searchInputContainer}
+                />
+                {searchQuery.length > 0 && (
+                  <TouchableOpacity
+                    onPress={() => setSearchQuery("")}
+                    style={styles.clearButton}
+                  >
+                    <Ionicons
+                      name="close-circle"
+                      size={20}
+                      color={AppColors.SECONDARY}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          )}
           {patients?.length === 0 ? (
             renderEmptyState()
+          ) : filteredPatients.length === 0 && searchQuery.trim() ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateTitle}>
+                {LanguageService.translate("No patients found")}
+              </Text>
+              <Text style={styles.emptyStateSubtitle}>
+                {LanguageService.translate("Try adjusting your search query")}
+              </Text>
+            </View>
           ) : (
             <FlatList
-              data={patients || []}
+              data={filteredPatients}
               keyExtractor={(item) => item.id.toString()}
               renderItem={renderPatientCard}
               scrollEnabled={false}
@@ -310,15 +378,18 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.WHITE,
     borderRadius: 12,
     padding: Spacings.STANDART,
+    paddingVertical: Spacings.SMALL,
     marginBottom: Spacings.SMALL,
-    shadowColor: AppColors.BLACK,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    // shadowColor: AppColors.BLACK,
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 4,
+    // elevation: 3,
+    borderBottomWidth: 1,
+    borderColor: AppColors.SECONDARY,
   },
   patientContent: {
     flexDirection: "row",
@@ -365,5 +436,37 @@ const styles = StyleSheet.create({
     color: AppColors.SECONDARY,
     textAlign: "center",
     lineHeight: 22,
+  },
+  searchContainer: {
+    marginBottom: Spacings.STANDART,
+  },
+  searchInputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: AppColors.WHITE,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: AppColors.SECONDARY,
+    paddingHorizontal: Spacings.SMALL,
+    paddingVertical: Spacings.SMALL / 2,
+  },
+  searchIcon: {
+    marginRight: Spacings.SMALL,
+  },
+  searchInput: {
+    flex: 1,
+    borderWidth: 0,
+    marginBottom: 0,
+    padding: 0,
+    height: 36,
+  },
+  searchInputContainer: {
+    marginBottom: 0,
+    flex: 1,
+    width: undefined,
+  },
+  clearButton: {
+    marginLeft: Spacings.SMALL,
+    padding: Spacings.SMALL / 2,
   },
 });
