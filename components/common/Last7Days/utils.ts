@@ -3,15 +3,24 @@ import { DAY_NAMES, MONTH_NAMES } from "./constants";
 import type { DayData } from "./types";
 
 /**
- * Generates an array of 7 days including today and the 6 previous days
+ * Generates an array of 7 consecutive days starting from the given start date
+ * If no start date is provided, defaults to 6 days ago (so today is the last day)
  */
-export function generateLast7Days(): Date[] {
+export function generateLast7Days(startDate?: Date): Date[] {
   const today = new Date();
+  const baseDate =
+    startDate ||
+    (() => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - 6);
+      return date;
+    })();
+
   const days: Date[] = [];
 
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(baseDate);
+    date.setDate(baseDate.getDate() + i);
     days.push(date);
   }
 

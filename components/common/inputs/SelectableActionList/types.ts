@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
 
-export interface SelectableActionListInterface<> {
+export interface SelectableActionListInterface {
   show: () => void;
   close: () => void;
 }
