@@ -171,7 +171,7 @@ export class APIService {
         method: Methods.POST,
         url: `${this.path}/default`,
         requiresAuth: false,
-        body: data,
+        body: { ...data, email: data.email.toLowerCase() },
       });
 
       return result;
@@ -210,7 +210,7 @@ export class APIService {
         method: Methods.POST,
         url: `${this.path}/anonymous/finish`,
         requiresAuth: true,
-        body: data,
+        body: { ...data, email: data.email.toLowerCase() },
       });
 
       return result;
@@ -230,7 +230,7 @@ export class APIService {
         method: Methods.POST,
         url: `${this.path}/default`,
         requiresAuth: false,
-        body: data,
+        body: { ...data, email: data.email.toLowerCase() },
       });
 
       return result;
@@ -615,6 +615,108 @@ export class APIService {
       });
 
       return result.patients;
+    },
+
+    async getPendingRequests() {
+      const result = await APIService.getInstance().makeRequest<{
+        success: boolean;
+        patients: {
+          id: number;
+          userId: number;
+          doctorId: number;
+          status: string;
+          user: UserFromApi;
+        }[];
+        total: number;
+      }>({
+        method: Methods.GET,
+        url: `${this.path}/pending-requests`,
+        requiresAuth: true,
+      });
+
+      return result;
+    },
+
+    async approvePatient(patientId: number) {
+      const result = await APIService.getInstance().makeRequest<{
+        success: boolean;
+        message: string;
+        patient: {
+          id: number;
+          userId: number;
+          doctorId: number;
+          status: string;
+        };
+      }>({
+        method: Methods.POST,
+        url: `${this.path}/approve`,
+        requiresAuth: true,
+        body: { patientId },
+      });
+
+      return result;
+    },
+
+    async declinePatient(patientId: number) {
+      const result = await APIService.getInstance().makeRequest<{
+        success: boolean;
+        message: string;
+      }>({
+        method: Methods.POST,
+        url: `${this.path}/decline`,
+        requiresAuth: true,
+        body: { patientId },
+      });
+
+      return result;
+    },
+
+    async getRelationshipStatus(doctorId: number) {
+      const result = await APIService.getInstance().makeRequest<{
+        success: boolean;
+        status: string | null;
+        patientId?: number;
+      }>({
+        method: Methods.GET,
+        url: `${this.path}/relationship-status/${doctorId}`,
+        requiresAuth: true,
+      });
+
+      return result;
+    },
+
+    async cancelRequest(doctorId: number) {
+      const result = await APIService.getInstance().makeRequest<{
+        success: boolean;
+        message: string;
+      }>({
+        method: Methods.POST,
+        url: `${this.path}/cancel-request`,
+        requiresAuth: true,
+        body: { doctorId },
+      });
+
+      return result;
+    },
+
+    async getMyPendingRequests() {
+      const result = await APIService.getInstance().makeRequest<{
+        success: boolean;
+        patients: {
+          id: number;
+          userId: number;
+          doctorId: number;
+          status: string;
+          doctor: DoctorFromApi;
+        }[];
+        total: number;
+      }>({
+        method: Methods.GET,
+        url: `${this.path}/my-pending-requests`,
+        requiresAuth: true,
+      });
+
+      return result;
     },
   };
 

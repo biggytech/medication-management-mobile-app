@@ -338,5 +338,17 @@
   "Failed to send message": "Failed to send message",
   "Start Chat": "Start Chat",
   "All": "All",
-  "Filter by type": "Filter by type"
+  "Filter by type": "Filter by type",
+  "Pending Requests": "Pending Requests",
+  "My Patients": "My Patients",
+  "Approve": "Approve",
+  "Decline": "Decline",
+  "Patient request approved": "Patient request approved",
+  "Patient request declined": "Patient request declined",
+  "Failed to approve request": "Failed to approve request",
+  "Failed to decline request": "Failed to decline request",
+  "Request Pending": "Request Pending",
+  "Request sent successfully": "Request sent successfully",
+  "Cancel Request": "Cancel Request",
+  "Request canceled successfully": "Request canceled successfully"
 }

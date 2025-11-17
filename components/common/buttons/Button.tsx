@@ -30,7 +30,10 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   return (
-    <TouchableHighlight {...props}>
+    <TouchableHighlight
+      {...props}
+      onPress={(...args) => (disabled ? null : props.onPress?.(...args))}
+    >
       <View
         style={[
           styles.button,

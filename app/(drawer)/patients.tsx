@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
 import { APIService } from "@/services/APIService";
 import { QUERY_KEYS } from "@/constants/queries/queryKeys";
 import { InlineLoader } from "@/components/common/loaders/InlineLoader";
@@ -16,8 +16,20 @@ import { showError } from "@/utils/ui/showError";
 import { showSuccess } from "@/utils/ui/showSuccess";
 import type { UserFromApi } from "@/types/users";
 import { useQueryWithFocus } from "@/hooks/queries/useQueryWithFocus";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/common/buttons/Button";
+
+interface PendingRequest {
+  id: number;
+  userId: number;
+  doctorId: number;
+  status: string;
+  user: UserFromApi;
+}
 
 export default function PatientsPage() {
+  const queryClient = useQueryClient();
+  
   const {
     data: patients,
     isLoading,
@@ -25,6 +37,38 @@ export default function PatientsPage() {
   } = useQueryWithFocus({
     queryKey: [QUERY_KEYS.PATIENTS.LIST],
     queryFn: () => APIService.patients.getPatients(),
+  });
+
+  const {
+    data: pendingRequests,
+    isLoading: isLoadingPending,
+    error: pendingError,
+  } = useQueryWithFocus({
+    queryKey: [QUERY_KEYS.PATIENTS.PENDING_REQUESTS],
+    queryFn: () => APIService.patients.getPendingRequests(),
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: (patientId: number) => APIService.patients.approvePatient(patientId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PATIENTS.PENDING_REQUESTS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PATIENTS.LIST] });
+      showSuccess(LanguageService.translate("Patient request approved"));
+    },
+    onError: () => {
+      showError(LanguageService.translate("Failed to approve request"));
+    },
+  });
+
+  const declineMutation = useMutation({
+    mutationFn: (patientId: number) => APIService.patients.declinePatient(patientId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PATIENTS.PENDING_REQUESTS] });
+      showSuccess(LanguageService.translate("Patient request declined"));
+    },
+    onError: () => {
+      showError(LanguageService.translate("Failed to decline request"));
+    },
   });
 
   const { currentLanguage } = useCurrentLanguage();
@@ -90,6 +134,34 @@ export default function PatientsPage() {
     </TouchableOpacity>
   );
 
+  const renderPendingRequestCard = ({ item }: { item: PendingRequest }) => (
+    <View style={styles.pendingRequestCard}>
+      <View style={styles.pendingRequestContent}>
+        <View style={styles.pendingRequestInfo}>
+          <Text style={styles.pendingRequestName}>{item.user.fullName}</Text>
+          <Text style={styles.pendingRequestEmail}>{item.user.email}</Text>
+        </View>
+        <View style={styles.pendingRequestActions}>
+          <Button
+            text={LanguageService.translate("Approve")}
+            onPress={() => approveMutation.mutate(item.id)}
+            disabled={approveMutation.isPending}
+            color={AppColors.POSITIVE}
+            size={FontSizes.SMALL}
+          />
+          <View style={styles.buttonSpacing} />
+          <Button
+            text={LanguageService.translate("Decline")}
+            onPress={() => declineMutation.mutate(item.id)}
+            disabled={declineMutation.isPending}
+            color={AppColors.NEGATIVE}
+            size={FontSizes.SMALL}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Text style={styles.emptyStateTitle}>
@@ -103,15 +175,15 @@ export default function PatientsPage() {
     </View>
   );
 
-  if (isLoading) {
+  if (isLoading || isLoadingPending) {
     return (
       <View style={styles.container}>
-        <InlineLoader isLoading={isLoading} />
+        <InlineLoader isLoading={isLoading || isLoadingPending} />
       </View>
     );
   }
 
-  if (error) {
+  if (error || pendingError) {
     return (
       <View style={styles.container}>
         <ErrorMessage
@@ -123,17 +195,40 @@ export default function PatientsPage() {
 
   return (
     <View style={styles.container}>
-      {patients?.length === 0 ? (
-        renderEmptyState()
-      ) : (
-        <FlatList
-          data={patients || []}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderPatientCard}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {pendingRequests && pendingRequests.patients.length > 0 && (
+          <View style={styles.pendingSection}>
+            <Text style={styles.sectionTitle}>
+              {LanguageService.translate("Pending Requests")}
+            </Text>
+            {pendingRequests.patients.map((request) => (
+              <View key={request.id}>
+                {renderPendingRequestCard({ item: request })}
+              </View>
+            ))}
+          </View>
+        )}
+
+        <View style={styles.approvedSection}>
+          <Text style={styles.sectionTitle}>
+            {LanguageService.translate("My Patients")}
+          </Text>
+          {patients?.length === 0 ? (
+            renderEmptyState()
+          ) : (
+            <FlatList
+              data={patients || []}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={renderPatientCard}
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+        </View>
+      </ScrollView>
 
       <PatientReportModal
         visible={isModalVisible}
@@ -150,6 +245,63 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: AppColors.BACKGROUND,
+  },
+  scrollContent: {
+    padding: Spacings.STANDART,
+  },
+  pendingSection: {
+    marginBottom: Spacings.BIG,
+  },
+  approvedSection: {
+    flex: 1,
+  },
+  sectionTitle: {
+    fontSize: FontSizes.BIG,
+    fontWeight: "bold",
+    color: AppColors.FONT,
+    marginBottom: Spacings.STANDART,
+  },
+  pendingRequestCard: {
+    backgroundColor: AppColors.WHITE,
+    borderRadius: 12,
+    padding: Spacings.STANDART,
+    marginBottom: Spacings.SMALL,
+    shadowColor: AppColors.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderLeftWidth: 4,
+    borderLeftColor: AppColors.ACCENT,
+  },
+  pendingRequestContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  pendingRequestInfo: {
+    flex: 1,
+    marginRight: Spacings.STANDART,
+  },
+  pendingRequestName: {
+    fontSize: FontSizes.BIG,
+    fontWeight: "bold",
+    color: AppColors.FONT,
+    marginBottom: Spacings.SMALL,
+  },
+  pendingRequestEmail: {
+    fontSize: FontSizes.STANDART,
+    color: AppColors.SECONDARY,
+  },
+  pendingRequestActions: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  buttonSpacing: {
+    width: Spacings.SMALL,
   },
   listContainer: {
     padding: Spacings.STANDART,

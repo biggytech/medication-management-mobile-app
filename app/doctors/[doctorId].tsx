@@ -36,6 +36,18 @@ export default function DoctorDetailsPage() {
     queryFn: () => APIService.patients.getMyDoctors(),
   });
 
+  // Check if current doctor is already in my doctors list
+  const isMyDoctor =
+    myDoctors?.patients.some(
+      (myDoctor) => myDoctor.doctor.id === Number(doctorId),
+    ) ?? false;
+
+  const { data: relationshipStatus } = useQueryWithFocus({
+    queryKey: [QUERY_KEYS.PATIENTS.RELATIONSHIP_STATUS, doctorId],
+    queryFn: () => APIService.patients.getRelationshipStatus(Number(doctorId)),
+    enabled: !!doctorId && !isMyDoctor,
+  });
+
   const becomePatientMutation = useMutation({
     mutationFn: (doctorId: number) =>
       APIService.patients.becomePatient(doctorId),
@@ -47,8 +59,11 @@ export default function DoctorDetailsPage() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.DOCTORS.DETAILS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PATIENTS.RELATIONSHIP_STATUS, doctorId],
+      });
       // Show success toast
-      showSuccess(LanguageService.translate("Doctor added successfully"));
+      showSuccess(LanguageService.translate("Request sent successfully"));
     },
   });
 
@@ -68,11 +83,27 @@ export default function DoctorDetailsPage() {
     },
   });
 
-  // Check if current doctor is already in my doctors list
-  const isMyDoctor =
-    myDoctors?.patients.some(
-      (myDoctor) => myDoctor.doctor.id === Number(doctorId),
-    ) ?? false;
+  const cancelRequestMutation = useMutation({
+    mutationFn: (doctorId: number) =>
+      APIService.patients.cancelRequest(doctorId),
+    onSuccess: () => {
+      // Invalidate and refetch relationship status and my doctors list
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PATIENTS.RELATIONSHIP_STATUS, doctorId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PATIENTS.MY_DOCTORS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.DOCTORS.DETAILS, doctorId],
+      });
+      // Show success toast
+      showSuccess(LanguageService.translate("Request canceled successfully"));
+    },
+  });
+
+  // Check if there's a pending request
+  const isPending = relationshipStatus?.status === "pending";
 
   if (isLoading) {
     return (
@@ -119,12 +150,23 @@ export default function DoctorDetailsPage() {
       {!isLoadingMyDoctors && (
         <View style={styles.buttonContainer}>
           {!isMyDoctor ? (
-            <Button
-              text={LanguageService.translate("Add as My Doctor")}
-              onPress={handleBecomePatient}
-              disabled={becomePatientMutation.isPending}
-              color={AppColors.POSITIVE}
-            />
+            <>
+              {isPending ? (
+                <Button
+                  text={LanguageService.translate("Cancel Request")}
+                  onPress={() => cancelRequestMutation.mutate(Number(doctorId))}
+                  disabled={cancelRequestMutation.isPending}
+                  color={AppColors.NEGATIVE}
+                />
+              ) : (
+                <Button
+                  text={LanguageService.translate("Add as My Doctor")}
+                  onPress={handleBecomePatient}
+                  disabled={becomePatientMutation.isPending}
+                  color={AppColors.POSITIVE}
+                />
+              )}
+            </>
           ) : (
             <Button
               text={LanguageService.translate("Remove from My Doctors")}
@@ -133,13 +175,15 @@ export default function DoctorDetailsPage() {
               color={AppColors.NEGATIVE}
             />
           )}
-          <View style={styles.chatButtonContainer}>
-            <Button
-              text={LanguageService.translate("Start Chat")}
-              onPress={handleStartChat}
-              color={AppColors.PRIMARY}
-            />
-          </View>
+          {isMyDoctor && (
+            <View style={styles.chatButtonContainer}>
+              <Button
+                text={LanguageService.translate("Start Chat")}
+                onPress={handleStartChat}
+                color={AppColors.PRIMARY}
+              />
+            </View>
+          )}
         </View>
       )}
     </View>

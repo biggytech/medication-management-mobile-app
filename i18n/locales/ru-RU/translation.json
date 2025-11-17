@@ -338,5 +338,17 @@
   "Failed to send message": "Не удалось отправить сообщение",
   "Start Chat": "Начать чат",
   "All": "Все",
-  "Filter by type": "Фильтр по типу"
+  "Filter by type": "Фильтр по типу",
+  "Pending Requests": "Ожидающие запросы",
+  "My Patients": "Мои пациенты",
+  "Approve": "Одобрить",
+  "Decline": "Отклонить",
+  "Patient request approved": "Запрос пациента одобрен",
+  "Patient request declined": "Запрос пациента отклонен",
+  "Failed to approve request": "Не удалось одобрить запрос",
+  "Failed to decline request": "Не удалось отклонить запрос",
+  "Request Pending": "Запрос ожидает",
+  "Request sent successfully": "Запрос успешно отправлен",
+  "Cancel Request": "Отменить запрос",
+  "Request canceled successfully": "Запрос успешно отменен"
 }

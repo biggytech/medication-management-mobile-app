@@ -73,13 +73,19 @@ export const DoctorSelectionModal: React.FC<DoctorSelectionModalProps> = ({
       // disableScrollView={true}
     >
       <View style={styles.container}>
-        <Text style={styles.description}>
-          {LanguageService.translate("Choose a doctor to send the report to")}
-        </Text>
-
-        <ScrollView style={styles.doctorsList}>
-          {doctors.map(renderDoctorItem)}
-        </ScrollView>
+        {doctors.length > 0 && (
+          <>
+            <Text style={styles.description}>
+              {LanguageService.translate(
+                "Choose a doctor to send the report to",
+              )}
+            </Text>
+            <ScrollView style={styles.doctorsList}>
+              {doctors.map(renderDoctorItem)}
+            </ScrollView>
+          </>
+        )}
+        {!doctors.length && renderEmptyState()}
       </View>
     </ModalWithBackDrop>
   );
