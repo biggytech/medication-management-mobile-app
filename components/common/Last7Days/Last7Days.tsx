@@ -29,7 +29,6 @@ export const Last7Days: React.FC<Last7DaysProps> = ({
   activeDate,
   onActiveDateChange,
 }) => {
-  // Initialize start date to Monday of current week
   const getInitialStartDate = () => {
     const today = new Date();
     return getMondayOfWeek(today);

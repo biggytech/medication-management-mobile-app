@@ -56,8 +56,8 @@ export const UserProfileEditForm: React.FC<UserProfileEditFormProps> = ({
       onSuccess?.();
     },
     onError: (error) => {
-      toaster.showError(LanguageService.translate("Failed to update profile"));
-      console.error("Profile update error:", error);
+      // toaster.showError(LanguageService.translate("Failed to update profile"));
+      // console.error("Profile update error:", error);
     },
   });
 
