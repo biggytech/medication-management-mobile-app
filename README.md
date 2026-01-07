@@ -57,5 +57,5 @@ android {
 }
 ...
 ```
-5. Build the APK file: `cd android && sh ../set-env.sh ./gradlew assembleRelease`
+5. Build the APK file: `cd android && ./gradlew assembleRelease`
 6. Find your signed apk under `android/app/build/outputs/apk/release/app-release.apk`
