@@ -214,9 +214,7 @@ const styles = StyleSheet.create({
   },
   userNameView: {
     padding: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    gap: 15,
   },
   userName: {},
 });
