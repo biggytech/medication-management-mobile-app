@@ -31,25 +31,6 @@ import { NotificationSchedulingService } from "@/services/notifications/Notifica
 import { prepareMedicineDataForEditing } from "@/utils/entities/medicine/prepareMedicineDataForEditing";
 import type { RequiredField } from "@/utils/types/RequiredField";
 import { prepareHealthTrackerDataForEditing } from "@/utils/entities/healthTrackers/prepareHealthTrackerDataForEditing";
-import Constants from "expo-constants";
-
-const { manifest } = Constants;
-
-// const uri = `http://${manifest.debuggerHost.split(":").shift()}:4000`;
-const serverUri = Constants.expoConfig?.hostUri
-  ? "http://" +
-    // Constants.expoConfig
-    //   .hostUri!.split(":")
-    //   .shift()
-    "localhost".concat(`:${process.env.EXPO_PUBLIC_SERVER_PORT}`).concat("/api")
-  : process.env.EXPO_PUBLIC_SERVER_BASE_URL;
-
-// const api =
-//   typeof manifest.packagerOpts === `object` && manifest.packagerOpts.dev
-//     ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
-//     : `api.example.com`;
-
-console.log("serverUri", serverUri);
 
 export enum Methods {
   GET = "GET",
@@ -60,7 +41,7 @@ export enum Methods {
 
 export class APIService {
   private static instance: APIService | null = null;
-  public BASE_URL = serverUri;
+  public BASE_URL = process.env.EXPO_PUBLIC_SERVER_BASE_URL;
 
   private constructor() {}
 
