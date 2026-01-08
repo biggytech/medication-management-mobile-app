@@ -1,6 +1,6 @@
 import { useAuthSession } from "@/providers/AuthProvider";
 import { type ReactNode, useState } from "react";
-import { Image, KeyboardAvoidingView, StyleSheet, View } from "react-native";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { LanguageService } from "@/services/language/LanguageService";
 import { LanguagePicker } from "@/components/common/inputs/LanguagePicker";
 import { Input } from "@/components/common/inputs/Input";
@@ -41,10 +41,7 @@ export default function LoginScreen(): ReactNode {
 
   return (
     <Screen style={styles.screen}>
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
-        behavior={"height"}
-      >
+      <ScrollView style={styles.keyboardAvoidingView}>
         <View style={styles.languagePickerContainer}>
           <LanguagePicker />
         </View>
@@ -63,7 +60,6 @@ export default function LoginScreen(): ReactNode {
                 style={styles.logo}
               />
               <Input
-                autoFocus
                 placeholder={LanguageService.translate("Email")}
                 value={data["email"]}
                 onChangeText={(text) => setValue("email", text.trim())}
@@ -112,7 +108,7 @@ export default function LoginScreen(): ReactNode {
             disabled={isLoading}
           />
         </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </Screen>
   );
 }
