@@ -2,7 +2,11 @@ import { AppColors } from "@/constants/styling/colors";
 
 const { Toast } = require("toastify-react-native");
 
-export const showSuccess = (message: string, details?: string) => {
+export const showSuccess = (
+  message: string,
+  details?: string,
+  visibilityTime?: number,
+) => {
   Toast.show({
     type: "custom",
     text1: message,
@@ -11,6 +15,6 @@ export const showSuccess = (message: string, details?: string) => {
     textColor: AppColors.WHITE,
     iconColor: AppColors.WHITE,
     icon: "checkmark-circle",
-    visibilityTime: 1000,
+    visibilityTime: visibilityTime ?? 1000,
   });
 };

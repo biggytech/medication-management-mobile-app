@@ -63,9 +63,27 @@ export const getNewUserSchema = () =>
     password: getPasswordSchema(),
   });
 
-export const getForgotPasswordSchema = () =>
+export const getCodeSchema = (isRequired = true) => {
+  if (isRequired) {
+    return yup
+      .string()
+      .required(LanguageService.translate("Verification code is required"));
+  } else {
+    return yup.string().nullable().optional();
+  }
+};
+
+export const getForgotPasswordSchema = (
+  isCodeRequired: boolean,
+  isPasswordRequired: boolean,
+) =>
   yup.object().shape({
     email: getEmailSchema(),
+    code: getCodeSchema(isCodeRequired),
+    password: getPasswordSchema({
+      isRequired: isPasswordRequired,
+    }),
+    passwordConfirmation: getPasswordConfirmationSchema(),
   });
 
 export const getSignInDefaultSchema = () =>
@@ -94,6 +112,24 @@ export const getSexSchema = () =>
       LanguageService.translate("Invalid sex value"),
     );
 
+export const getPasswordConfirmationSchema = () =>
+  yup
+    .string()
+    .nullable()
+    .optional()
+    .transform((value) => (value === "" ? null : value))
+    .when("password", {
+      is: (value: string | null | undefined) => value && value.length > 0,
+      then: (schema) =>
+        schema
+          .required(LanguageService.translate("Confirm Password is required"))
+          .oneOf(
+            [yup.ref("password")],
+            LanguageService.translate("Passwords do not match"),
+          ),
+      otherwise: (schema) => schema.nullable().optional(),
+    });
+
 export const getUserProfileEditSchema = () =>
   yup.object().shape({
     fullName: getFullNameSchema(),
@@ -101,22 +137,7 @@ export const getUserProfileEditSchema = () =>
     password: getPasswordSchema({
       isRequired: false,
     }),
-    passwordConfirmation: yup
-      .string()
-      .nullable()
-      .optional()
-      .transform((value) => (value === "" ? null : value))
-      .when("password", {
-        is: (value: string | null | undefined) => value && value.length > 0,
-        then: (schema) =>
-          schema
-            .required(LanguageService.translate("Confirm Password is required"))
-            .oneOf(
-              [yup.ref("password")],
-              LanguageService.translate("Passwords do not match"),
-            ),
-        otherwise: (schema) => schema.nullable().optional(),
-      }),
+    passwordConfirmation: getPasswordConfirmationSchema(),
     sex: getSexSchema(),
     dateOfBirth: getDateOfBirthSchema(),
   });

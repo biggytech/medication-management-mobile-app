@@ -358,5 +358,8 @@
   "Notification skipped for 1 hour": "Уведомление отложено на 1 час",
   "Failed to skip notification": "Не удалось отложить уведомление",
   "I don't remember password": "Я не помню пароль",
-  "New password will be sent to your email": "Новый пароль будет отправлен на ваш email"
+  "Verification code": "Код подтверждения",
+  "Verification code has been sent to your email": "Код подтверждения был отправлен на ваш email",
+  "Please, check your email and enter verification code here": "Пожалуйста, проверьте ваш email и введите код подтверждения здесь",
+  "Verification code is required": "Код подтверждения обязателен"
 }

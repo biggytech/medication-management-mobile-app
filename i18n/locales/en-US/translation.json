@@ -358,5 +358,8 @@
   "Notification skipped for 1 hour": "Notification skipped for 1 hour",
   "Failed to skip notification": "Failed to skip notification",
   "I don't remember password": "I don't remember password",
-  "New password will be sent to your email": "New password will be sent to your email"
+  "Verification code": "Verification code",
+  "Verification code has been sent to your email": "Verification code has been sent to your email",
+  "Please, check your email and enter verification code here": "Please, check your email and enter verification code here",
+  "Verification code is required": "Verification code is required"
 }

@@ -748,6 +748,32 @@ export class APIService {
 
       return result;
     },
+
+    async confirmVerificationCode(data: { email: string; code: string }) {
+      const result = await APIService.getInstance().makeRequest({
+        method: Methods.POST,
+        url: `${this.path}/confirm-verification-code`,
+        requiresAuth: false,
+        body: data,
+      });
+
+      return result;
+    },
+
+    async updateForgottenPassword(data: {
+      email: string;
+      code: string;
+      password: string;
+    }) {
+      const result = await APIService.getInstance().makeRequest({
+        method: Methods.POST,
+        url: `${this.path}/update-forgotten-password`,
+        requiresAuth: false,
+        body: data,
+      });
+
+      return result;
+    },
   };
 
   public static patientReports = {
