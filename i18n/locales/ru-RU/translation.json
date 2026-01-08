@@ -356,5 +356,7 @@
   "Request canceled successfully": "Запрос успешно отменен",
   "In 1 hour": "Через 1 час",
   "Notification skipped for 1 hour": "Уведомление отложено на 1 час",
-  "Failed to skip notification": "Не удалось отложить уведомление"
+  "Failed to skip notification": "Не удалось отложить уведомление",
+  "I don't remember password": "Я не помню пароль",
+  "New password will be sent to your email": "Новый пароль будет отправлен на ваш email"
 }

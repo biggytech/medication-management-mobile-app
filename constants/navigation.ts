@@ -1,6 +1,7 @@
 export enum AppScreens {
   LOGIN = "/login",
   SIGN_UP = "/sign-up",
+  FORGOT_PASSWORD = "/forgot-password",
   HOME = "/(drawer)/(tabs)",
   MEDICINES = "/(drawer)/(tabs)/medicines",
   MEDICINES_NEW = "/medicines/new",

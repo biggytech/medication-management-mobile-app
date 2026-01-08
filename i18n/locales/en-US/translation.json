@@ -356,5 +356,7 @@
   "Request canceled successfully": "Request canceled successfully",
   "In 1 hour": "In 1 hour",
   "Notification skipped for 1 hour": "Notification skipped for 1 hour",
-  "Failed to skip notification": "Failed to skip notification"
+  "Failed to skip notification": "Failed to skip notification",
+  "I don't remember password": "I don't remember password",
+  "New password will be sent to your email": "New password will be sent to your email"
 }

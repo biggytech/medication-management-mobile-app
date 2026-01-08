@@ -63,6 +63,11 @@ export const getNewUserSchema = () =>
     password: getPasswordSchema(),
   });
 
+export const getForgotPasswordSchema = () =>
+  yup.object().shape({
+    email: getEmailSchema(),
+  });
+
 export const getSignInDefaultSchema = () =>
   yup.object().shape({
     email: getEmailSchema(),

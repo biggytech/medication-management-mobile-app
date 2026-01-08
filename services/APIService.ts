@@ -737,6 +737,17 @@ export class APIService {
 
       return result;
     },
+
+    async forgotPassword(data: { email: string }) {
+      const result = await APIService.getInstance().makeRequest({
+        method: Methods.POST,
+        url: `${this.path}/forgot-password`,
+        requiresAuth: false,
+        body: data,
+      });
+
+      return result;
+    },
   };
 
   public static patientReports = {
