@@ -1,5 +1,7 @@
 # Medication Management App - Mobile App
 
+Mobile application for taking medications.
+
 ## Supported platforms
 - Android 36 or higher
 
@@ -10,6 +12,17 @@
     - emulator 35.4.9 or higher
     - platform-tools 35.0.2 or higher
     - android-36
+ 
+## Demo
+
+[Video demo](./demo/demo_rus.mp4)
+
+### Screenshots
+| ![](./demo/images/5-1.png) | ![](./demo/images/5-2.png) | ![](./demo/images/3-6.png) |
+|--|--|--|
+| ![](./demo/images/5-3.png) | ![](./demo/images/5-4.png) | ![](./demo/images/3-3.png) |
+| ![](./demo/images/5-5.png) | ![](./demo/images/5-9.png) | ![](./demo/images/3-5.png) | 
+| ![](./demo/images/5-6.png) | ![](./demo/images/5-7.png) | ![](./demo/images/5-8.png) |
 
 ## Run the App
 
